@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>激浪中文v2</title>
+    <title>系统设计</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -46,31 +46,19 @@
           
             
               <li class="">
-                <a href="background.html">激浪中文v2</a>
+                <a href="design.html">设计</a>
               </li>
             
           
             
               <li class="">
-                <a href="design.html">激浪中文v2</a>
-              </li>
-            
-          
-            
-              <li class="">
-                <a href="development.html">激浪中文v2</a>
-              </li>
-            
-          
-            
-              <li class="">
-                <a href="element.html">激浪中文v2</a>
+                <a href="development.html">开发</a>
               </li>
             
           
             
               <li class="active">
-                <a href="system.html">激浪中文v2</a>
+                <a href="system.html">系统设计</a>
               </li>
             
           
@@ -83,13 +71,132 @@
 </div><div class="container">
   <div class="row">
     
-      <div class="span12">
+      <div class="span3 doc-sidebar">
+        <ul class="nav nav-list doc-sidenav affix">
+          
+          <li class="active" >
+            <a href="#道具系统">
+              <i class="icon-chevron-right"></i>
+              道具系统
+            </a>
+          </li>
+          
+          <li >
+            <a href="#游戏模式">
+              <i class="icon-chevron-right"></i>
+              游戏模式
+            </a>
+          </li>
+          
+          <li >
+            <a href="#种族">
+              <i class="icon-chevron-right"></i>
+              种族
+            </a>
+          </li>
+          
+          <li >
+            <a href="#武器系统">
+              <i class="icon-chevron-right"></i>
+              武器系统
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+      <div class="span9">
     
-      <section id="简介">
+      <h1>简介</h1>
+
+<p>武器系统</p>
+<section id="道具系统">
   <div class="page-header">
-    <h1>简介</h1>
+    <h1>道具系统</h1>
   </div>
-  <p>武器系统</p>
+  <h2>商店道具</h2>
+
+<h2>随机道具</h2>
+
+<p>此类道具为战斗过程中随机出现的道具。</p>
+
+<p>此类道具将出现在双方阵地的正中空中，等待玩家击中该道具。</p>
+
+<p>如果玩家击中道具，将会触发相应的效果，且道具消失。</p>
+
+<p>如果玩家未击中，道具将继续存在在游戏画面中，等待下一回合由另一位玩家尝试命中。</p>
+
+<p>如果从道具出现开始两回合内都未被击中，则道具消失。</p>
+
+<h3>随机道具列表</h3>
+
+<p>流星火雨</p>
+
+<p>隐身斗篷</p>
+
+<p>火力增强</p>
+
+<p>集体补血</p>
+
+<p>集体冻结</p>
+</section>
+<section id="游戏模式">
+  <div class="page-header">
+    <h1>游戏模式</h1>
+  </div>
+  <h2>遭遇模式</h2>
+
+<p>玩家选择任一种族，与指定（或随机）种族进行战斗。</p>
+
+<h3>游戏流程</h3>
+
+<ol>
+<li>进入游戏</li>
+<li>选择遭遇模式</li>
+<li>选择种族</li>
+<li>选择兵种</li>
+<li>拖动放置兵种</li>
+<li>点击“开始战斗”按钮</li>
+<li>随机一方开始进行攻击，指定时间内不完成有效进攻则判定为放弃该回合</li>
+<li>进入下回合，由另一方进行攻击</li>
+<li>交替进攻，直至其中一方被全歼，则被全歼方判定为失败</li>
+<li>显示战斗统计，游戏结束</li>
+</ol>
+
+<h2>联机模式</h2>
+
+<p>一位玩家创建房间，等待另一位玩家加入，双方选择种族，在双方确认准备完毕后，房主可执行“开始游戏”命令。</p>
+
+<p>游戏开始后，双方将随机一方开始第一回合，回合结束后由另一方发起攻击。</p>
+
+<p>直至其中一方被全歼，则另一方取得胜利。</p>
+
+<h3>游戏流程</h3>
+
+<h2>生存模式</h2>
+
+<p>玩家将扮演松鼠一方，抵御各种入侵者，直至家园被入侵。</p>
+
+<p>若家园被成功入侵，则游戏结束</p>
+
+<h3>游戏流程</h3>
+
+<h2>BOSS模式</h2>
+
+<p>游戏关卡中将出现强大的BOSS，必须在规定的时间内击杀BOSS方能取得胜利。</p>
+
+<h3>游戏流程</h3>
+
+<h2>故事模式</h2>
+
+<p>玩家将扮演松鼠一方，运用各种武器和组合击退入侵者，守卫家园。<br />入侵者分数拨进攻，必须完全剿灭所有入侵者方为获胜。</p>
+
+<h3>游戏流程</h3>
+</section>
+<section id="种族">
+  <div class="page-header">
+    <h1>种族</h1>
+  </div>
+  
 </section>
 <section id="武器系统">
   <div class="page-header">
@@ -100,6 +207,18 @@
 <p>武器购买系统</p>
 
 <p>暴击几率</p>
+
+<p>减速类武器</p>
+
+<p>群体类武器<br />溅射 液体<br />分裂 石头</p>
+
+<p>回收类<br />回旋标</p>
+
+<p>投掷类<br />标枪<br />石头<br />弓箭<br />香蕉<br />火把</p>
+
+<p>等级</p>
+
+<p>种族<br />猴子<br />狼<br />鹰<br />猩猩</p>
 </section>
     </div>
   </div>

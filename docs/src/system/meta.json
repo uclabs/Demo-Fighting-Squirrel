@@ -1,7 +1,7 @@
 {
-    "name": "激浪中文v2",
-    "description": ["jlang.md"],
+    "name": "系统设计",
+    "description": ["system.md"],
     "order": [],
-    "childrenOrder": ["production", "design", "frontend", "api", "partner", "assets", "contact"],
-    "sidebarOn": false
+    "childrenOrder": [],
+    "sidebarOn": true
 }
