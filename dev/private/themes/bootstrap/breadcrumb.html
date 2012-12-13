@@ -1,0 +1,8 @@
+<div id="breadcrumb" class="container">
+  {{ if(data.system) { }}
+  <ul class="breadcrumb">
+    <li><a href="{{= data.system.link }}">{{= data.system.name }}</a> <span class="divider">/</span></li>
+    <li class="active">{{= data.module.name }}</li>
+  </ul>
+  {{ } }}
+</div>
