@@ -5,9 +5,12 @@ var path = require('path'),
     converter = new Showdown.converter(),
     tpl = require('./template'),
     util = require('./util'),
-    mdFilter = /(\S| )+\.(md|markdown|mdown|mkdn|mkd)$/,
-    themeRoot = 'private/themes',
+    mdFilter = /[\/\\]([\w\-_\.=]+)\.(md|markdown|mdown|mkdn|mkd)$/,
     templates;
+
+var META_FILE = 'meta.json',
+    SITE_FILE = 'site.json',
+    THEME_ROOT = '../private/themes';
 
 // 整理 Array，删除其中的 undefined
 function arrangeArray (array) {
@@ -28,32 +31,8 @@ function arrangeArray (array) {
     return array;
 }
 
-// 轮询文件夹获取内部符合指定筛选条件的文件
-function traverse (root, files, filter) {
-    if (!Array.isArray(files)) {
-        files = [];
-    }
-
-    var stat = fs.lstatSync(root),
-        dirFiles, realPath;
-
-    if (stat.isDirectory()) {
-        dirFiles = fs.readdirSync(root);
-        dirFiles.forEach(function (file, i) {
-            return traverse(path.join(root, file), files, filter);
-        }, this);
-    } else {
-        realPath = fs.realpathSync(root);
-        if (!filter || (filter && filter.test(realPath))) {
-            files.push(realPath);
-        }
-    }
-
-    return files;
-}
-
 // 获取文件夹信息，如果设置了轮询，返回的文件夹列表为空数组
-function getDirectoryInfo (directory, iterate, filter) {
+function getDirectoryInfo (directory) {
     var stat = fs.lstatSync(directory),
         data = {},
         dirFiles;
@@ -62,185 +41,143 @@ function getDirectoryInfo (directory, iterate, filter) {
     data.files = [];
 
     if (stat.isDirectory()) {
-        if (iterate) {
-            data.files = traverse(directory, data.files, filter);
-        } else {
-            dirFiles = fs.readdirSync(directory);
-            dirFiles.forEach(function (file, i) {
-                var filePath = path.join(directory, file),
-                    stat = fs.lstatSync(filePath);
-                if (stat.isDirectory()) {
-                    data.directorys.push(file);
-                } else {
-                    realPath = fs.realpathSync(filePath);
-                    if (!filter || (filter && filter.test(realPath))) {
-                        data.files.push(realPath);
-                    }
+        dirFiles = fs.readdirSync(directory);
+        dirFiles.forEach(function (file, i) {
+            var filePath = path.join(directory, file),
+                stat = fs.lstatSync(filePath);
+            if (stat.isDirectory()) {
+                data.directorys.push(file);
+            } else {
+                realPath = fs.realpathSync(filePath);
+                if (mdFilter.test(realPath)) {
+                    data.files.push(realPath);
                 }
-            });
-        }
+            }
+        });
     } else {
         console.error(directory + ' is Not Directory.');
     }
-
     return data;
-};
+}
 
 
 // 读取 Markdown 文件，并根据 H1 解析为段
-function getSection (filepath) {
-    var fileData = fs.readFileSync(filepath, 'utf8').split('\n'),
-        line, match, lastLine,
-        sections = [], sectionName,
-        sectionData = [], sectionsData = [],
+function getSection (filePath) {
+    var fileData = fs.readFileSync(filePath, 'utf8').split('\n'),
+        line, match, lastLine, section, fileMatch, fileName,
+        sectionId, sectionName, sectionData = [],
+        fileNamePattern = /[\/\\]([\w\-_\.=]+)\.(md|markdown|mdown|mkdn|mkd)$/,
         setextStyleHeadingPattern = /^#\s+(.*)/,
         atxStyleHeadingPattern = /^(={3,})(\s*)$/,
         endWithWhitespaceattern = /(\s*)$/,
         startWithWhitespaceattern = /^(\s*)/,
-        endWithSharpPattern = /(#+)$/;
+        endWithSharpPattern = /(\s)*(#+)(\s)*$/;
+
+    fileMatch = fileNamePattern.exec(filePath);
+    if ((fileMatch || []).length > 2) {
+        sectionId = fileMatch[1];
+        fileName = sectionId + '.' + fileMatch[2];
+    } else {
+        return section;
+    }
 
     while (fileData.length > 0) {
         line = fileData.shift();
-        if (atxStyleHeadingPattern.test(line)) {
-            if (lastLine && lastLine.length > 0) {
-                if (sectionName) {
-                    sectionData.pop();
-                    sectionsData.push({
-                        id: sectionName,
-                        data: sectionData.join('\n')
-                    })
-                    sectionData = [];
-                }
-                sectionName = lastLine.replace(startWithWhitespaceattern, '');
-                sectionName = sectionName.replace(endWithWhitespaceattern, '');
-                sections.push(sectionName);
-                lastLine = '';
-            } else {
-                lastLine = line;
-            }
+        if (sectionName) {
+            sectionData.push(line);
         } else {
-            match = setextStyleHeadingPattern.exec(line);
-            if ((match || []).length > 1) {
-                if (sectionName) {
-                    sectionsData.push({
-                        id: sectionName,
-                        data: sectionData.join('\n')
-                    });
-                    sectionData = [];
-                }
-                sectionName = match[1];
-                if (endWithWhitespaceattern.test(sectionName)) {
+            if (atxStyleHeadingPattern.test(line)) {
+                if (lastLine && lastLine.length > 0) {
+                    sectionName = lastLine.replace(startWithWhitespaceattern, '');
                     sectionName = sectionName.replace(endWithWhitespaceattern, '');
                 } else {
-                    sectionName = sectionName.replace(endWithSharpPattern, '');
+                    lastLine = line;
                 }
-                sections.push(sectionName);
-                lastLine = '';
             } else {
-                lastLine = line;
+                match = setextStyleHeadingPattern.exec(line);
+                if ((match || []).length > 1) {
+                    sectionName = match[1];
+                    sectionName = sectionName.replace(endWithSharpPattern, '');
+                } else {
+                    lastLine = line;
+                }
             }
         }
-
-        if (sectionName) {
-            sectionData.push(lastLine);
-        }
     }
+
     if (sectionName) {
-        sectionsData.push({
-            id: sectionName,
-            data: sectionData.join('\n')
-        });
-        sectionData = [];
+        section = {
+            id: sectionId,
+            fileName: fileName,
+            name: sectionName,
+            data: converterToHtml(sectionData.join('\n'))
+        };
     }
 
-    return [sections, sectionsData];
+    return section;
 }
 
-function prettifyHtml (text) {
+function converterToHtml(text) {
+    text = converter.makeHtml(text);
     // beautify Code
     text = text.replace(/<pre([^>\n]*)>/g, '<pre$1 class="prettyprint linenums">');
-
     // beautify Table
     text = text.replace(/<table([^>\n]*)>/g, '<table$1 class="table table-striped table-bordered">');
-    
     return text;
 }
 
-function Metadoc (config) {
+function Metadocs (config) {
+    config = config || {};
     this.config = {
-        fromPath: config.fromPath,
-        toPath: config.toPath,
-        metaFile: config.metaFile || 'meta.json',
+        src: config.src || path.join(__dirname, '../src/docs'),
+        dest: config.dest || path.join(__dirname, '../docs'),
         theme: config.theme || 'bootstrap'
     };
-    this.rootId = 'index';
 }
 
-Metadoc.prototype.process = function () {
+Metadocs.prototype.gen = function () {
     var that = this,
-        cfg = this.config,
-        root = {}, systems = [];
+        cfg = this.config;
 
-    this.themePath = path.join(themeRoot, cfg.theme);
+    this.site = {};
+    this.root = {};
+    this.globeData = {};
+
+    this.themePath = path.join(__dirname, THEME_ROOT, cfg.theme);
     if (!existsSync(this.themePath)) {
         console.error('No Theme Founded.');
         return;
     }
 
-    this.fromPath = cfg.fromPath;
-    if (!existsSync(this.fromPath)) {
-        console.error('fromPath not Founded.');
+    this.src = fs.realpathSync(cfg.src);
+    if (!existsSync(this.src)) {
+        console.error('src not Founded.');
         return;
     }
 
-    this.toPath = cfg.toPath;
-    if (!existsSync(this.toPath)) {
-        fs.mkdirSync(this.toPath);
+    if (!existsSync(cfg.dest)) {
+        fs.mkdirSync(cfg.dest);
     }
+    this.dest = fs.realpathSync(cfg.dest);
 
-    root = this.getData(this.fromPath, false);
-    root.items = [];
-    root.id = this.rootId;
-    root.name = root.name || root.id;
-    root.path = this.rootId;
-    root.body = '';
-    // 如果根目录存在名称，则在头部最前显示
-    if (root.name) {
-        systems.push({
-            id: this.rootId,
-            name: root.name
-        });
-    }
-
-    root.children.forEach(function (c, i) {
-        var directory, system;
-        if (c === this.rootId) {
-            console.error('System named \'index\' was Found');
-        }
-        directory = path.join(that.fromPath, c);
-        system = that.getSystem(c, directory);
-        root.items.push(system);
-        systems.push(system);
-    });
-
-    this.genHtml(root, systems);
-    root.items.forEach(function (s, i) {
-        that.writeFile(that.toPath, s);
-    });
-
-    root.html = root.body.length > 0 ? root.html : (root.items[0] || {}).html;
-    root.items = [];
-    this.writeFile(that.toPath, root);
+    this.site = this.getSiteInfo();
+    this.root = this.getData({}, '');
+    this.writeToDisk(this.root);
     if (existsSync(path.join(this.themePath, 'assets'))) {
-        util.copyDir(path.join(this.themePath, 'assets'), path.join(this.toPath, 'assets'), true);
+        util.copyDir(path.join(this.themePath, 'assets'), path.join(this.dest, 'assets'), true);
     }
 };
 
+Metadocs.prototype.getSiteInfo = function () {
+    var siteConfig = path.join(this.src, SITE_FILE),
+    siteInfo = this.getMetaInfo(siteConfig);
+    return siteInfo || {};
+};
 
 // 获取模版
-Metadoc.prototype.getTemplates = function () {
+Metadocs.prototype.getTemplates = function () {
     var that = this;
-    this.tplList = ['header', 'page', 'nav', 'breadcrumb', 'main', 'section', 'footer'];
+    this.tplList = ['header', 'page', 'nav', 'main', 'footer'];
     if (this.templates) {
         return this.templates;
     }
@@ -254,247 +191,187 @@ Metadoc.prototype.getTemplates = function () {
     return this.templates;
 };
 
-// 写入文件，如果存在 item 则会循环写入
-Metadoc.prototype.writeFile = function(directory, data) {
-    var that = this;
+Metadocs.prototype.writeToDisk = function(current) {
+    var that = this,
+        directory = path.join(this.dest, current.id),
+        templates = this.getTemplates(),
+        data = {
+            site: this.site,
+            current: current,
+            globe: this.globeData,
+            root: this.root
+        };
     if (!existsSync(directory)) {
         fs.mkdirSync(directory);
     }
-    if (data.html && data.html.length > 0 && data.path) {
-        fs.writeFileSync(path.join(directory, data.path + '.html'), data.html, 'utf8');
-    }
 
-    if(data.items) {
-        data.items.forEach(function (it, i) {
-            that.writeFile(directory, it);
+    var headerHtml = tpl.tmpl(templates.header, data),
+        navHtml = tpl.tmpl(templates.nav, data),
+        mainHtml = tpl.tmpl(templates.main, data),
+        footerHtml = tpl.tmpl(templates.footer, data),
+        content = tpl.tmpl(templates.page, {
+            header: headerHtml,
+            nav: navHtml,
+            main: mainHtml,
+            footer: footerHtml
         });
-    }
+    fs.writeFileSync(path.join(directory, 'index.html'), content, 'utf8');
+    current.config.assets.forEach(function (a, i) {
+        util.copyDir(path.join(that.src, current.id, a), path.join(directory, a), true);
+    });
+    current.childrenId.forEach(function (cid, i) {
+        var child = that.globeData[cid];
+        that.writeToDisk(child);
+    });
 };
 
 // 获取 meta 文件的信息
-Metadoc.prototype.getMetaInfo = function (rootDirectory) {
-    var metaPath = path.join(rootDirectory, this.config.metaFile),
-        metaInfo;
-    if (existsSync(metaPath)) {
+Metadocs.prototype.getMetaInfo = function (file) {
+    var metaInfo;
+
+    if (existsSync(file)) {
         try {
-            metaInfo = require(fs.realpathSync(metaPath));
+            metaInfo = require(fs.realpathSync(file));
         } catch (e) {
-            console.error('Failed When Parse Metafile:' + metaPath);
+            console.error('Failed When Parse Metafile:' + file);
         }
     }
     return metaInfo;
 };
 
-// 根据模版，将内容生成为 Html
-Metadoc.prototype.genHtml = function (data, systems) {
-    var that = this,
-        html = '',
-        templates = this.getTemplates(),
-        header, headerHtml = '',
-        page, pageHtml = '',
-        nav, navHtml = '',
-        breadcrumb, breadcrumbHtml = '',
-        main, mainHtml = '',
-        footer, footerHtml = '',
-        systemId, innerContent = [];
-
-    if (!templates) {
-        console.error('No Template Founded.');
-        return;
-    }
-
-    header = templates.header;
-    page = templates.page;
-    nav = templates.nav;
-    breadcrumb = templates.breadcrumb;
-    main = templates.main;
-    footer = templates.footer;
-
-    data.descriptionsData.forEach(function (d, i) {
-        var descriptionsHtml = prettifyHtml(converter.makeHtml(d));
-        innerContent.push(descriptionsHtml);
-    });
-    data.sections.forEach(function (s, i) {
-        if (data.sectionsData[s]) {
-            var sectionContent = prettifyHtml(converter.makeHtml(data.sectionsData[s])),
-                section = templates.section,
-                sectionHtml = tpl.tmpl(section, {id: s, content: sectionContent});
-            innerContent.push(sectionHtml);
-        }
-    });
-
-    if (data.isModule) {
-        systemId = data.systemId;
-        breadcrumbHtml = tpl.tmpl(breadcrumb, {
-            system: {
-                link: data.systemId + '.html',
-                name: data.systemName
-            },
-            module: {name: data.name}
-        });
-        data.path = systemId + '-' + data.id;
-    } else {
-        systemId = data.id;
-        breadcrumbHtml = tpl.tmpl(breadcrumb, {});
-        data.path = systemId;
-    }
-
-    if (innerContent.length > 0 || (data.items || []).length === 0) {
-        navHtml = tpl.tmpl(nav, {systems: systems, id: systemId});
-        pageHtml += navHtml;
-        pageHtml += breadcrumbHtml;
-        mainHtml = tpl.tmpl(main, {
-            sections: data.sections,
-            sidebarOn: data.sidebarOn,
-            content: innerContent.join('\n')
-        });
-        pageHtml += mainHtml;
-    }
-
-    data.body = pageHtml;
-    (data.items || []).forEach(function (item, i) {
-        var itemBody = that.genHtml(item, systems);
-        if (i===0 && data.body.length === 0) {
-            data.body = itemBody;
-        }
-    });
-    html = tpl.tmpl(page, {body: data.body, header: header, footer:footer});
-    data.html = html;
-    return pageHtml;
-};
-
-// 获取系统
-Metadoc.prototype.getSystem = function (id, root) {
-    var that = this,
-        system = this.getData(root, false);
-
-    system.id = id;
-    system.name = system.name || id;
-    system.directory = root;
-    system.items = [];
-
-    system.children.forEach(function (c, i) {
-        var directory = path.join(root, c),
-            module = that.getModule(c, directory, system);
-        system.items.push(module);
-    });
-
-    return system;
-};
-
-// 获取 Module
-Metadoc.prototype.getModule = function (id, root, system) {
-    var module = this.getData(root, true);
-
-    module.id = id;
-    module.isModule = true;
-    module.directory = root;
-    module.name = module.name || id;
-    module.systemId = system.id;
-    module.systemName = system.name;
-    
-    return module;
-};
-
 // 获取数据
-Metadoc.prototype.getData = function (rootDirectory, iterate, mdFilter) {
-    var metaInfo = this.getMetaInfo(rootDirectory) || {},
-        metaName = metaInfo.name,
-        metaDescription = metaInfo.description || [],
-        metaOrder = metaInfo.order || [],
-        metaChildren = metaInfo.childrenOrder || [],
-        sidebarOn = metaInfo.sidebarOn,
-        showOnNav = metaInfo.showOnNav,
-        description = new Array(metaDescription.length),
-        tmpDescription = [], descriptionsData = [],
-        files = [],
-        sections = new Array(metaOrder.length),
-        sectionsData = {},
-        children = new Array(metaChildren.length),
-        data;
+Metadocs.prototype.getData = function (parent, id) {
+    var that = this,
+        config = {
+            name: '',
+            description: [],
+            order: [],
+            assets: [],
+            childrenOrder: [],
+            sidebarOn: undefined,
+            showOnNav: true
+        };
 
-
-    if (sidebarOn !== true && sidebarOn !== false) {
-        if (children.length === 0) {
-            sidebarOn = true;
-        } else {
-            sidebarOn = false;
+    var level = parent.level >= 0 ? parent.level + 1 : 0,
+        rootDirectory = path.join(this.src, id),
+        metaFile = path.join(rootDirectory, META_FILE);
+    var metaInfo = this.getMetaInfo(metaFile) || {};
+    for(p in metaInfo) {
+        if (metaInfo.hasOwnProperty(p)) {
+            config[p] = metaInfo[p];
         }
     }
 
-    metaDescription.forEach(function (d, i) {
-        var tmpPath = path.join(rootDirectory, d);
-        if (existsSync(tmpPath)) {
-            tmpDescription.push(fs.realpathSync(tmpPath));
-        }
-    });
-
-    directoryInfo = getDirectoryInfo(rootDirectory, iterate, mdFilter);
-    directoryInfo.files.forEach(function (f, i) {
-        var index = tmpDescription.indexOf(f);
-        if (index >= 0) {
-            description[index] = f;
+    // 加载描述
+    var tmpDescription = [], descriptions,
+        pattern = /([\w\-_\.=]+)\.(md|markdown|mdown|mkdn|mkd)$/;
+    config.description.forEach(function (d, i) {
+        var match = pattern.exec(d);
+        if ((match || []).length > 2) {
+            tmpDescription.push(match[1]);
         } else {
-            files.push(f);
+            tmpDescription.push(d);
         }
     });
-    arrangeArray(description);
+    descriptions = new Array(tmpDescription.length);
 
-    description.forEach(function (d, i) {
-        var descriptionData = fs.readFileSync(d, 'utf8');
-        if (descriptionData) {
-            descriptionsData.push(descriptionData);
+    var directoryInfo = getDirectoryInfo(rootDirectory),
+        sectionFiles = [],
+        fileNamePattern = /[\/\\]([\w\-_\.=]+)\.(md|markdown|mdown|mkdn|mkd)$/;
+    directoryInfo.files.forEach(function (f, i) {
+        var fileMatch = fileNamePattern.exec(f),
+            index = -1;
+        if ((fileMatch || []).length > 2) {
+            index = tmpDescription.indexOf(fileMatch[1]);
+        }
+
+        if (index >= 0) {
+            descriptions[index] = {
+                file: f,
+                data: converterToHtml(fs.readFileSync(f, 'utf8'))
+            };
+        } else {
+            sectionFiles.push(f);
         }
     });
+    arrangeArray(descriptions);
 
-    files.forEach(function (f, i) {
-        var result = getSection(f),
-            secs = result[0],
-            secsData = result[1];
+    var metaOrder = config.order,
+        sectionsIndex = [],
+        sections = new Array(metaOrder.length);
+    sectionFiles.forEach(function (f, i) {
+        var section = getSection(f);
+        if (section) {
+            var sectionId = section.id,
+                fileName = section.fileName,
+                sectionName = section.name,
+                index = metaOrder.indexOf(sectionId);
 
-        secs.forEach(function (s, i) {
-            var index = metaOrder.indexOf(s);
-            if (sections.indexOf(s) >= 0) {
-                console.error('Repeat Section Name:' + s + ' Founded in file:' + f);
-                return;
+            if (index < 0) {
+                index = metaOrder.indexOf(fileName);
+            }
+
+            if (sectionsIndex.indexOf(sectionName) >= 0) {
+                console.error('Duplicate Section Name:' + sectionName + ' Founded in file:' + f);
             } else {
+                sectionsIndex.push(sectionName);
                 if (index >= 0) {
-                sections[index] = s;
+                    sections[index] = section;
                 } else {
-                    sections.push(s);
+                    sections.push(section);
                 }
             }
-        });
-        
-        secsData.forEach(function (sd, i) {
-            if (sd && sd.id) {
-                sectionsData[sd.id] = sd.data;
-            }
-        });
-    });
-
-    arrangeArray(sections);
-
-    directoryInfo.directorys.forEach(function (d, i) {
-        var index = metaChildren.indexOf(d);
-        if (index >= 0) {
-            children[index] = d;
-        } else {
-            children.push(d);
         }
     });
-    arrangeArray(children);
+    arrangeArray(sections);
 
-    data = {
-        name: metaName,
-        children: children,
-        sidebarOn: sidebarOn,
+    var metaAssets = config.assets,
+        assets = [],
+        metaChildrenOrder= config.childrenOrder,
+        childrenId = new Array(metaChildrenOrder.length);
+    directoryInfo.directorys.forEach(function (d, i) {
+        var assetsIndex = metaAssets.indexOf(d),
+            index = metaChildrenOrder.indexOf(d);
+        if(assetsIndex >= 0) {
+            assets.push(d);
+        } else {
+            d = id.length > 0? id + '/' + d : d;
+            if (index >= 0) {
+                childrenId[index] = d;
+            } else {
+                childrenId.push(d);
+            }
+        }
+    });
+    arrangeArray(childrenId);
+
+    var sidebarOn = config.sidebarOn;
+    if (sidebarOn !== true && sidebarOn !== false) {
+        if (childrenId.length === 0) {
+            config.sidebarOn = true;
+        } else {
+            config.sidebarOn = false;
+        }
+    }
+
+    var data = {
+        id: id,
+        name: config.name || id,
+        parentId: parent.id,
+        childrenId: childrenId,
+        descriptions: descriptions,
         sections: sections,
-        sectionsData: sectionsData,
-        descriptionsData: descriptionsData,
-        showOnNav: showOnNav
+        assets: assets,
+        config: config,
+        level: level
     };
+
+    this.globeData[id] = data;
+
+    childrenId.forEach(function(cid, i) {
+        that.getData(data, cid);
+    });
     return data;
 };
 
-module.exports = Metadoc;
+module.exports = Metadocs;

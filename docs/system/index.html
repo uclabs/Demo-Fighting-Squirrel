@@ -1,27 +1,29 @@
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title>系统设计</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="assets/css/prettify.css" rel="stylesheet">
-    <link href="assets/css/docs.css" rel="stylesheet">
+    
+    
+    
+    
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="../assets/css/prettify.css" rel="stylesheet">
+    <link href="../assets/css/docs.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="assets/js/html5.js"></script>
+      <script src="../assets/js/html5.js"></script>
     <![endif]-->
   </head>
   <body data-spy="scroll" data-target=".doc-sidebar">
+
 <div id="nav" class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-
       <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -30,35 +32,30 @@
 
       <div class="nav-collapse collapse">
         <ul class="nav">
+          
+            <li class="">
+              <a href="../index.html">战斗吧，松鼠！</a>
+            </li>
+          
           <!-- TODO: 此处由代码根据一级目录元信息生成 -->
           
-            
               <li class="">
-                <a href="index.html">战斗吧，松鼠！</a>
+                <a href="../intro/index.html">概述</a>
               </li>
             
           
-            
               <li class="">
-                <a href="intro.html">概述</a>
+                <a href="../design/index.html">设计</a>
               </li>
             
           
-            
-              <li class="">
-                <a href="design.html">设计</a>
-              </li>
-            
-          
-            
               <li class="active">
-                <a href="system.html">系统设计</a>
+                <a href="../system/index.html">系统设计</a>
               </li>
             
           
-            
               <li class="">
-                <a href="development.html">开发</a>
+                <a href="../development/index.html">开发</a>
               </li>
             
           
@@ -66,44 +63,47 @@
       </div>
     </div>
   </div>
-</div><div id="breadcrumb" class="container">
+</div>
+<div id="breadcrumb" class="container">
   
-</div><div class="container">
+</div>
+
+<div class="container">
   <div class="row">
     
       <div class="span3 doc-sidebar">
         <ul class="nav nav-list doc-sidenav affix">
           
           <li class="active" >
-            <a href="#道具系统">
+            <a href="#item">
               <i class="icon-chevron-right"></i>
               道具系统
             </a>
           </li>
           
           <li >
-            <a href="#游戏模式">
+            <a href="#mode">
               <i class="icon-chevron-right"></i>
               游戏模式
             </a>
           </li>
           
           <li >
-            <a href="#模式 - 双人模式">
+            <a href="#player-vs-player-mode">
               <i class="icon-chevron-right"></i>
               模式 - 双人模式
             </a>
           </li>
           
           <li >
-            <a href="#种族">
+            <a href="#race">
               <i class="icon-chevron-right"></i>
               种族
             </a>
           </li>
           
           <li >
-            <a href="#武器系统">
+            <a href="#weapon">
               <i class="icon-chevron-right"></i>
               武器系统
             </a>
@@ -113,14 +113,19 @@
       </div>
       <div class="span9">
     
-      <h1>系统设计</h1>
+    
+      <section>
+        <h1>系统设计</h1>
 
 <p>介绍该游戏游戏模式、种族系统、武器系统、道具系统和天气系统等，以便读者对该游戏的系统有全面、详尽的了解。</p>
-<section id="道具系统">
-  <div class="page-header">
-    <h1>道具系统</h1>
-  </div>
-  <h2>随机道具</h2>
+      </section>
+    
+    
+      <section id="item">
+        <div class="page-header">
+          <h1>道具系统</h1>
+        </div>
+        <h2>随机道具</h2>
 
 <p>此类道具为战斗过程中随机出现的道具。</p>
 
@@ -145,12 +150,13 @@
 <p>集体冻结</p>
 
 <h2>商店道具</h2>
-</section>
-<section id="游戏模式">
-  <div class="page-header">
-    <h1>游戏模式</h1>
-  </div>
-  <h2>双人模式</h2>
+      </section>
+    
+      <section id="mode">
+        <div class="page-header">
+          <h1>游戏模式</h1>
+        </div>
+        <h2>双人模式</h2>
 
 <h2>遭遇模式</h2>
 
@@ -200,12 +206,13 @@
 <p>玩家将扮演松鼠一方，运用各种武器和组合击退入侵者，守卫家园。<br />入侵者分数拨进攻，必须完全剿灭所有入侵者方为获胜。</p>
 
 <h3>游戏流程</h3>
-</section>
-<section id="模式 - 双人模式">
-  <div class="page-header">
-    <h1>模式 - 双人模式</h1>
-  </div>
-  <p>双人模式，即是本地双人对战模式，不需要联网即可进行双人对战。</p>
+      </section>
+    
+      <section id="player-vs-player-mode">
+        <div class="page-header">
+          <h1>模式 - 双人模式</h1>
+        </div>
+        <p>双人模式，即是本地双人对战模式，不需要联网即可进行双人对战。</p>
 
 <p>在双人模式下，两位玩家在同一台设备上交替进行战斗。</p>
 
@@ -230,12 +237,13 @@
 <li>如果不在我方回合内，则我方无法进行任何操作。</li>
 <li>在指定时间内必须完成攻击，超时将视为放弃本回合</li>
 </ul>
-</section>
-<section id="种族">
-  <div class="page-header">
-    <h1>种族</h1>
-  </div>
-  <h2>松鼠</h2>
+      </section>
+    
+      <section id="race">
+        <div class="page-header">
+          <h1>种族</h1>
+        </div>
+        <h2>松鼠</h2>
 
 <p>松鼠是一个温顺、善良的物种。</p>
 
@@ -254,12 +262,13 @@
 <h2>猩猩</h2>
 
 <p>未定义</p>
-</section>
-<section id="武器系统">
-  <div class="page-header">
-    <h1>武器系统</h1>
-  </div>
-  <p>暂时不涉及武器购买、升级、精炼功能。</p>
+      </section>
+    
+      <section id="weapon">
+        <div class="page-header">
+          <h1>武器系统</h1>
+        </div>
+        <p>暂时不涉及武器购买、升级、精炼功能。</p>
 
 <h2>石头</h2>
 
@@ -272,11 +281,13 @@
 <h2>毒液</h2>
 
 <p>单体攻击<br />被击中不直接扣血，呈中毒状态，行动减缓，在指定时间内少量扣血</p>
-</section>
+      </section>
+    
     </div>
   </div>
 </div>
 
+<!DOCTYPE html>
     <footer class="footer">
       <div class="container">
         <p class="pull-right"><a href="#">Back to top</a></p>
@@ -284,9 +295,9 @@
       </div>
     </footer>
 
-    <script src="assets/js/jquery-1.8.1.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/prettify.js"></script>
-    <script src="assets/js/docs.js"></script>
+    <script src="../assets/js/jquery-1.8.1.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/prettify.js"></script>
+    <script src="../assets/js/docs.js"></script>
   </body>
 <html>

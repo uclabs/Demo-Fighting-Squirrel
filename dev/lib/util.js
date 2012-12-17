@@ -136,6 +136,7 @@ function copyDir(src, destPath, overwrite) {
             throw Error(destPath + ' is not directory.');
         }
     } else if (fs.statSync(dest).isDirectory() && !overwrite) {
+        // 这里有一个 Bug，Windows 下 src 只能是相对路径
         dest = path.join(destPath, src);
     }
 

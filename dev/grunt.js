@@ -43,9 +43,8 @@ module.exports = function (grunt) {
             tasks: 'docs'
         },
         docs: {
-            inputPath: '../docs/src',
-            outputPath: '../docs',
-            metaFile: 'meta.json',
+            src: '../docs/src',
+            dest: '../docs',
             theme: 'bootstrap'
         },
         lint: {
