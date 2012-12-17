@@ -18,7 +18,7 @@ define('class', function () {
         var _super = this.prototype;
     
         // Instantiate a base class (but only create the instance,
-        // don't run the init constructor)
+        // don't run the ctor constructor)
         initializing = true;
         var prototype = new this();
         initializing = false;
@@ -50,8 +50,8 @@ define('class', function () {
         // The dummy class constructor
         function Class() {
             // All construction is actually done in the init method
-            if (!initializing && this.init) {
-                this.init.apply(this, arguments);
+            if (!initializing && this.ctor) {
+                this.ctor.apply(this, arguments);
             }
         }
 
