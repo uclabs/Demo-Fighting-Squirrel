@@ -1,7 +1,11 @@
 {
-    "name": "开发",
+    "name": "开发记录",
     "description": ["development.md"],
-    "order": [],
+    "order": [
+		"plan",
+		"log"
+	],
     "childrenOrder": [],
-    "sidebarOn": true
+    "sidebarOn": true,
+	"assets": ["img"]
 }

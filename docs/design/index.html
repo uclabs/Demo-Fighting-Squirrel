@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>设计</title>
+    <title>游戏设计</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     
@@ -45,7 +45,7 @@
             
           
               <li class="active">
-                <a href="../design/index.html">设计</a>
+                <a href="../design/index.html">游戏设计</a>
               </li>
             
           
@@ -55,7 +55,7 @@
             
           
               <li class="">
-                <a href="../development/index.html">开发</a>
+                <a href="../development/index.html">开发记录</a>
               </li>
             
           
@@ -75,16 +75,58 @@
         <ul class="nav nav-list doc-sidenav affix">
           
           <li class="active" >
-            <a href="#client">
+            <a href="#specification">
               <i class="icon-chevron-right"></i>
-              客户端
+              技术指标
             </a>
           </li>
           
           <li >
-            <a href="#element">
+            <a href="#scene">
               <i class="icon-chevron-right"></i>
-              游戏元素
+              场景
+            </a>
+          </li>
+          
+          <li >
+            <a href="#role">
+              <i class="icon-chevron-right"></i>
+              角色
+            </a>
+          </li>
+          
+          <li >
+            <a href="#weapon">
+              <i class="icon-chevron-right"></i>
+              武器系统
+            </a>
+          </li>
+          
+          <li >
+            <a href="#item">
+              <i class="icon-chevron-right"></i>
+              道具系统
+            </a>
+          </li>
+          
+          <li >
+            <a href="#multi-player-mode">
+              <i class="icon-chevron-right"></i>
+              模式 - 双人模式
+            </a>
+          </li>
+          
+          <li >
+            <a href="#online-mode">
+              <i class="icon-chevron-right"></i>
+              模式 - 联机模式
+            </a>
+          </li>
+          
+          <li >
+            <a href="#story-mode">
+              <i class="icon-chevron-right"></i>
+              模式 - 故事模式
             </a>
           </li>
           
@@ -96,9 +138,9 @@
           </li>
           
           <li >
-            <a href="#map">
+            <a href="#client">
               <i class="icon-chevron-right"></i>
-              地图
+              客户端
             </a>
           </li>
           
@@ -115,30 +157,213 @@
     
     
       <section>
-        <h1>设计</h1>
+        <h1>游戏设计</h1>
 
-<p>介绍游戏相关设计，包含游戏界面、元素、地图、关卡等相关设计资料。</p>
+<p>介绍游戏相关设计，包含游戏界面、元素、地图、关卡、游戏模式、种族系统、武器系统、道具系统和天气系统等，以便读者对该游戏的系统有全面、详尽的了解。</p>
       </section>
     
     
-      <section id="client">
+      <section id="specification">
         <div class="page-header">
-          <h1>客户端</h1>
+          <h1>技术指标</h1>
         </div>
-        <p>由于该游戏是基于 <strong>HTML5</strong> 技术制作，没有独立的客户端载体，游戏将运行在支持 <strong>HTML5</strong> 相关特性的浏览器中，因此此处客户端实为运行于浏览器中的游戏界面。</p>
-
-<h2>界面预览</h2>
-
-<h2>地图设定</h2>
-
-<h2>指令面板</h2>
+        <ul>
+<li>比例： 4:3</li>
+<li>分辨率： 1024 x 768 (资源兼容 2048 × 1536 分辨率)</li>
+<li>FPS： 40+</li>
+<li>浏览器： UC(Android 8.7+) / UC(iPhone 8.7+) / Safari / Chrome</li>
+<li>设备：小米1 / iphone4 / ipad3 及以上</li>
+</ul>
       </section>
     
-      <section id="element">
+      <section id="scene">
         <div class="page-header">
-          <h1>游戏元素</h1>
+          <h1>场景</h1>
         </div>
-        <p>怪物：进攻的怪物，是需要被消灭<br />障碍物：关卡初始化时存在</p>
+        <p>暂时只有一个场景。</p>
+      </section>
+    
+      <section id="role">
+        <div class="page-header">
+          <h1>角色</h1>
+        </div>
+        <p>角色，就是游戏中玩家控制的对象，包含松鼠、猴子、熊猫等种族！</p>
+
+<h2>特性</h2>
+
+<ul>
+<li>有生命，有生命值，会死翘翘</li>
+<li>有力量，有战斗力，能打战，打胜战</li>
+<li>会使用武器，会攻击敌人</li>
+<li>会中毒，会摔死</li>
+</ul>
+
+<h2>种族</h2>
+
+<h4>松鼠</h4>
+
+<ul>
+<li>生命： 100</li>
+<li>攻击力： 20</li>
+<li>防御： 20</li>
+<li>特殊技： 暂无</li>
+</ul>
+
+<h4>猴子</h4>
+
+<p>未定义</p>
+
+<h4>熊猫</h4>
+
+<p>未定义</p>
+
+<h4>黑熊</h4>
+
+<p>未定义</p>
+
+<h4>狐狸</h4>
+
+<p>未定义</p>
+      </section>
+    
+      <section id="weapon">
+        <div class="page-header">
+          <h1>武器系统</h1>
+        </div>
+        <p>武器是角色所持有的，用于进行进攻的道具。如果被武器击中，角色会受伤。</p>
+
+<p>暂时不涉及武器购买、升级、精炼功能。</p>
+
+<h2>特性</h2>
+
+<ul>
+<li>石头，香蕉，板砖，管制刀具都可以作为武器</li>
+<li>具有伤害角色的能力</li>
+<li>部分武器具有群体伤害能力，能够对多个角色造成伤害</li>
+</ul>
+
+<h2>属性</h2>
+
+<ul>
+<li>攻击力： 伤害对方的属性，会造成对方角色生命值下降</li>
+<li>暴击几率： 攻击时武器有可能将攻击力加成输出，加成输出称之为暴击，加成输出几率称之为暴击几率</li>
+<li>暴击倍数： 暴击出现时，武器原本所具有的【攻击力】乘以【倍率】，即为此次攻击武器的实际攻击输出</li>
+</ul>
+
+<h2>武器种类</h2>
+
+<h4>石头</h4>
+
+<ul>
+<li>单体攻击</li>
+<li>被击中直接扣血</li>
+<li>攻击力： 30</li>
+<li>暴击几率： 0.1</li>
+<li>暴击倍率： 2</li>
+</ul>
+
+<h4>矛</h4>
+
+<ul>
+<li>单体攻击</li>
+<li>被击中直接扣血</li>
+<li>有一定的暴击几率，暴击出现时攻击力将为正常攻击力的2～4倍</li>
+</ul>
+
+<h4>毒液</h4>
+
+<ul>
+<li>单体攻击</li>
+<li>被击中不直接扣血，呈中毒状态，行动减缓，在指定时间内少量扣血</li>
+</ul>
+      </section>
+    
+      <section id="item">
+        <div class="page-header">
+          <h1>道具系统</h1>
+        </div>
+        <h2>随机道具</h2>
+
+<p>此类道具为战斗过程中随机出现的道具。</p>
+
+<p>此类道具将出现在双方阵地的正中空中，等待玩家击中该道具。</p>
+
+<p>如果玩家击中道具，将会触发相应的效果，且道具消失。</p>
+
+<p>如果玩家未击中，道具将继续存在在游戏画面中，等待下一回合由另一位玩家尝试命中。</p>
+
+<p>如果从道具出现开始两回合内都未被击中，则道具消失。</p>
+
+<h3>随机道具列表</h3>
+
+<p>流星火雨</p>
+
+<p>隐身斗篷</p>
+
+<p>火力增强</p>
+
+<p>集体补血</p>
+
+<p>集体冻结</p>
+
+<h2>商店道具</h2>
+      </section>
+    
+      <section id="multi-player-mode">
+        <div class="page-header">
+          <h1>模式 - 双人模式</h1>
+        </div>
+        <p>双人模式，即是本地双人对战模式，不需要联网即可进行双人对战。</p>
+
+<p>在双人模式下，两位玩家在同一台设备上交替进行战斗。</p>
+
+<p>两位玩家可以任意选择种族（包括同族）进行对战。</p>
+
+<h2>游戏流程</h2>
+
+<ol>
+<li>运行游戏，进入游戏界面</li>
+<li>选择双人模式</li>
+<li>两位玩家各自选择种族，完成选择后点击“开始游戏”按钮</li>
+<li>游戏开始，两位玩家被分配到舞台的各一侧，并进入战斗准备状态</li>
+<li>游戏随机选择一方作为先手，率先进行攻击</li>
+<li>双方交替进行攻击，直至其中一方战斗士兵被全歼</li>
+<li>如其中一方士兵被全歼，则判定游戏结束，另一方为胜者</li>
+<li>如果点击屏幕中的“重新开始”按钮，则游戏回到第3步重新初始化</li>
+</ol>
+
+<h2>注意</h2>
+
+<ul>
+<li>如果不在我方回合内，则我方无法进行任何操作。</li>
+<li>在指定时间内必须完成攻击，超时将视为放弃本回合</li>
+</ul>
+      </section>
+    
+      <section id="online-mode">
+        <div class="page-header">
+          <h1>模式 - 联机模式</h1>
+        </div>
+        <p>联机模式，即是通过互联网连接服务器，玩家与玩家进行双人对战模式，可以实现不同地域的玩家进行远程对战。</p>
+
+<p>在联机模式下，两位玩家分别在不同设备上操作，游戏自动实时同步展现相同的游戏画面。</p>
+
+<p>两位玩家可以任意选择种族（包括同族）进行对战。</p>
+
+<h2>游戏流程</h2>
+
+<h2>注意</h2>
+      </section>
+    
+      <section id="story-mode">
+        <div class="page-header">
+          <h1>模式 - 故事模式</h1>
+        </div>
+        <p>故事模式，是玩家按照游戏设定的关卡，在取得一关的胜利后才进入下一关，直至通关的模式。</p>
+
+<h2>游戏流程</h2>
+
+<h2>注意</h2>
       </section>
     
       <section id="level">
@@ -148,11 +373,49 @@
         <p>暂不涉及关卡设计，关卡设计将在故事模式开发时进行详述。</p>
       </section>
     
-      <section id="map">
+      <section id="client">
         <div class="page-header">
-          <h1>地图</h1>
+          <h1>客户端</h1>
         </div>
-        
+        <p>由于该游戏是基于 <strong>HTML5</strong> 技术制作，没有独立的客户端载体，游戏将运行在支持 <strong>HTML5</strong> 相关特性的浏览器中，因此此处客户端实为运行于浏览器中的游戏界面。</p>
+
+<h2>界面预览</h2>
+
+<h3>启动闪屏</h3>
+
+<p><img src="img/client/1_0_Splash.png" alt="启动闪屏" title="" /></p>
+
+<h3>欢迎界面</h3>
+
+<p><img src="img/client/2_0_Welcome.png" alt="欢迎界面" title="" /></p>
+
+<h3>模式选择</h3>
+
+<p><img src="img/client/3_0_Mode_Selection.png" alt="模式选择" title="" /></p>
+
+<h3>游戏初始化</h3>
+
+<p><img src="img/client/4_0_Playing.png" alt="游戏初始化" title="" /></p>
+
+<h3>回合开始</h3>
+
+<p><img src="img/client/4_1_Round_Start.png" alt="回合开始" title="" /></p>
+
+<h3>攻击开始</h3>
+
+<p><img src="img/client/4_2_Attack_Start.png" alt="攻击开始" title="" /></p>
+
+<h3>攻击中</h3>
+
+<p><img src="img/client/4_3_Attacking.png" alt="攻击中" title="" /></p>
+
+<h3>回合结束</h3>
+
+<p><img src="img/client/4_4_Round_End.png" alt="回合结束" title="" /></p>
+
+<h3>游戏结束</h3>
+
+<p><img src="img/client/4_5_Game_Over.png" alt="游戏结束" title="" /></p>
       </section>
     
       <section id="server">

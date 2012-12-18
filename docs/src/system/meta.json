@@ -1,7 +1,12 @@
 {
     "name": "系统设计",
     "description": ["system.md"],
-    "order": [],
+    "order": [
+		"architecture",
+		"flow",
+		"state"
+	],
     "childrenOrder": [],
-    "sidebarOn": true
+    "sidebarOn": true,
+	"assets": ["img"]
 }

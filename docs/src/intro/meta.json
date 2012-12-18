@@ -1,7 +1,14 @@
 {
     "name": "概述",
     "description": ["intro.md"],
-    "order": [],
+    "order": [
+		"preview",
+		"background",
+		"feature",
+		"mode",
+		"term"
+	],
     "childrenOrder": [],
-    "sidebarOn": true
+    "sidebarOn": true,
+	"assets": ["img"]
 }
