@@ -1,5 +1,5 @@
 /**
- * Config Module
+ * Config
  */
 elf.define('FS::Config', function () {
     return {

@@ -1,5 +1,5 @@
 /**
- * Main Application Module
+ * Main Application
  */
 elf.define('FS::App', function () {
     return {
