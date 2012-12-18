@@ -14,12 +14,15 @@ elf.define('FS::Controller::Director', [
     'FS::Model::Role',
     'FS::Model::Weapon'
 ], function (dispatcher, Scene, Stage, Role, Weapon) {
-    var downlink = dispatcher.downlink,
+    var uuid = 0,
+        downlink = dispatcher.downlink,
         director;
 
     // 为类添加工厂方法
     [Scene, Stage, Role, Weapon].forEach(function (ctor) {
         ctor.create = ctor.create || function (opts) {
+            opts = opts || {};
+            opts.id = String(++uuid);
             return new this(opts);
         };
     });

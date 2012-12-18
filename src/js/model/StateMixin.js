@@ -1,11 +1,11 @@
 /**
  * StateMixin
  *
- * ../Dispatcher.js
+ * @import ../Dispatcher.js
  */
 elf.define('FS::Model::StateMixin', ['FS::Dispatcher'], function (dispatcher) {
     var downlink = dispatcher.downlink;
-        stateMixin = {
+        mixin = {
             state: null,
             changeState: function (newState, args) {
                 var lastState = this.stateHandler[this.state],
@@ -19,10 +19,10 @@ elf.define('FS::Model::StateMixin', ['FS::Dispatcher'], function (dispatcher) {
                     this.state = newState;
                 }
                 
-                downlink.fire(this.id, args);
+                this.fire(args);
                 state.main.apply(this, args);
             }
         };
 
-    return stateMixin;
+    return mixin;
 });
