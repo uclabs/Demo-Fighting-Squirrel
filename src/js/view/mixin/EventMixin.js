@@ -1,9 +1,9 @@
 /**
  * EventMixin
  *
- * @import ../Dispatcher.js
+ * @import ../../Dispatcher.js
  */
-elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
+elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
     var uplink = dispatcher.uplink,
         downlink = dispatcher.downlink,
         mixin = {
@@ -13,7 +13,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                     event = this.id;
                 }
                 if (typeof event === 'string' && typeof handler === 'function') {
-                    return uplink.bind(event, handler);
+                    return downlink.bind(event, handler);
                 }
             },
             unbind: function (event, handler) {
@@ -22,7 +22,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                     event = this.id;
                 }
                 if (typeof event === 'string') {
-                    return uplink.unbind(event, handler);
+                    return downlink.unbind(event, handler);
                 }
             },
             fire: function (event, args) {
@@ -31,7 +31,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                     event = this.id;
                 }
                 if (typeof event === 'string') {
-                    return downlink.fire(event, args);
+                    return uplink.fire(event, args);
                 }
             }
         };

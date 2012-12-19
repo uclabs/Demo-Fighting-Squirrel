@@ -1,11 +1,12 @@
 /**
  * Manager
  *
- * @import ../../../lib/elf/mod/async.js
+ * @import ../../lib/elf/core/lang.js
+ * @import ../../lib/elf/mod/async.js
+ * @import ../model/mixin/EventMixin.js
  */
-elf.define('FS::Controller::Manager', ['async'], function (async) {
-    var that = this,
-        keys = Object.keys,
+elf.define('FS::Controller::Manager', ['lang', 'async', 'FS::Model::EventMixin'], function (_, async, eventMixin) {
+    var keys = Object.keys,
         slice = Array.prototype.slice,
         manager = {
             splash: {},
@@ -13,16 +14,31 @@ elf.define('FS::Controller::Manager', ['async'], function (async) {
             resultMenu: {}
         };
 
+    // 把事件 mixin
+    _.extend(manager, eventMixin);
+
     keys(manager).forEach(function (name) {
         ['show', 'hide'].forEach(function(method) {
             manager[name][method] = function () {
-                that.fire(name, method);
+                manager.fire(name, [method]);
             };
         });
     });
 
     manager.init = function() {
-        splash.hide();
+        // 同步方法使用例子，后期移除
+        async.series([
+            function(callback) {
+                manager.splash.hide();
+                callback(null, 'splash.hide');
+            },
+            function(callback) {
+                manager.mainMenu.show();
+                callback(null, 'mainMenu.show');
+            }
+        ], function(err, results) {
+            console.log(results);
+        });
     };
 
     return manager;

@@ -3,7 +3,7 @@
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
- * @import ../StateMixin.js
+ * @import ../mixin/StateMixin.js
  */
 elf.define('FS::Model::Weapon', ['lang', 'class', 'FS::Model::StateMixin'], function (_, Class, stateMixin) {
     var Weapon = Class.extend({

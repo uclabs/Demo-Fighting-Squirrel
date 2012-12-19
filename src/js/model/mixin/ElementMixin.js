@@ -1,11 +1,8 @@
 /**
  * ElementMixin
- *
- * @import ../Dispatcher.js
  */
-elf.define('FS::Model::ElementMixin', ['FS::Dispatcher'], function (dispatcher) {
-    var downlink = dispatcher.downlink;
-        mixin = {
+elf.define('FS::Model::ElementMixin', [], function () {
+    var mixin = {
             id: null,
             x: null,
             y: null,
