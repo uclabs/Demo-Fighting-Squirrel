@@ -1,14 +1,12 @@
 /**
  * Scene
  *
- * @import ../../../lib/elf/core/lang.js
- * @import ../../../lib/elf/mod/class.js
- * @import StateMixin.js
+ * @import ../../lib/elf/core/lang.js
+ * @import ../../lib/elf/mod/class.js
  */
-elf.define('FS::Model::Scene', ['lang', 'class', 'FS::Model::StateMixin'], function (_, Class, stateMixin) {
+elf.define('FS::Model::Scene', ['lang', 'class', 'FS::Model::StateMixin'], function (_, Class) {
     var Scene = Class.extend({
         ctor: function () {
-            this.mix(stateMixin);
         },
         mix: function () {
             _.extend.apply(_, [this].concat(arguments));

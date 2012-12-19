@@ -12,13 +12,13 @@
 <canvas id="stage"></canvas>
 <script>
 elf.require(['selector', 'FS::Config'], function ($, config) {
-    $(function () {
+    (function () {
         var cfg = document.ccConfig = config.ccConfig,
             script = document.createElement('script');
         script.id = 'cocos2d-html5';
         script.src = cfg.engineDir + 'platform/jsloader.js';
         document.body.appendChild(script);
-    });
+    })();
 });
 </script>
 </body>

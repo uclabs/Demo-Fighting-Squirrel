@@ -1,8 +1,8 @@
 /**
  * Role Base Model
  *
- * @import ../../../../lib/elf/core/lang.js
- * @import ../../../../lib/elf/mod/class.js
+ * @import ../../../lib/elf/core/lang.js
+ * @import ../../../lib/elf/mod/class.js
  * @import ../EventMixin.js
  * @import ../ElementMixin.js
  * @import ../StateMixin.js
