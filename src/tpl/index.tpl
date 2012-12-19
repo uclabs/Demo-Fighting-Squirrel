@@ -9,7 +9,8 @@
     {{=tpl.genTags('js', data.jsFiles) }}
 </head>
 <body>
-<canvas id="stage"></canvas>
+<canvas id="splash"></canvas>
+<canvas id="scene"></canvas>
 <script>
 elf.require(['selector', 'FS::Config'], function ($, config) {
     (function () {

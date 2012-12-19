@@ -1,30 +1,29 @@
 /**
  * Manager
  *
- * @import ../Dispatcher.js
+ * @import ../../../lib/elf/mod/async.js
  */
-elf.define('FS::Controller::Manager', ['FS::Dispatcher'], function (dispatcher) {
-    var keys = Object.keys,
+elf.define('FS::Controller::Manager', ['async'], function (async) {
+    var that = this,
+        keys = Object.keys,
         slice = Array.prototype.slice,
-        downlink = dispatcher.downlink,
         manager = {
             splash: {},
             mainMenu: {},
-            resuleMenu: {}
+            resultMenu: {}
         };
-
-    function action(name) {
-        var args = slice.call(arguments, 1);
-        return function () {
-            downlink.fire(name, args);
-        };
-    }
 
     keys(manager).forEach(function (name) {
         ['show', 'hide'].forEach(function(method) {
-            manager[name][method] = action(name, method);
+            manager[name][method] = function () {
+                that.fire(name, method);
+            };
         });
     });
+
+    manager.init = function() {
+        splash.hide();
+    };
 
     return manager;
 });
