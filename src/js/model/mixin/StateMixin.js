@@ -17,7 +17,6 @@ elf.define('FS::Model::StateMixin', [], function () {
                     this.state = newState;
                 }
                 
-                this.fire(args);
                 stateHandler.main.apply(this, args);
             }
         };
