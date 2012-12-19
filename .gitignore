@@ -42,3 +42,7 @@ Thumbs.db
 # node files #
 ######################
 node_modules/
+
+# temp files #
+######################
+*.pid
