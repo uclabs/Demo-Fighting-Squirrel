@@ -1,10 +1,10 @@
 /**
- * ResultMenu
+ * GameMenu
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../mixin/EventMixin.js
  */
-elf.define('FS::View::ResultMenu', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
+elf.define('FS::View::GameMenu', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
     'use strict';
     var menu = {};
 
@@ -12,16 +12,16 @@ elf.define('FS::View::ResultMenu', ['lang', 'FS::View::EventMixin'], function (_
     _.extend(menu, eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.bind('resultMenu', function(method, args) {
+    menu.bind('gameMenu', function(method, args) {
         menu[method].apply(menu, args);
     });
 
     menu.show = function show() {
-        console.log('i am resultMenu, i am show');
+        console.log('i am gameMenu, i am show');
     };
 
     menu.hide = function hide() {
-        console.log('i am resultMenu, i am hide');
+        console.log('i am gameMenu, i am hide');
     };
 
     return menu;

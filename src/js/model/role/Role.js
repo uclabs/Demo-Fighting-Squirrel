@@ -1,5 +1,5 @@
 /**
- * Role Base Model
+ * Base Model for Roles
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
@@ -15,12 +15,14 @@ elf.define('FS::Model::Role', [
     'FS::Model::StateMixin'
 ], function (_, Class, eventMixin, elementMixin, stateMixin) {
     'use strict';
-    var Role = Class.extend({
-        ctor: function () {
+    var concat = Array.prototype.concat,
+        Role = Class.extend({
+        ctor: function (opts) {
             this.mix(eventMixin, elementMixin, stateMixin);
+            this.config(opts);
         },
         mix: function () {
-            _.extend.apply(_, [this].concat(arguments));
+            _.extend.apply(_, concat.apply([this], arguments));
         },
         stateHandler: {
             idle: {

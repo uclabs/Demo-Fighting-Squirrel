@@ -11,7 +11,7 @@ elf.define('FS::Controller::Manager', [
     'async',
     'FS::Controller::Messager',
     'FS::Model::EventMixin'
-], function (_, async, msg, eventMixin) {
+], function (_, async, messager, eventMixin) {
     'use strict';
 
     var manager = {},
@@ -33,19 +33,36 @@ elf.define('FS::Controller::Manager', [
 
     manager.bind('mode', function(mode) {
         console.log('manager - mode : ' + mode);
+        messager.fire('director', ['config', {mode: mode}]);
     });
 
     manager.bind('game', function(action) {
-        console.log('manager - game : ' + action);
-        // 同步方法使用例子，后期酌情移除
-        async.series([
-            function(callback) {
-            },
-            function(callback) {
-            }
-        ], function(err, results) {
-            console.log(results);
-        });
+        switch(action) {
+            case 'start':
+                console.log('manager : director-start');
+                messager.fire('director', ['start']);
+                break;
+
+            case 'stop':
+                console.log('manager : director-stop');
+                messager.fire('director', ['stop']);
+                break;
+
+            case 'restart':
+                console.log('manager : director-restart');
+                messager.fire('director', ['restart']);
+                break;
+        }
+    });
+
+    manager.bind('director', function(state) {
+        switch(state) {
+            case 'ready':
+                manager.fire('mainMenu', ['hide']);
+                manager.fire('gameMenu', ['show']);
+                messager.fire('director', ['show']);
+                break;
+        }
     });
 
     function init() {
