@@ -20,8 +20,6 @@ elf.define('FS::Log', ['FS::Config'], function (config) {
                 logs = logs.concat('(', args, ')');
             }
             console.log.apply(console, logs);
-        }
-        :
-        function() {};
+        } : function() {};
     return log;
 });

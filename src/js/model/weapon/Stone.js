@@ -16,6 +16,7 @@ elf.define('FS::Model::Stone', [
 ], function (_, Weapon, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var Stone = Weapon.extend({
+            type: 'Stone',
             stateHandler: {
                 idle: {
                     init: function () {},
@@ -29,8 +30,6 @@ elf.define('FS::Model::Stone', [
                 }
             }
         });
-
-    Stone.type = 'Stone';
 
     return Stone;
 });

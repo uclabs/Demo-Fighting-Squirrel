@@ -17,6 +17,7 @@ elf.define('FS::Model::Role', [
     'use strict';
     var concat = Array.prototype.concat,
         Role = Class.extend({
+            type: 'Role',
             weapon: null,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
@@ -38,8 +39,6 @@ elf.define('FS::Model::Role', [
                 }
             }
         });
-
-    Role.type = 'Role';
 
     return Role;
 });

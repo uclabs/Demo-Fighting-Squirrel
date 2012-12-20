@@ -24,113 +24,68 @@ elf.define('FS::Controller::Director', [
 ], function (_, async, messager, eventMixin, stateMixin, Scene, Stage, Role, Weapon) {
     'use strict';
 
-    var uuid = 0,
-        director = {
-            options: {
-                mode: 'master' // master | slave
-            }
-        };
-
-    // 把事件和状态 mixin
-    _.extend(director, eventMixin, stateMixin);
+    var hasOwn = Object.prototype.hasOwnProperty,
+        uuid = 0,
+        director = _.extend({}, eventMixin);
 
     // 为类添加工厂方法
+    function create(opts) {
+        var instance;
+
+        opts = opts || {};
+        opts.id = String(++uuid);
+
+        instance = new this(opts);
+        director.fire(instance.type, ['create', opts]);
+
+        log('director', instance.type + '.create', uuid, opts);
+        return instance;
+    }
+
     [Scene, Stage, Role, Weapon].forEach(function (Class) {
-        Class.create = Class.create || function (opts) {
-            opts = opts || {};
-            opts.id = String(++uuid);
-            director.fire(Class.type, ['create', opts]);
-            log('director', Class.type + '.create', uuid, opts);
-            return new this(opts);
-        };
+        Class.create = create;
     });
 
-    messager.bind('director', function(action) {
-        log('director', 'bind', action);
-        switch(action) {
-            case 'start':
-                start();
-                break;
+    // 方法分发器
+    function dispactor() {
+        var action = arguments[0];
+        action = action && director[action];
+        typeof action === 'function' && action.apply(director, arguments);
+    }
 
-            case 'stop':
-                stop();
-                break;
+    director = _.extend(director, {
+        init: function (opts) {
+            var options = this.options = _.extend({}, opts);
+            options.mode = options.mode === 'master' ? 'master' : 'slave';
+            this.on();
+        },
 
-            case 'restart':
-                restart();
-                break;
+        // 事件相关
+        on: function () {
+            messager.bind('director', dispactor.bind(this));
+        },
+        off: function () {
+            messager.unbind('director');
+        }
 
-            case 'config':
-                config();
-                break;
+        // 游戏逻辑
+        start: function (opts) {
+            // TODO: 处理 opts，根据 opts 实例化具体代码。
+            var scene = this.scene = game.scene = Scene.create({}),
+                roleGroup = scene.roleGroup = [];
 
-            case 'show':
-                show();
-                break;
+            scene.stage = Stage.create({});
+            roleGroup.push(Role.create({
+                weapon: Weapon.create({})
+            }));
 
-            case 'hide':
-                hide();
-                break;
+            scene.changeState('ready');
+        },
+        stop: function () {
+            // TODO: this.scene.over();
+            this.scene = null;
         }
     });
-
-    var scene, stage,
-        weapon1, role1,
-        weapon2, role2;
-    function start() {
-        log('director', 'start');
-        scene = Scene.create({});
-        stage = Stage.create({});
-        weapon1 = Weapon.create({});
-        role1 = Role.create({weapon: weapon1});
-        weapon2 = Weapon.create({});
-        role2 = Role.create({weapon: weapon2});
-    };
-
-    function stop() {
-        
-    };
-
-    function restart() {
-        
-    };
-
-    function config() {
-        
-    };
-
-    function show() {
-        
-    };
-
-    function hide() {
-        
-    };
-
-    director.init = function init() {
-        log('director', 'init');
-    };
-
-    // director.stateHandler = {
-    //     init: function() {
-
-    //     },
-    //     start: {
-    //         init: function () {},
-    //         main: function () {},
-    //         exit: function () {}
-    //     },
-    //     stop: {
-    //         init: function () {},
-    //         main: function () {},
-    //         exit: function () {}
-    //     },
-    //     restart: {
-    //         init: function () {},
-    //         main: function () {},
-    //         exit: function () {}
-    //     }
-    // };
 
     return director;
 });

@@ -17,9 +17,12 @@ elf.define('FS::Model::Scene', [
     'use strict';
     var concat = Array.prototype.concat,
         Scene = Class.extend({
+            type: 'Scene',
             ctor: function (opts) {
-                this.mix(eventMixin, elementMixin, stateMixin);
-                this.config(opts);
+                this.mix(eventMixin, stateMixin);
+                this.config = _.extend({
+                    round: 0
+                }, opts);
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
@@ -27,9 +30,20 @@ elf.define('FS::Model::Scene', [
             stateHandler: {
                 // 准备攻击阶段
                 ready: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
+                    init: function () {
+                        var roleGroup = this.roleGroup;
+                        // TODO: 摆放各元素
+
+                        this.round += 1;
+                        this.currentRole = roleGroup[this.round % roleGroup.length - 1];
+                    },
+                    main: function () {
+                        this.currentRole.changeState('active');
+                    },
+                    exit: function () {
+                        this.currentRole.changeState('idle');
+                        this.currentRole = null;
+                    }
                 },
                 // 攻击进行中
                 attack: {
@@ -39,8 +53,6 @@ elf.define('FS::Model::Scene', [
                 }
             }
         });
-
-    Scene.type = 'Scene';
 
     return Scene;
 });
