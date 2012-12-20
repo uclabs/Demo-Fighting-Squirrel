@@ -19,11 +19,11 @@ elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, ev
     });
 
     splash.show = function show() {
-        console.log('[splash] show');
+        log('splash', 'show');
     };
 
     splash.hide = function hide() {
-        console.log('[splash] hide');
+        log('splash', 'hide');
     };
 
     return splash;

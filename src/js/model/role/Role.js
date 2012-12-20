@@ -39,5 +39,7 @@ elf.define('FS::Model::Role', [
             }
         });
 
+    Role.type = 'Role';
+
     return Role;
 });

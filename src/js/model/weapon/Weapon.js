@@ -38,5 +38,7 @@ elf.define('FS::Model::Weapon', [
             }
         });
 
+    Weapon.type = 'Weapon';
+
     return Weapon;
 });

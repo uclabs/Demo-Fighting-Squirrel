@@ -35,16 +35,17 @@ elf.define('FS::Controller::Director', [
     _.extend(director, eventMixin, stateMixin);
 
     // 为类添加工厂方法
-    [Scene, Stage, Role, Weapon].forEach(function (ctor) {
-        ctor.create = ctor.create || function (opts) {
+    [Scene, Stage, Role, Weapon].forEach(function (Class) {
+        Class.create = Class.create || function (opts) {
             opts = opts || {};
             opts.id = String(++uuid);
+            log(Class.type, 'create', uuid);
             return new this(opts);
         };
     });
 
     messager.bind('director', function(action) {
-        console.log('[director] bind - ' + action);
+        log('director', 'bind', action);
         switch(action) {
             case 'start':
                 start();
@@ -76,7 +77,7 @@ elf.define('FS::Controller::Director', [
         weapon1, role1,
         weapon2, role2;
     function start() {
-        console.log('[director] start');
+        log('director', 'start');
         scene = Scene.create({});
         stage = Stage.create({});
         weapon1 = Weapon.create({});
@@ -106,7 +107,7 @@ elf.define('FS::Controller::Director', [
     };
 
     director.init = function init() {
-
+        log('director', 'init');
     };
 
     // director.stateHandler = {

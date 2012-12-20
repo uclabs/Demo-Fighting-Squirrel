@@ -32,24 +32,24 @@ elf.define('FS::Controller::Manager', [
     });
 
     manager.bind('mode', function(mode) {
-        console.log('[manager] mode - ' + mode);
+        log('manager', 'mode', mode);
         messager.fire('director', ['config', {mode: mode}]);
     });
 
     manager.bind('game', function(action) {
         switch(action) {
             case 'start':
-                console.log('[manager] fire - director-start');
+                log('manager', 'fire', 'director-start');
                 messager.fire('director', ['start']);
                 break;
 
             case 'stop':
-                console.log('[manager] fire - director-stop');
+                log('manager', 'fire', 'director-stop');
                 messager.fire('director', ['stop']);
                 break;
 
             case 'restart':
-                console.log('[manager] fire - director-restart');
+                log('manager', 'fire', 'director-restart');
                 messager.fire('director', ['restart']);
                 break;
         }
@@ -66,6 +66,7 @@ elf.define('FS::Controller::Manager', [
     });
 
     function init() {
+        log('manager', 'init');
         // 同步方法使用例子，后期酌情移除
         async.series([
             function(callback) {
@@ -77,7 +78,7 @@ elf.define('FS::Controller::Manager', [
                 callback(null, 'mainMenu.show');
             }
         ], function(err, results) {
-            console.log('[manager] fire - ' + results.join(' - '));
+            log('manager', 'fire', results.join(' - '));
         });
     };
 

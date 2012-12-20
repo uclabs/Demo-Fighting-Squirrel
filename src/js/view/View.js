@@ -20,7 +20,7 @@ elf.define('FS::View::View', [
     _.extend(view, eventMixin);
 
     view.init = function() {
-
+        console.log('[view] init');
     };
 
     return view;

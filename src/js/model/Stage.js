@@ -28,5 +28,7 @@ elf.define('FS::Model::Stage', [
             }
         });
 
+    Stage.type = 'Stage';
+
     return Stage;
 });

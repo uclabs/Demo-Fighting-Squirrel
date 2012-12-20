@@ -40,5 +40,7 @@ elf.define('FS::Model::Scene', [
             }
         });
 
+    Scene.type = 'Scene';
+
     return Scene;
 });
