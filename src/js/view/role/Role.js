@@ -7,6 +7,8 @@
  * @import ../mixin/StateMixin.js
  */
 elf.define('FS::View::Role', ['lang', 'class', 'FS::View::EventMixin', 'FS::View::StateMixin'], function (_, Class, eventMixin, stateMixin) {
+    'use strict';
+
     var Role = Class.extend({
         ctor: function () {
             this.mix(eventMixin, stateMixin);

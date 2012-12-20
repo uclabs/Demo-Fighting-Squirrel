@@ -4,6 +4,7 @@
  * @import ../../Dispatcher.js
  */
 elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
+    'use strict';
     var uplink = dispatcher.uplink,
         downlink = dispatcher.downlink,
         mixin = {

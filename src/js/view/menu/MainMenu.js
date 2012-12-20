@@ -5,6 +5,7 @@
  * @import ../mixin/EventMixin.js
  */
 elf.define('FS::View::MainMenu', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
+    'use strict';
     var mainMenu = {};
 
     // 把事件 mixin

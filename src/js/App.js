@@ -7,6 +7,8 @@ elf.define('FS::App', [
     'FS::Controller::Manager',
     'FS::View::View'
 ], function (manager, view) {
+    'use strict';
+
     var exports = {};
 
     exports.init = function() {

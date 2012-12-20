@@ -6,6 +6,8 @@
  * @import ../model/mixin/EventMixin.js
  */
 elf.define('FS::Controller::Manager', ['lang', 'async', 'FS::Model::EventMixin'], function (_, async, eventMixin) {
+    'use strict';
+
     var manager = {},
         views = ['splash', 'mainMenu', 'resultMenu'];
 

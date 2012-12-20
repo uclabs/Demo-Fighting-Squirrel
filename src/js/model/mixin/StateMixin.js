@@ -2,6 +2,7 @@
  * StateMixin
  */
 elf.define('FS::Model::StateMixin', [], function () {
+    'use strict';
     var mixin = {
             state: null,
             changeState: function (newState, args) {

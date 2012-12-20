@@ -6,6 +6,7 @@
  * @import ../mixin/StateMixin.js
  */
 elf.define('FS::Model::Weapon', ['lang', 'class', 'FS::Model::StateMixin'], function (_, Class, stateMixin) {
+    'use strict';
     var Weapon = Class.extend({
         ctor: function () {
             this.mix(stateMixin);

@@ -14,6 +14,7 @@ elf.define('FS::Model::Role', [
     'FS::Model::ElementMixin',
     'FS::Model::StateMixin'
 ], function (_, Class, eventMixin, elementMixin, stateMixin) {
+    'use strict';
     var Role = Class.extend({
         ctor: function () {
             this.mix(eventMixin, elementMixin, stateMixin);

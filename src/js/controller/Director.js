@@ -14,6 +14,8 @@ elf.define('FS::Controller::Director', [
     'FS::Model::Role',
     'FS::Model::Weapon'
 ], function (dispatcher, Scene, Stage, Role, Weapon) {
+    'use strict';
+
     var uuid = 0,
         downlink = dispatcher.downlink,
         director;

@@ -12,6 +12,8 @@ elf.define('FS::View::View', [
     'FS::View::Splash',
     'FS::View::MainMenu'
 ], function (_, async, eventMixin, splash, mainMenu) {
+    'use strict';
+
     var view = {};
 
     // 把事件 mixin

@@ -2,6 +2,7 @@
  * Config
  */
 elf.define('FS::Config', function () {
+    'use strict';
     return {
         // Cocos2D Config
         ccConfig: {

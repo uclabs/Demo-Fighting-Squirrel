@@ -6,6 +6,7 @@
  * @import mixin/StateMixin.js
  */
 elf.define('FS::Model::Scene', ['lang', 'class', 'FS::Model::StateMixin'], function (_, Class, stateMixin) {
+    'use strict';
     var Scene = Class.extend({
         ctor: function () {
             this.mix(stateMixin);

@@ -2,6 +2,7 @@
  * ElementMixin
  */
 elf.define('FS::Model::ElementMixin', [], function () {
+    'use strict';
     var mixin = {
             id: null,
             x: null,

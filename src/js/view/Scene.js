@@ -5,6 +5,8 @@
  * @import ../../lib/elf/mod/class.js
  */
 elf.define('FS::View::Scene', ['lang', 'class'], function (_, Class) {
+    'use strict';
+
     var Scene = Class.extend({
         ctor: function () {
 

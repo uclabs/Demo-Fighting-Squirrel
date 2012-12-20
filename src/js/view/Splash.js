@@ -5,6 +5,8 @@
  * @import mixin/EventMixin.js
  */
 elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
+    'use strict';
+
     var splash = {},
         _splash = document.getElementById('splash');
 
