@@ -17,11 +17,11 @@ elf.define('FS::View::GameMenu', ['lang', 'FS::View::EventMixin'], function (_, 
     });
 
     menu.show = function show() {
-        console.log('[gameMenu] show');
+        log('gameMenu', 'show');
     };
 
     menu.hide = function hide() {
-        console.log('[gameMenu] hide');
+        log('gameMenu', 'hide');
     };
 
     return menu;

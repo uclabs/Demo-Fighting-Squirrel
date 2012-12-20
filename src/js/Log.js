@@ -17,7 +17,7 @@ elf.define('FS::Log', ['FS::Config'], function (config) {
 
             var logs = ['[' + name + ']', method];
             if (args.length > 0) {
-                logs = logs.concat(['('], args, [')']);
+                logs = logs.concat('(', args, ')');
             }
             console.log.apply(console, logs);
         }

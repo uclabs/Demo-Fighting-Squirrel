@@ -60,13 +60,17 @@ function getDepends(file) {
         i, l, line, match,
         importPattern = /@import\s+(\S+)/,
         endPattern = /\*\//,
-        deps = [];
+        deps = [], dep;
 
     for (i=0, l=data.length; i<l; i++) {
         line = data[i];
         match = importPattern.exec(line);
         if ((match || []).length > 1) {
-            deps.push(path.resolve(path.dirname(file), match[1]));
+            dep = match[1];
+            if (/^\w/.test(dep)) {
+                dep = './' + dep;
+            }
+            deps.push(path.resolve(path.dirname(file), dep));
         }
         if (endPattern.test(line)) {
             break;

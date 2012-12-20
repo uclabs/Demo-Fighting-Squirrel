@@ -15,7 +15,7 @@ elf.define('FS::Controller::Manager', [
     'use strict';
 
     var manager = {},
-        views = ['splash', 'mainMenu', 'resultMenu'];
+        views = ['splash', 'mainMenu', 'resultMenu', 'gameMenu', 'exitMenu'];
 
     // 把事件 mixin
     _.extend(manager, eventMixin);
@@ -39,17 +39,22 @@ elf.define('FS::Controller::Manager', [
     manager.bind('game', function(action) {
         switch(action) {
             case 'start':
-                log('manager', 'fire', 'director-start');
+                log('manager', 'fire', 'director|start');
                 messager.fire('director', ['start']);
                 break;
 
+            case 'exit':
+                manager.exitMenu.show();
+                break;
+
             case 'stop':
-                log('manager', 'fire', 'director-stop');
+                log('manager', 'fire', 'director|stop');
                 messager.fire('director', ['stop']);
+                manager.mainMenu.show();
                 break;
 
             case 'restart':
-                log('manager', 'fire', 'director-restart');
+                log('manager', 'fire', 'director|restart');
                 messager.fire('director', ['restart']);
                 break;
         }
@@ -58,8 +63,8 @@ elf.define('FS::Controller::Manager', [
     manager.bind('director', function(state) {
         switch(state) {
             case 'ready':
-                manager.fire('mainMenu', ['hide']);
-                manager.fire('gameMenu', ['show']);
+                manager.mainMenu.hide();
+                manager.gameMenu.show();
                 messager.fire('director', ['show']);
                 break;
         }
@@ -67,19 +72,8 @@ elf.define('FS::Controller::Manager', [
 
     function init() {
         log('manager', 'init');
-        // 同步方法使用例子，后期酌情移除
-        async.series([
-            function(callback) {
-                manager.splash.hide();
-                callback(null, 'splash.hide');
-            },
-            function(callback) {
-                manager.mainMenu.show();
-                callback(null, 'mainMenu.show');
-            }
-        ], function(err, results) {
-            log('manager', 'fire', results.join(' - '));
-        });
+        manager.splash.hide();
+        manager.mainMenu.show();
     };
 
     return {

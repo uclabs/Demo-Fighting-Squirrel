@@ -39,7 +39,8 @@ elf.define('FS::Controller::Director', [
         Class.create = Class.create || function (opts) {
             opts = opts || {};
             opts.id = String(++uuid);
-            log(Class.type, 'create', uuid);
+            director.fire(Class.type, ['create', opts]);
+            log('director', Class.type + '.create', uuid, opts);
             return new this(opts);
         };
     });

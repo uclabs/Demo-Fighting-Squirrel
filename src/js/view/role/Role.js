@@ -1,36 +1,45 @@
 /**
- * Role
+ * Base Model for Roles
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
  * @import ../mixin/EventMixin.js
+ * @import ../mixin/ElementMixin.js
  * @import ../mixin/StateMixin.js
  */
-elf.define('FS::View::Role', ['lang', 'class', 'FS::View::EventMixin', 'FS::View::StateMixin'], function (_, Class, eventMixin, stateMixin) {
+elf.define('FS::View::Role', [
+    'lang',
+    'class',
+    'FS::View::EventMixin',
+    'FS::View::ElementMixin',
+    'FS::View::StateMixin'
+], function (_, Class, eventMixin, elementMixin, stateMixin) {
     'use strict';
-
-    var Role = Class.extend({
-        ctor: function () {
-            this.mix(eventMixin, stateMixin);
-        },
-        mix: function () {
-            _.extend.apply(_, [this].concat(arguments));
-        },
-        stateHandler: {
-            // 准备攻击阶段
-            ready: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+    var concat = Array.prototype.concat,
+        Role = Class.extend({
+            weapon: null,
+            ctor: function (opts) {
+                this.mix(eventMixin, elementMixin, stateMixin);
+                this.config(opts);
             },
-            // 攻击进行中
-            attack: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+            mix: function () {
+                _.extend.apply(_, concat.apply([true, this], arguments));
+            },
+            stateHandler: {
+                idle: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                },
+                active: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                }
             }
-        }
-    });
+        });
+
+    Role.type = 'Role';
 
     return Role;
 });
