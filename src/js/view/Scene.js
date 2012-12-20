@@ -4,9 +4,10 @@
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
  */
-elf.define('FS::Model::Scene', ['lang', 'class'], function (_, Class) {
+elf.define('FS::View::Scene', ['lang', 'class'], function (_, Class) {
     var Scene = Class.extend({
         ctor: function () {
+
         },
         mix: function () {
             _.extend.apply(_, [this].concat(arguments));

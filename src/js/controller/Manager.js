@@ -6,27 +6,42 @@
  * @import ../model/mixin/EventMixin.js
  */
 elf.define('FS::Controller::Manager', ['lang', 'async', 'FS::Model::EventMixin'], function (_, async, eventMixin) {
-    var keys = Object.keys,
-        slice = Array.prototype.slice,
-        manager = {
-            splash: {},
-            mainMenu: {},
-            resultMenu: {}
-        };
+    var manager = {},
+        views = ['splash', 'mainMenu', 'resultMenu'];
 
     // 把事件 mixin
     _.extend(manager, eventMixin);
 
-    keys(manager).forEach(function (name) {
+    views.forEach(function (name) {
         ['show', 'hide'].forEach(function(method) {
+            if (!manager[name]) {
+                manager[name] = {};
+            }
             manager[name][method] = function () {
                 manager.fire(name, [method]);
             };
         });
     });
 
-    manager.init = function() {
-        // 同步方法使用例子，后期移除
+    manager.bind('mode', function(mode) {
+        console.log('manager - mode : ' + mode);
+    });
+
+    manager.bind('game', function(action) {
+        console.log('manager - game : ' + action);
+        // 同步方法使用例子，后期酌情移除
+        async.series([
+            function(callback) {
+            },
+            function(callback) {
+            }
+        ], function(err, results) {
+            console.log(results);
+        });
+    });
+
+    function init() {
+        // 同步方法使用例子，后期酌情移除
         async.series([
             function(callback) {
                 manager.splash.hide();
@@ -41,5 +56,7 @@ elf.define('FS::Controller::Manager', ['lang', 'async', 'FS::Model::EventMixin']
         });
     };
 
-    return manager;
+    return {
+        init: init
+    };
 });

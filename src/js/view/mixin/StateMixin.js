@@ -1,7 +1,7 @@
 /**
  * StateMixin
  */
-elf.define('FS::Model::StateMixin', [], function () {
+elf.define('FS::View::StateMixin', [], function () {
     var mixin = {
             state: null,
             changeState: function (newState, args) {

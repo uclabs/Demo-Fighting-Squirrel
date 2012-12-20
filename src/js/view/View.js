@@ -9,16 +9,17 @@ elf.define('FS::View::View', [
     'lang',
     'async',
     'FS::View::EventMixin',
-    'FS::View::Splash'
-], function (_, async, eventMixin, splash) {
-    var exports = {};
+    'FS::View::Splash',
+    'FS::View::MainMenu'
+], function (_, async, eventMixin, splash, mainMenu) {
+    var view = {};
 
     // 把事件 mixin
-    _.extend(this, eventMixin);
+    _.extend(view, eventMixin);
 
-    exports.init = function() {
+    view.init = function() {
 
     };
 
-    return exports;
+    return view;
 });

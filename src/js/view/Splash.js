@@ -5,24 +5,24 @@
  * @import mixin/EventMixin.js
  */
 elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
-    var that = this,
-        exports = {},
-        splash = document.getElementById('splash');
-
-     exports.show = function show() {
-        console.log('i am splash, i am hide');
-    };
-
-    exports.hide = function hide() {
-        console.log('i am splash, i am hide');
-    };
+    var splash = {},
+        _splash = document.getElementById('splash');
 
     // 把事件 mixin
-    _.extend(this, eventMixin);
+    _.extend(splash, eventMixin);
     
-    this.bind('splash', function(method, args) {
-        exports[method].apply(that, args);
+    // 绑定来自 manager 的指令
+    splash.bind('splash', function(method, args) {
+        splash[method].apply(splash, args);
     });
 
-    return exports;
+    splash.show = function show() {
+        console.log('i am splash, i am show');
+    };
+
+    splash.hide = function hide() {
+        console.log('i am splash, i am hide');
+    };
+
+    return splash;
 });
