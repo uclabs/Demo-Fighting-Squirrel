@@ -3,9 +3,15 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
+ * @import Messager.js
  * @import ../model/mixin/EventMixin.js
  */
-elf.define('FS::Controller::Manager', ['lang', 'async', 'FS::Model::EventMixin'], function (_, async, eventMixin) {
+elf.define('FS::Controller::Manager', [
+    'lang',
+    'async',
+    'FS::Controller::Messager',
+    'FS::Model::EventMixin'
+], function (_, async, msg, eventMixin) {
     'use strict';
 
     var manager = {},

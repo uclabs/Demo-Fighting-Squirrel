@@ -2,6 +2,7 @@
  * Director
  *
  * @import ../Dispatcher.js
+ * @import Messager.js
  * @import ../model/Scene.js
  * @import ../model/Stage.js
  * @import ../model/role/Role.js
@@ -9,11 +10,12 @@
  */
 elf.define('FS::Controller::Director', [
     'FS::Dispatcher',
+    'FS::Controller::Messager',
     'FS::Model::Scene',
     'FS::Model::Stage',
     'FS::Model::Role',
     'FS::Model::Weapon'
-], function (dispatcher, Scene, Stage, Role, Weapon) {
+], function (dispatcher, messager, Scene, Stage, Role, Weapon) {
     'use strict';
 
     var uuid = 0,
@@ -29,7 +31,11 @@ elf.define('FS::Controller::Director', [
         };
     });
 
-    // TODO 程序流程
+    director = {
+        init: function () {
+
+        }
+    }
 
     return director;
 });
