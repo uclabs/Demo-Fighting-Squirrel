@@ -17,28 +17,28 @@ elf.define('FS::Model::Scene', [
     'use strict';
     var concat = Array.prototype.concat,
         Scene = Class.extend({
-        ctor: function (opts) {
-            this.mix(eventMixin, elementMixin, stateMixin);
-            this.config(opts);
-        },
-        mix: function () {
-            _.extend.apply(_, concat.apply([this], arguments));
-        },
-        stateHandler: {
-            // 准备攻击阶段
-            ready: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+            ctor: function (opts) {
+                this.mix(eventMixin, elementMixin, stateMixin);
+                this.config(opts);
             },
-            // 攻击进行中
-            attack: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+            mix: function () {
+                _.extend.apply(_, concat.apply([true, this], arguments));
+            },
+            stateHandler: {
+                // 准备攻击阶段
+                ready: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                },
+                // 攻击进行中
+                attack: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                }
             }
-        }
-    });
+        });
 
     return Scene;
 });

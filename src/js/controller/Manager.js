@@ -32,24 +32,24 @@ elf.define('FS::Controller::Manager', [
     });
 
     manager.bind('mode', function(mode) {
-        console.log('manager - mode : ' + mode);
+        console.log('[manager] mode - ' + mode);
         messager.fire('director', ['config', {mode: mode}]);
     });
 
     manager.bind('game', function(action) {
         switch(action) {
             case 'start':
-                console.log('manager : director-start');
+                console.log('[manager] fire - director-start');
                 messager.fire('director', ['start']);
                 break;
 
             case 'stop':
-                console.log('manager : director-stop');
+                console.log('[manager] fire - director-stop');
                 messager.fire('director', ['stop']);
                 break;
 
             case 'restart':
-                console.log('manager : director-restart');
+                console.log('[manager] fire - director-restart');
                 messager.fire('director', ['restart']);
                 break;
         }
@@ -77,7 +77,7 @@ elf.define('FS::Controller::Manager', [
                 callback(null, 'mainMenu.show');
             }
         ], function(err, results) {
-            console.log(results);
+            console.log('[manager] fire - ' + results.join(' - '));
         });
     };
 

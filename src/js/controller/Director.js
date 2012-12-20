@@ -44,7 +44,7 @@ elf.define('FS::Controller::Director', [
     });
 
     messager.bind('director', function(action) {
-        console.log('director : ' + action);
+        console.log('[director] bind - ' + action);
         switch(action) {
             case 'start':
                 start();
@@ -76,13 +76,13 @@ elf.define('FS::Controller::Director', [
         weapon1, role1,
         weapon2, role2;
     function start() {
-        console.log('director start()');
+        console.log('[director] start');
         scene = Scene.create({});
         stage = Stage.create({});
         weapon1 = Weapon.create({});
         role1 = Role.create({weapon: weapon1});
         weapon2 = Weapon.create({});
-        role2 = Role.create({weapon: weapon2});console.log(scene, stage, weapon1, role1);
+        role2 = Role.create({weapon: weapon2});
     };
 
     function stop() {

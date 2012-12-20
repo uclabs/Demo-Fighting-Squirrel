@@ -17,16 +17,16 @@ elf.define('FS::Model::Stage', [
     'use strict';
     var concat = Array.prototype.concat,
         Stage = Class.extend({
-        ctor: function (opts) {
-            this.mix(eventMixin, elementMixin, stateMixin);
-            this.config(opts);
-        },
-        mix: function () {
-            _.extend.apply(_, concat.apply([this], arguments));
-        },
-        stateHandler: {
-        }
-    });
+            ctor: function (opts) {
+                this.mix(eventMixin, elementMixin, stateMixin);
+                this.config(opts);
+            },
+            mix: function () {
+                _.extend.apply(_, concat.apply([true, this], arguments));
+            },
+            stateHandler: {
+            }
+        });
 
     return Stage;
 });

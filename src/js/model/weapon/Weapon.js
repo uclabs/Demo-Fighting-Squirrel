@@ -17,26 +17,26 @@ elf.define('FS::Model::Weapon', [
     'use strict';
     var concat = Array.prototype.concat,
         Weapon = Class.extend({
-        ctor: function (opts) {
-            this.mix(eventMixin, elementMixin, stateMixin);
-            this.config(opts);
-        },
-        mix: function () {
-            _.extend.apply(_, concat.apply([this], arguments));
-        },
-        stateHandler: {
-            idle: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+            ctor: function (opts) {
+                this.mix(eventMixin, elementMixin, stateMixin);
+                this.config(opts);
             },
-            active: {
-                init: function () {},
-                main: function () {},
-                exit: function () {}
+            mix: function () {
+                _.extend.apply(_, concat.apply([true, this], arguments));
+            },
+            stateHandler: {
+                idle: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                },
+                active: {
+                    init: function () {},
+                    main: function () {},
+                    exit: function () {}
+                }
             }
-        }
-    });
+        });
 
     return Weapon;
 });
