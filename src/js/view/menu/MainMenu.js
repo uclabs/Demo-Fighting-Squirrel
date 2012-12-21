@@ -21,7 +21,7 @@ elf.define('FS::View::MainMenu', ['lang', 'FS::View::EventMixin'], function (_, 
         // 由于没有界面，先用计时器模拟玩家延迟点击“开始游戏”按钮
         setTimeout(function() {
             // 向 manager 发送游戏开始的消息
-            menu.fire('mode', ['multi-player']);
+            menu.fire('config', [{mode: 'multi-player'}]);
             menu.fire('game', ['start']);
         }, 2000);
     };

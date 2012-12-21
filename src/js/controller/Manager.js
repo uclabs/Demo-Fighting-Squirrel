@@ -3,22 +3,19 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
- * @import Messager.js
  * @import ../model/mixin/EventMixin.js
+ * @import ../model/mixin/MessageMixin.js
  */
 elf.define('FS::Controller::Manager', [
     'lang',
     'async',
-    'FS::Controller::Messager',
-    'FS::Model::EventMixin'
-], function (_, async, messager, eventMixin) {
+    'FS::Model::EventMixin',
+    'FS::Model::MessageMixin'
+], function (_, async, eventMixin, messageMixin) {
     'use strict';
 
-    var manager = {},
+    var manager = _.extend({}, eventMixin, messageMixin),
         views = ['splash', 'mainMenu', 'resultMenu', 'gameMenu', 'exitMenu'];
-
-    // 把事件 mixin
-    _.extend(manager, eventMixin);
 
     views.forEach(function (name) {
         ['show', 'hide'].forEach(function(method) {
@@ -31,16 +28,16 @@ elf.define('FS::Controller::Manager', [
         });
     });
 
-    manager.bind('mode', function(mode) {
-        log('manager', 'mode', mode);
-        messager.fire('director', ['config', {mode: mode}]);
+    manager.bind('config', function(opts) {
+        log('manager', 'config', opts);
+        manager.postMessage('director', ['config', opts]);
     });
 
     manager.bind('game', function(action) {
         switch(action) {
             case 'start':
-                log('manager', 'fire', 'director|start');
-                messager.fire('director', ['start']);
+                log('manager', 'fire', 'director.start');
+                manager.postMessage('director', ['start']);
                 break;
 
             case 'exit':
@@ -48,14 +45,14 @@ elf.define('FS::Controller::Manager', [
                 break;
 
             case 'stop':
-                log('manager', 'fire', 'director|stop');
-                messager.fire('director', ['stop']);
+                log('manager', 'fire', 'director.stop');
+                manager.postMessage('director', ['stop']);
                 manager.mainMenu.show();
                 break;
 
             case 'restart':
-                log('manager', 'fire', 'director|restart');
-                messager.fire('director', ['restart']);
+                log('manager', 'fire', 'director.restart');
+                manager.postMessage('director', ['restart']);
                 break;
         }
     });
@@ -65,7 +62,7 @@ elf.define('FS::Controller::Manager', [
             case 'ready':
                 manager.mainMenu.hide();
                 manager.gameMenu.show();
-                messager.fire('director', ['show']);
+                manager.postMessage('director', ['show']);
                 break;
         }
     });

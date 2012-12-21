@@ -19,10 +19,9 @@ elf.define('FS::Model::Scene', [
         Scene = Class.extend({
             type: 'Scene',
             ctor: function (opts) {
-                this.mix(eventMixin, stateMixin);
-                this.config = _.extend({
-                    round: 0
-                }, opts);
+                this.mix(eventMixin, elementMixin, stateMixin);
+                this.config(opts);
+                this.round = 0;
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
@@ -31,18 +30,26 @@ elf.define('FS::Model::Scene', [
                 // 准备攻击阶段
                 ready: {
                     init: function () {
-                        var roleGroup = this.roleGroup;
-                        // TODO: 摆放各元素
-
-                        this.round += 1;
-                        this.currentRole = roleGroup[this.round % roleGroup.length - 1];
+                        this.round++;
                     },
                     main: function () {
-                        this.currentRole.changeState('active');
+                        var side = this.round % 2,
+                            activeGroup = side === 1 ? this.roleGroup1 : this.roleGroup2,
+                            idleGroup = side === 1 ? this.roleGroup2 : this.roleGroup1;
+                        activeGroup.forEach(function(role) {
+                            role.changeState('active');
+                        });
+                        idleGroup.forEach(function(role) {
+                            role.changeState('idle');
+                        });
                     },
                     exit: function () {
-                        this.currentRole.changeState('idle');
-                        this.currentRole = null;
+                        this.roleGroup1.forEach(function(role) {
+                            role.changeState('idle');
+                        });
+                        this.roleGroup2.forEach(function(role) {
+                            role.changeState('idle');
+                        });
                     }
                 },
                 // 攻击进行中

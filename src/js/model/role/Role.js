@@ -19,6 +19,7 @@ elf.define('FS::Model::Role', [
         Role = Class.extend({
             type: 'Role',
             weapon: null,
+            player: null, // 所属的玩家
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);

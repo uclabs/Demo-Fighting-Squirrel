@@ -3,8 +3,8 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
- * @import Messager.js
  * @import ../model/mixin/EventMixin.js
+ * @import ../model/mixin/MessageMixin.js
  * @import ../model/mixin/StateMixin.js
  * @import ../model/Scene.js
  * @import ../model/Stage.js
@@ -14,19 +14,21 @@
 elf.define('FS::Controller::Director', [
     'lang',
     'async',
-    'FS::Controller::Messager',
     'FS::Model::EventMixin',
+    'FS::Model::MessageMixin',
     'FS::Model::StateMixin',
     'FS::Model::Scene',
     'FS::Model::Stage',
     'FS::Model::Role',
-    'FS::Model::Weapon'
-], function (_, async, messager, eventMixin, stateMixin, Scene, Stage, Role, Weapon) {
+    'FS::Model::Squirrel',
+    'FS::Model::Weapon',
+    'FS::Model::Stone'
+], function (_, async, eventMixin, messageMixin, stateMixin, Scene, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var hasOwn = Object.prototype.hasOwnProperty,
         uuid = 0,
-        director = _.extend({}, eventMixin);
+        director = _.extend({}, eventMixin, messageMixin);
 
     // 为类添加工厂方法
     function create(opts) {
@@ -42,40 +44,51 @@ elf.define('FS::Controller::Director', [
         return instance;
     }
 
-    [Scene, Stage, Role, Weapon].forEach(function (Class) {
+    [Scene, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
         Class.create = create;
     });
 
     // 方法分发器
     function dispactor() {
-        var action = arguments[0];
-        action = action && director[action];
-        typeof action === 'function' && action.apply(director, arguments);
+        var slice = Array.prototype.slice,
+            action = arguments[0];
+        action = action && this[action];console.log(arguments, this, action);
+        typeof action === 'function' && action.apply(this, slice.call(arguments, 1));
     }
 
     director = _.extend(director, {
+        player1: {
+            race: ''
+        },
+        player2: {
+            race: ''
+        },
         init: function (opts) {
-            var options = this.options = _.extend({}, opts);
-            options.mode = options.mode === 'master' ? 'master' : 'slave';
-            this.on();
+            log('director', 'init', opts);
+            this.config(opts);
+            this.listenMessage('director', dispactor.bind(this));
         },
-
-        // 事件相关
-        on: function () {
-            messager.bind('director', dispactor.bind(this));
+        config: function(opts) {
+            log('director', 'config', opts);
+            _.extend(true, this, opts);
         },
-        off: function () {
-            messager.unbind('director');
-        }
 
         // 游戏逻辑
         start: function (opts) {
+            log('director', 'start', opts);
             // TODO: 处理 opts，根据 opts 实例化具体代码。
-            var scene = this.scene = game.scene = Scene.create({}),
-                roleGroup = scene.roleGroup = [];
+            var scene = this.scene = Scene.create({}),
+                stage = scene.stage = Stage.create({}),
+                roleGroup1 = scene.roleGroup1 = [],
+                roleGroup2 = scene.roleGroup2 = [];
 
-            scene.stage = Stage.create({});
-            roleGroup.push(Role.create({
+            // 创建玩家一角色
+            roleGroup1.push(Squirrel.create({
+                weapon: Weapon.create({})
+            }));
+
+            // 创建玩家二角色
+            roleGroup2.push(Squirrel.create({
                 weapon: Weapon.create({})
             }));
 
@@ -83,9 +96,10 @@ elf.define('FS::Controller::Director', [
         },
         stop: function () {
             // TODO: this.scene.over();
-            this.scene = null;
+            var scene = this.scene;
+            scene = null;
         }
     });
-
+console.log(director);
     return director;
 });
