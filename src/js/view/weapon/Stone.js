@@ -16,6 +16,7 @@ elf.define('FS::View::Stone', [
 ], function (_, Weapon, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var Stone = Weapon.extend({
+            type: 'Stone',
             stateHandler: {
                 idle: {
                     init: function () {},

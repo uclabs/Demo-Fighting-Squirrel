@@ -17,6 +17,7 @@ elf.define('FS::View::Scene', [
     'use strict';
     var concat = Array.prototype.concat,
         Scene = Class.extend({
+            type: 'Scene',
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -39,6 +40,8 @@ elf.define('FS::View::Scene', [
                 }
             }
         });
+
+    Scene.type = 'Scene';
 
     return Scene;
 });

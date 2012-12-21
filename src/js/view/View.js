@@ -14,21 +14,32 @@ elf.define('FS::View::View', [
     'FS::View::Scene',
     'FS::View::Stage',
     'FS::View::Role',
-    'FS::View::Weapon'
-], function (_, async, eventMixin, splash, mainMenu, stateMixin, Scene, Stage, Role, Weapon) {
+    'FS::View::Squirrel',
+    'FS::View::Weapon',
+    'FS::View::Stone'
+], function (_, async, eventMixin, splash, mainMenu, stateMixin, Scene, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
-    var view = {};
-
-    // 把事件 mixin
-    _.extend(view, eventMixin);
+    var view = _.extend({}, eventMixin),
+        Classes = [Scene, Stage, Role, Squirrel, Weapon, Stone],
+        elements = {};
 
     // 为类添加工厂方法
-    [Scene, Stage, Role, Weapon].forEach(function (Class) {
+    Classes.forEach(function (Class) {
         Class.create = Class.create || function (opts) {
+            if (!opts) {
+                return;
+            }
             log('view', Class.type + '.create', opts.uuid, opts);
-            return new this(opts);
+            var instance = new this(opts);
+            elements[opts.uuid] = instance;
+            return instance;
         };
+        view.bind(Class.type, function(action, opts) {
+            if (action === 'create') {
+                Class.create(opts);
+            }
+        });
     });
 
     view.init = function() {

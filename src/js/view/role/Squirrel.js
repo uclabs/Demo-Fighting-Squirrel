@@ -16,6 +16,7 @@ elf.define('FS::View::Squirrel', [
 ], function (_, Role, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var Squirrel = Role.extend({
+            type: 'Squirrel',
             stateHandler: {
                 idle: {
                     init: function () {},

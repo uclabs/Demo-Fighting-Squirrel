@@ -52,7 +52,7 @@ elf.define('FS::Controller::Director', [
     function dispactor() {
         var slice = Array.prototype.slice,
             action = arguments[0];
-        action = action && this[action];console.log(arguments, this, action);
+        action = action && this[action];
         typeof action === 'function' && action.apply(this, slice.call(arguments, 1));
     }
 
@@ -92,14 +92,24 @@ elf.define('FS::Controller::Director', [
                 weapon: Weapon.create({})
             }));
 
+
+            // 把元素放置到舞台上
+            scene.append();
             scene.changeState('ready');
         },
         stop: function () {
+            log('director', 'stop');
             // TODO: this.scene.over();
             var scene = this.scene;
             scene = null;
+        },
+        show: function() {
+
+        },
+        hide: function() {
+
         }
     });
-console.log(director);
+
     return director;
 });

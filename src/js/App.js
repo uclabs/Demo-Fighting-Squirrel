@@ -11,7 +11,6 @@ elf.define('FS::App', [
     'FS::Config',
     'FS::Log',
     'FS::Controller::Director',
-    'FS::Controller::Director',
     'FS::Controller::Manager',
     'FS::View::View'
 ], function (config, log, director, manager, view) {

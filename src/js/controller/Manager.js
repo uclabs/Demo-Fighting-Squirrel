@@ -36,7 +36,7 @@ elf.define('FS::Controller::Manager', [
     manager.bind('game', function(action) {
         switch(action) {
             case 'start':
-                log('manager', 'fire', 'director.start');
+                log('manager', 'postMessage', 'director.start');
                 manager.postMessage('director', ['start']);
                 break;
 
@@ -45,13 +45,13 @@ elf.define('FS::Controller::Manager', [
                 break;
 
             case 'stop':
-                log('manager', 'fire', 'director.stop');
+                log('manager', 'postMessage', 'director.stop');
                 manager.postMessage('director', ['stop']);
                 manager.mainMenu.show();
                 break;
 
             case 'restart':
-                log('manager', 'fire', 'director.restart');
+                log('manager', 'postMessage', 'director.restart');
                 manager.postMessage('director', ['restart']);
                 break;
         }
@@ -60,6 +60,7 @@ elf.define('FS::Controller::Manager', [
     manager.bind('director', function(state) {
         switch(state) {
             case 'ready':
+                log('manager', 'postMessage', 'director.show');
                 manager.mainMenu.hide();
                 manager.gameMenu.show();
                 manager.postMessage('director', ['show']);
