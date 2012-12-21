@@ -10,6 +10,14 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
             config: function(opts) {
                 _.extend(true, this, opts);
             },
+            action: function() {
+                return function() {console.log('!!action');
+                    var action = arguments[0],
+                        fn = this[action],
+                        args = Array.prototype.slice.call(arguments, 1);console.log(action, fn, args);
+                    fn.apply(this, args);
+                };
+            },
             // 插入元素
             append: function () {
                 log(this.id, 'append', arguments);

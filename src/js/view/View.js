@@ -17,7 +17,7 @@ elf.define('FS::View::View', [
     'FS::View::Squirrel',
     'FS::View::Weapon',
     'FS::View::Stone'
-], function (_, async, eventMixin, splash, mainMenu, stateMixin, Scene, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, eventMixin, splash, mainMenu, Scene, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var view = _.extend({}, eventMixin),
@@ -30,9 +30,9 @@ elf.define('FS::View::View', [
             if (!opts) {
                 return;
             }
-            log('view', Class.type + '.create', opts.uuid, opts);
+            log('view', Class.type + '.create', opts.id, opts);
             var instance = new this(opts);
-            elements[opts.uuid] = instance;
+            elements[opts.id] = instance;
             return instance;
         };
         view.bind(Class.type, function(action, opts) {

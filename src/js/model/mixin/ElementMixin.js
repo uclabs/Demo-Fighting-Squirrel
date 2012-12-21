@@ -15,11 +15,20 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             },
             // 插入元素
             append: function () {
-                var arr = ['append'];
+                var arr = ['append'],
+                    push = function(child) {
+                        var id = _.type(child) === 'object' ? child.id : child;
+                        arr.push(id);
+                    };
                 for (var i = 0, len = arguments.length; i < len; i++) {
-                    var child = arguments[i],
-                        id = _.type(child) === 'object' ? child.id : child;
-                    arr.push(id);
+                    if (Array.isArray(arguments[i])) {
+                        var children = arguments[i];
+                        for (var j = 0, count = children.length; j < count; j++) {
+                            push(children[j]);
+                        }
+                    } else {
+                        push(arguments[i]);
+                    }
                 }
                 this.fire(arr);
             },

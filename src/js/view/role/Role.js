@@ -22,6 +22,7 @@ elf.define('FS::View::Role', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
+                this.bind(opts.id, this.action.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));

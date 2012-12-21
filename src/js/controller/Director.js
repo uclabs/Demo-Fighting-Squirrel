@@ -35,12 +35,12 @@ elf.define('FS::Controller::Director', [
         var instance;
 
         opts = opts || {};
-        opts.id = String(++uuid);
+        opts.id = 'i' + (++uuid);
 
         instance = new this(opts);
+        log('director', instance.type + '.create', opts.id, opts);
         director.fire(instance.type, ['create', opts]);
 
-        log('director', instance.type + '.create', uuid, opts);
         return instance;
     }
 
@@ -63,6 +63,7 @@ elf.define('FS::Controller::Director', [
         player2: {
             race: ''
         },
+
         init: function (opts) {
             log('director', 'init', opts);
             this.config(opts);
@@ -92,9 +93,8 @@ elf.define('FS::Controller::Director', [
                 weapon: Weapon.create({})
             }));
 
-
             // 把元素放置到舞台上
-            scene.append();
+            scene.append(stage, roleGroup1, roleGroup2);
             scene.changeState('ready');
         },
         stop: function () {
