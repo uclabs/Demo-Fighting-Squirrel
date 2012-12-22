@@ -33,7 +33,8 @@ elf.define('FS::Model::Scene', [
                         this.round++;
                     },
                     main: function () {
-                        var side = this.round % 2,
+                        var timer = this.timer,
+                            side = this.round % 2,
                             activeGroup = side === 1 ? this.roleGroup1 : this.roleGroup2,
                             idleGroup = side === 1 ? this.roleGroup2 : this.roleGroup1;
                         activeGroup.forEach(function(role) {
@@ -42,6 +43,7 @@ elf.define('FS::Model::Scene', [
                         idleGroup.forEach(function(role) {
                             role.changeState('idle');
                         });
+                        timer.changeState('timing');
                     },
                     exit: function () {
                         this.roleGroup1.forEach(function(role) {

@@ -7,6 +7,7 @@
  * @import ../model/mixin/MessageMixin.js
  * @import ../model/mixin/StateMixin.js
  * @import ../model/Scene.js
+ * @import ../model/Timer.js
  * @import ../model/Stage.js
  * @import ../model/role/Role.js
  * @import ../model/weapon/Weapon.js
@@ -18,12 +19,13 @@ elf.define('FS::Controller::Director', [
     'FS::Model::MessageMixin',
     'FS::Model::StateMixin',
     'FS::Model::Scene',
+    'FS::Model::Timer',
     'FS::Model::Stage',
     'FS::Model::Role',
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, async, eventMixin, messageMixin, stateMixin, Scene, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var uuid = 0,
@@ -41,7 +43,7 @@ elf.define('FS::Controller::Director', [
         return instance;
     }
 
-    [Scene, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
+    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
         Class.create = create;
     });
 
@@ -76,6 +78,7 @@ elf.define('FS::Controller::Director', [
             log('director', 'start', opts);
             // TODO: 处理 opts，根据 opts 实例化具体代码。
             var scene = this.scene = Scene.create({}),
+                timer = scene.timer = Timer.create({}),
                 stage = scene.stage = Stage.create({}),
                 roleGroup1 = scene.roleGroup1 = [],
                 roleGroup2 = scene.roleGroup2 = [];
