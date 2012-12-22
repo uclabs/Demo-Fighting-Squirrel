@@ -18,7 +18,7 @@ elf.define('FS::Model::Timer', [
     var concat = Array.prototype.concat,
         Timer = Class.extend({
             type: 'Timer',
-            countdown: 30,
+            countdown: 10,
             _countdown: 0,
             timer: null,
             ctor: function (opts) {

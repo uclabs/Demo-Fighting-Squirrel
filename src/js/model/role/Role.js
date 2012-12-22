@@ -30,12 +30,16 @@ elf.define('FS::Model::Role', [
             stateHandler: {
                 idle: {
                     init: function () {},
-                    main: function () {},
+                    main: function () {
+                        this.fire(['idle']);
+                    },
                     exit: function () {}
                 },
                 active: {
                     init: function () {},
-                    main: function () {},
+                    main: function () {
+                        this.fire(['active']);
+                    },
                     exit: function () {}
                 }
             }

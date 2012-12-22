@@ -16,19 +16,7 @@ elf.define('FS::Model::Squirrel', [
 ], function (_, Role, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var Squirrel = Role.extend({
-            type: 'Squirrel',
-            stateHandler: {
-                idle: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                },
-                active: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                }
-            }
+            type: 'Squirrel'
         });
 
     return Squirrel;

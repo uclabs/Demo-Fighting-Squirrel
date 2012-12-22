@@ -27,18 +27,6 @@ elf.define('FS::View::Scene', [
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             stateHandler: {
-                // 准备攻击阶段
-                ready: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                },
-                // 攻击进行中
-                attack: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                }
             }
         });
 

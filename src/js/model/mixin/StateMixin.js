@@ -1,10 +1,13 @@
 /**
  * StateMixin
+ *
+ * @import ../../../lib/elf/core/event.js
  */
-elf.define('FS::Model::StateMixin', [], function () {
+elf.define('FS::Model::StateMixin', ['event'], function (Event) {
     'use strict';
     var mixin = {
             state: null,
+            stateEvent: new Event(),
             changeState: function (newState, args) {
                 var lastState = this.stat,
                     lastStateHandler = this.stateHandler[lastState],
@@ -25,6 +28,10 @@ elf.define('FS::Model::StateMixin', [], function () {
                 } else if (stateHandler) {
                     stateHandler.apply(this, args);
                 }
+                this.stateEvent.fire(this.state);
+            },
+            stateChange: function(state, callback) {
+                this.stateEvent.bind(state, callback);
             }
         };
 

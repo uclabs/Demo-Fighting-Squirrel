@@ -26,39 +26,57 @@ elf.define('FS::Model::Scene', [
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
+            // 冻结角色操作
+            freeze: function() {
+                this.roleGroup1.forEach(function(role) {
+                    role.changeState('idle');
+                });
+                this.roleGroup2.forEach(function(role) {
+                    role.changeState('idle');
+                });
+            },
+            nextRound: function() {
+                log('scene', 'nextRound', this.round + 1);
+                // 进入下一回合
+                this.round++;
+                var side = this.round % 2,
+                    activeGroup = side === 1 ? this.roleGroup1 : this.roleGroup2,
+                    idleGroup = side === 1 ? this.roleGroup2 : this.roleGroup1;
+                activeGroup.forEach(function(role) {
+                    role.changeState('active');
+                });
+                idleGroup.forEach(function(role) {
+                    role.changeState('idle');
+                });
+            },
             stateHandler: {
-                // 准备攻击阶段
+                // 冻结
+                freeze: function() {
+                    this.freeze();
+                },
+                // 攻击预备阶段
                 ready: {
                     init: function () {
-                        this.round++;
+                        this.freeze();
                     },
                     main: function () {
-                        var timer = this.timer,
-                            side = this.round % 2,
-                            activeGroup = side === 1 ? this.roleGroup1 : this.roleGroup2,
-                            idleGroup = side === 1 ? this.roleGroup2 : this.roleGroup1;
-                        activeGroup.forEach(function(role) {
-                            role.changeState('active');
-                        });
-                        idleGroup.forEach(function(role) {
-                            role.changeState('idle');
-                        });
-                        timer.changeState('timing');
+                        this.nextRound();
                     },
                     exit: function () {
-                        this.roleGroup1.forEach(function(role) {
-                            role.changeState('idle');
-                        });
-                        this.roleGroup2.forEach(function(role) {
-                            role.changeState('idle');
-                        });
+                        this.freeze();
                     }
                 },
                 // 攻击进行中
                 attack: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
+                    init: function () {
+                        this.freeze();
+                    },
+                    main: function () {
+
+                    },
+                    exit: function () {
+                        this.freeze();
+                    }
                 }
             }
         });

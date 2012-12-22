@@ -27,17 +27,11 @@ elf.define('FS::View::Role', [
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
-            stateHandler: {
-                idle: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                },
-                active: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                }
+            idle: function() {
+                log(this.type + ':' + this.uuid, 'idle');
+            },
+            active: function() {
+                log(this.type + ':' + this.uuid, 'active');
             }
         });
 

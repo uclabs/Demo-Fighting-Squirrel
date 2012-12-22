@@ -40,7 +40,6 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             // 物体移动
             move: function (x, y) {
                 this.fire(['move', x, y]);
-                state.main.apply(this, args);
             }
         };
 
