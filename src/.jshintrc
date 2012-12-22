@@ -22,5 +22,5 @@
     "devel": true,
     "jquery": true,
     "node": true,
-    "predef": ["elf", "define"]
+    "predef": ["elf", "define", "log"]
 }
