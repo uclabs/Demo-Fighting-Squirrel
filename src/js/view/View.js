@@ -30,9 +30,9 @@ elf.define('FS::View::View', [
             if (!opts) {
                 return;
             }
-            log('view', Class.type + '.create', opts.id, opts);
+            log('view', Class.type + '.create', opts.uuid, opts);
             var instance = new this(opts);
-            elements[opts.id] = instance;
+            elements[opts.uuid] = instance;
             return instance;
         };
         view.bind(Class.type, function(action, opts) {

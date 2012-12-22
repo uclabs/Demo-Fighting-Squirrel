@@ -21,7 +21,7 @@ elf.define('FS::View::Weapon', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.bind(opts.id, this.action.bind(this));
+                this.bind(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));

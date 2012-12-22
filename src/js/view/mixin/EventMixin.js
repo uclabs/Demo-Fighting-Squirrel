@@ -12,7 +12,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
             bind: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
-                    event = this.id;
+                    event = this.uuid;
                 }
                 if (typeof event === 'string' && typeof handler === 'function') {
                     return downlink.bind(event, handler);
@@ -21,7 +21,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
             unbind: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
-                    event = this.id;
+                    event = this.uuid;
                 }
                 if (typeof event === 'string') {
                     return downlink.unbind(event, handler);
@@ -30,7 +30,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
             fire: function (event, args) {
                 if (Array.isArray(event)) {
                     args = event;
-                    event = this.id;
+                    event = this.uuid;
                 }
                 if (typeof event === 'string') {
                     return uplink.fire(event, args);

@@ -17,8 +17,8 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             append: function () {
                 var arr = ['append'],
                     push = function(child) {
-                        var id = _.type(child) === 'object' ? child.id : child;
-                        arr.push(id);
+                        var uuid = _.type(child) === 'object' ? child.uuid : child;
+                        arr.push(uuid);
                     };
                 for (var i = 0, len = arguments.length; i < len; i++) {
                     if (Array.isArray(arguments[i])) {
@@ -38,7 +38,7 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                 this.fire(['appendTo', pid]);
             },
             // 物体移动
-            move: function (x, y) {                
+            move: function (x, y) {
                 this.fire(['move', x, y]);
                 state.main.apply(this, args);
             }

@@ -26,19 +26,16 @@ elf.define('FS::Controller::Director', [
 ], function (_, async, eventMixin, messageMixin, stateMixin, Scene, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
-    var hasOwn = Object.prototype.hasOwnProperty,
-        uuid = 0,
+    var uuid = 0,
         director = _.extend({}, eventMixin, messageMixin);
 
     // 为类添加工厂方法
     function create(opts) {
-        var instance;
-
         opts = opts || {};
-        opts.id = 'i' + (++uuid);
+        opts.uuid = 'i' + (++uuid);
 
-        instance = new this(opts);
-        log('director', instance.type + '.create', opts.id, opts);
+        var instance = new this(opts);
+        log('director', instance.type + '.create', opts.uuid, opts);
         director.fire(instance.type, ['create', opts]);
 
         return instance;
@@ -85,12 +82,16 @@ elf.define('FS::Controller::Director', [
 
             // 创建玩家一角色
             roleGroup1.push(Squirrel.create({
-                weapon: Weapon.create({})
+                x: 50,
+                y: 120,
+                weapon: Stone.create({})
             }));
 
             // 创建玩家二角色
             roleGroup2.push(Squirrel.create({
-                weapon: Weapon.create({})
+                x: 950,
+                y: 120,
+                weapon: Stone.create({})
             }));
 
             // 把元素放置到舞台上
