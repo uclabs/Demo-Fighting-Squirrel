@@ -3,21 +3,18 @@
  *
  * @import ../../../lib/elf/core/lang.js
  * @import Role.js
- * @import ../mixin/EventMixin.js
- * @import ../mixin/ElementMixin.js
- * @import ../mixin/StateMixin.js
  */
 elf.define('FS::Model::Squirrel', [
     'lang',
-    'FS::Model::Role',
-    'FS::Model::EventMixin',
-    'FS::Model::ElementMixin',
-    'FS::Model::StateMixin'
-], function (_, Role, eventMixin, elementMixin, stateMixin) {
+    'FS::Model::Role'
+], function (_, Role) {
     'use strict';
-    var Squirrel = Role.extend({
-            type: 'Squirrel'
+    var type = 'Squirrel',
+        Squirrel = Role.extend({
+            type: type
         });
+
+    Squirrel.type = type;
 
     return Squirrel;
 });

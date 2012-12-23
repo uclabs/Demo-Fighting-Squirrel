@@ -23,7 +23,7 @@ elf.define('FS::View::MainMenu', ['lang', 'FS::View::EventMixin'], function (_, 
             // 向 manager 发送游戏开始的消息
             menu.fire('config', [{mode: 'multi-player'}]);
             menu.fire('game', ['start']);
-        }, 2000);
+        }, 1000);
     };
 
     menu.hide = function hide() {

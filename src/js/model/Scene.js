@@ -21,33 +21,12 @@ elf.define('FS::Model::Scene', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.round = 0;
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
-            // 冻结角色操作
+            // 冻结场景
             freeze: function() {
-                this.roleGroup1.forEach(function(role) {
-                    role.changeState('idle');
-                });
-                this.roleGroup2.forEach(function(role) {
-                    role.changeState('idle');
-                });
-            },
-            nextRound: function() {
-                log('scene', 'nextRound', this.round + 1);
-                // 进入下一回合
-                this.round++;
-                var side = this.round % 2,
-                    activeGroup = side === 1 ? this.roleGroup1 : this.roleGroup2,
-                    idleGroup = side === 1 ? this.roleGroup2 : this.roleGroup1;
-                activeGroup.forEach(function(role) {
-                    role.changeState('active');
-                });
-                idleGroup.forEach(function(role) {
-                    role.changeState('idle');
-                });
             },
             stateHandler: {
                 // 冻结
@@ -60,7 +39,6 @@ elf.define('FS::Model::Scene', [
                         this.freeze();
                     },
                     main: function () {
-                        this.nextRound();
                     },
                     exit: function () {
                         this.freeze();

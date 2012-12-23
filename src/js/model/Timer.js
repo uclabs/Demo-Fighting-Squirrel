@@ -54,6 +54,9 @@ elf.define('FS::Model::Timer', [
                 timing: function() {
                     this.start();
                 },
+                pause: function() {
+                    
+                },
                 stop: function() {
                     this.stop();
                 }

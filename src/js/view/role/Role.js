@@ -32,6 +32,19 @@ elf.define('FS::View::Role', [
             },
             active: function() {
                 log(this.type + ':' + this.uuid, 'active');
+                // 模拟玩家进行攻击
+                // TODO 完成后移除
+                var that = this;
+                setTimeout(function() {
+                    var fire = Math.random() < 0.85;
+                    if (fire) {
+                        that.attack({force: 123});
+                    }
+                }, Math.random() * 10000);
+            },
+            attack: function(force) {
+                log(this.type + ':' + this.uuid, 'attack', force);
+                this.fire(['attack', force]);
             }
         });
 

@@ -37,9 +37,20 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                 var pid = _.type(parent) === 'object' ? parent.id : parent;
                 this.fire(['appendTo', pid]);
             },
-            // 物体移动
+            // 移动
             move: function (x, y) {
-                this.fire(['move', x, y]);
+                if (_.type(x) === 'object') {
+                    y = x.y;
+                    x = x.x;
+                }
+                if (_.type(x) === 'number' && _.type(y) === 'number') {
+                    this.fire(['move', x, y]);
+                }
+            },
+            // 碰撞
+            collision: function(arg) {
+                // 广播物体被碰撞
+                this.postMessage('Element', [this.uuid, 'collision', arg]);
             }
         };
 
