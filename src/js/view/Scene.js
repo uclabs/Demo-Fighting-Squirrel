@@ -23,6 +23,7 @@ elf.define('FS::View::Scene', [
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
+            cocos2d: cc.Scene.extend({}),
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
