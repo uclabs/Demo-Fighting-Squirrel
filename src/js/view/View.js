@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
+ * @import Resources.js
  * @import mixin/EventMixin.js
  * @import Splash.js
  * @import menu/ExitMenu.js
@@ -20,6 +21,8 @@
 elf.define('FS::View::View', [
     'lang',
     'async',
+    'FS::Config',
+    'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::Splash',
     'FS::View::ExitMenu',
@@ -33,10 +36,11 @@ elf.define('FS::View::View', [
     'FS::View::Squirrel',
     'FS::View::Weapon',
     'FS::View::Stone'
-], function (_, async, eventMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, config, resources, eventMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var view = _.extend({}, eventMixin),
+        cocos2dApp,
         Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone],
         elements = {};
 
@@ -58,7 +62,36 @@ elf.define('FS::View::View', [
         });
     });
 
+    //创建Application
+    cocos2dApp = cc.Application.extend({
+        config: config.ccConfig,
+        ctor:function (scene) {
+            this._super();
+            this.startScene = scene;
+            cc.COCOS2D_DEBUG = this.config.COCOS2D_DEBUG;
+            cc.setup(this.config.tag);
+            cc.Loader.getInstance().onloading = function () {
+                cc.LoaderScene.getInstance().draw();
+            };
+            cc.Loader.getInstance().onload = function () {
+                cc.AppController.shareAppController().didFinishLaunchingWithOptions();
+            };
+            cc.Loader.getInstance().preload(resources.ccRessources);
+        },
+        applicationDidFinishLaunching:function () {
+            // initialize director
+            var director = cc.Director.getInstance();
+
+            // run
+            director.runWithScene(new this.startScene());
+
+            return true;
+        }
+    });
+
+
     view.init = function() {
+        //var myApp = new cocos2dApp(Begin);
         log('view', 'init');
     };
 

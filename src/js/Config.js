@@ -5,6 +5,7 @@ elf.define('FS::Config', function () {
     'use strict';
 
     var frameRate = 60;
+    
     return {
         // 输出日志开关
         log: true,
@@ -20,7 +21,7 @@ elf.define('FS::Config', function () {
             showFPS: true,
             frameRate: frameRate,
             loadExtension: false,
-            tag: 'stage', //the dom element to run cocos2d on
+            tag: 'scene', //the dom element to run cocos2d on
             engineDir: 'public/lib/cocos2d/',
             appFiles: []
         }
