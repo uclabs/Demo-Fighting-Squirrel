@@ -23,17 +23,17 @@ elf.define('FS::Controller::Manager', [
                 manager[name] = {};
             }
             manager[name][method] = function () {
-                manager.sendClient(name, [method]);
+                manager.sendView(name, [method]);
             };
         });
     });
 
-    manager.listenClient('config', function(opts) {
+    manager.listenView('config', function(opts) {
         log('manager', 'config', opts);
         manager.sendMessage('director', ['config', opts]);
     });
 
-    manager.listenClient('game', function(action) {
+    manager.listenView('game', function(action) {
         switch(action) {
             case 'start':
                 log('manager', 'sendMessage', 'director.start');
@@ -57,7 +57,7 @@ elf.define('FS::Controller::Manager', [
         }
     });
 
-    manager.listenClient('director', function(state) {
+    manager.listenView('director', function(state) {
         switch(state) {
             case 'ready':
                 log('manager', 'sendMessage', 'director.show');

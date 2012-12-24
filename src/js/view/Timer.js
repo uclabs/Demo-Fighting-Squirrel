@@ -21,22 +21,22 @@ elf.define('FS::View::Timer', [
             countdown: 30,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
-                this.config(opts);
-                this.listenServer(opts.uuid, this.invoke.bind(this));
+                this.config(opts);console.log('view-timer', opts);
+                this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             start: function(countdown) {
                 this.countdown = countdown;
-                log('timer', 'start');
+                log('view:' + this.type + ':' + this.uuid, 'start');
             },
             stop: function() {
-                log('timer', 'stop');
+                log('view:' + this.type + ':' + this.uuid, 'stop');
             },
             tick: function(countdown) {
                 this.countdown = countdown;
-                log('timer', 'tick', this.countdown);
+                log('view:' + this.type + ':' + this.uuid, 'tick', this.countdown);
             }
         });
 

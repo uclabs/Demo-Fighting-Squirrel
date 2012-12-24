@@ -12,16 +12,16 @@ elf.define('FS::View::GameMenu', ['lang', 'FS::View::EventMixin'], function (_, 
     _.extend(menu, eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenServer('gameMenu', function(method, args) {
+    menu.listenController('gameMenu', function(method, args) {
         menu[method].apply(menu, args);
     });
 
     menu.show = function show() {
-        log('gameMenu', 'show');
+        log('view:gameMenu', 'show');
     };
 
     menu.hide = function hide() {
-        log('gameMenu', 'hide');
+        log('view:gameMenu', 'hide');
     };
 
     return menu;

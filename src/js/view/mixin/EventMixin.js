@@ -9,7 +9,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
     var uplink = dispatcher.uplink,
         downlink = dispatcher.downlink,
         mixin = {
-            listenServer: function (event, handler) {
+            listenController: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
                     event = this.uuid;
@@ -18,7 +18,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                     return downlink.bind(event, handler);
                 }
             },
-            unlistenServer: function (event, handler) {
+            unlistenController: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
                     event = this.uuid;
@@ -27,7 +27,7 @@ elf.define('FS::View::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                     return downlink.unbind(event, handler);
                 }
             },
-            sendServer: function (event, args) {
+            sendController: function (event, args) {
                 if (Array.isArray(event)) {
                     args = event;
                     event = this.uuid;

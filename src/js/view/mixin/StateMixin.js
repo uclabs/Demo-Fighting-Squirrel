@@ -22,7 +22,7 @@ elf.define('FS::View::StateMixin', ['event'], function (Event) {
                     }
                 }
                 
-                if (stateHandler.main) {
+                if (stateHandler && stateHandler.main) {
                     stateHandler.main.apply(this, args);
                 } else if (stateHandler) {
                     stateHandler.apply(this, args);

@@ -32,20 +32,30 @@ elf.define('FS::Model::Timer', [
                 this._countdown = this.countdown;
             },
             start: function() {
+                log('controller:' + this.type + ':' + this.uuid, 'start');
                 var that = this;
                 this.reset();
                 this.timer = setInterval(function() {
                     that.tick();
                 }, 1000);
-                this.sendClient(['start', this._countdown]);
+
+                this.sendView(['start', this._countdown]);
             },
             stop: function() {
+                log('controller:' + this.type + ':' + this.uuid, 'stop');
                 clearInterval(this.timer);
-                this.sendClient(['stop']);
+
+                this.sendView(['stop']);
             },
             tick: function() {
+                // 递减倒计时时间
                 this._countdown--;
-                this.sendClient(['tick', this._countdown]);
+                log('controller:' + this.type + ':' + this.uuid, 'tick', this._countdown);
+
+                // 发送倒计时时间
+                this.sendView(['tick', this._countdown]);
+
+                // 判断是否倒计时结束
                 if (this._countdown <= 0) {
                     this.changeState('stop');
                 }

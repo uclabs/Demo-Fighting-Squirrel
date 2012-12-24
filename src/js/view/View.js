@@ -36,9 +36,10 @@ elf.define('FS::View::View', [
 ], function (_, async, eventMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
-    var view = _.extend({}, eventMixin),
-        Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone],
-        elements = {};
+    var view = _.extend({
+                elements: {}
+            }, eventMixin),
+        Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone];
 
     // 为类添加工厂方法
     Classes.forEach(function (Class) {
@@ -46,12 +47,14 @@ elf.define('FS::View::View', [
             if (!opts) {
                 return;
             }
+
             log('view', Class.type + '.create', opts.uuid, opts);
-            var instance = new this(opts);
-            elements[opts.uuid] = instance;
+            var instance = new Class(opts);
+            view.elements[opts.uuid] = instance;
+
             return instance;
         };
-        view.listenServer(Class.type, function(action, opts) {
+        view.listenController(Class.type, function(action, opts) {
             if (action === 'create') {
                 Class.create(opts);
             }

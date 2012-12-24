@@ -12,7 +12,7 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
                 var lastState = this.stat,
                     lastStateHandler = this.stateHandler[lastState],
                     stateHandler = this.stateHandler[newState];
-
+                    
                 if (newState !== lastState) {
                     if (lastStateHandler && lastState.exit) {
                         lastStateHandler.exit.call(this);
@@ -23,7 +23,7 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
                     }
                 }
                 
-                if (stateHandler.main) {
+                if (stateHandler && stateHandler.main) {
                     stateHandler.main.apply(this, args);
                 } else if (stateHandler) {
                     stateHandler.apply(this, args);

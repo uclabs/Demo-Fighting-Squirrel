@@ -9,7 +9,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
         downlink = dispatcher.downlink,
         mixin = {
             // 绑定消息处理
-            listenClient: function (event, handler) {
+            listenView: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
                     event = this.uuid;
@@ -19,7 +19,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                 }
             },
             // 解绑消息处理
-            unlistenClient: function (event, handler) {
+            unlistenView: function (event, handler) {
                 if (typeof event === 'function') {
                     handler = event;
                     event = this.uuid;
@@ -29,7 +29,7 @@ elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
                 }
             },
             // 派发消息
-            sendClient: function (event, args) {
+            sendView: function (event, args) {
                 if (Array.isArray(event)) {
                     args = event;
                     event = this.uuid;

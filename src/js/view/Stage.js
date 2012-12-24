@@ -21,7 +21,7 @@ elf.define('FS::View::Stage', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.listenServer(opts.uuid, this.invoke.bind(this));
+                this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));

@@ -19,16 +19,15 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
             },
             // 插入元素
             append: function () {
-                log(this.uuid, 'append', arguments);
+                log('view:' + this.type + ':' + this.uuid, 'append', arguments);
             },
             // 插入到某元素
             appendTo: function(parent) {
-                log(this.uuid, 'appendTo', parent);
+                log('view:' + this.type + ':' + this.uuid, 'appendTo', parent);
             },
             // 移动元素
             move: function (x, y) {
-                // move
-                log(this.uuid, 'move', x, y);
+                log('view:' + this.type + ':' + this.uuid, 'move', x, y);
             }
         };
 

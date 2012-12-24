@@ -28,7 +28,7 @@ elf.define('FS::Model::Role', [
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.listenClient(this.uuid, function() {
+                this.listenView(this.uuid, function() {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
                     that.sendMessage(type, args);
@@ -38,10 +38,10 @@ elf.define('FS::Model::Role', [
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             active: function() {
-                this.sendClient(['active']);
+                this.sendView(['active']);
             },
             idle: function() {
-                this.sendClient(['idle']);
+                this.sendView(['idle']);
             },
             stateHandler: {
                 idle: {

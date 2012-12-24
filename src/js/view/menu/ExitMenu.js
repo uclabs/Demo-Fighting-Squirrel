@@ -12,16 +12,16 @@ elf.define('FS::View::ExitMenu', ['lang', 'FS::View::EventMixin'], function (_, 
     _.extend(menu, eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenServer('exitMenu', function(method, args) {
+    menu.listenController('exitMenu', function(method, args) {
         menu[method].apply(menu, args);
     });
 
     menu.show = function show() {
-        log('exitMenu', 'show');
+        log('view:exitMenu', 'show');
     };
 
     menu.hide = function hide() {
-        log('exitMenu', 'hide');
+        log('view:exitMenu', 'hide');
     };
 
     return menu;

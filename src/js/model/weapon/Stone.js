@@ -11,19 +11,7 @@ elf.define('FS::Model::Stone', [
     'use strict';
     var type = 'Stone',
         Stone = Weapon.extend({
-            type: type,
-            stateHandler: {
-                idle: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                },
-                active: {
-                    init: function () {},
-                    main: function () {},
-                    exit: function () {}
-                }
-            }
+            type: type
         });
 
     Stone.type = type;

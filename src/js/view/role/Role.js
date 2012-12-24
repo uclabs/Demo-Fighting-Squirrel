@@ -22,29 +22,29 @@ elf.define('FS::View::Role', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.listenServer(opts.uuid, this.invoke.bind(this));
+                this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             idle: function() {
-                log(this.type + ':' + this.uuid, 'idle');
+                log('view:' + this.type + ':' + this.uuid, 'idle');
             },
             active: function() {
-                log(this.type + ':' + this.uuid, 'active');
+                log('view:' + this.type + ':' + this.uuid, 'active');
                 // 模拟玩家进行攻击
                 // TODO 完成后移除
                 var that = this;
                 setTimeout(function() {
-                    var sendServer = Math.random() < 0.9;
-                    if (sendServer) {
+                    var sendController = Math.random() < 0.95;
+                    if (sendController) {
                         that.attack({force: 123});
                     }
                 }, Math.random() * 10000);
             },
             attack: function(force) {
-                log(this.type + ':' + this.uuid, 'attack', force);
-                this.sendServer(['attack', force]);
+                log('view:' + this.type + ':' + this.uuid, 'attack', force);
+                this.sendController(['attack', force]);
             }
         });
 

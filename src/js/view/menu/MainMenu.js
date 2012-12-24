@@ -12,22 +12,22 @@ elf.define('FS::View::MainMenu', ['lang', 'FS::View::EventMixin'], function (_, 
     _.extend(menu, eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenServer('mainMenu', function(method, args) {
+    menu.listenController('mainMenu', function(method, args) {
         menu[method].apply(menu, args);
     });
 
     menu.show = function show() {
-        log('mainMenu', 'show');
+        log('view:mainMenu', 'show');
         // 由于没有界面，先用计时器模拟玩家延迟点击“开始游戏”按钮
         setTimeout(function() {
             // 向 manager 发送游戏开始的消息
-            menu.sendServer('config', [{mode: 'multi-player'}]);
-            menu.sendServer('game', ['start']);
+            menu.sendController('config', [{mode: 'multi-player'}]);
+            menu.sendController('game', ['start']);
         }, 1000);
     };
 
     menu.hide = function hide() {
-        log('mainMenu', 'hide');
+        log('view:mainMenu', 'hide');
     };
 
     return menu;

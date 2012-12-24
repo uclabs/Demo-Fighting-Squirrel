@@ -32,25 +32,23 @@ elf.define('FS::Controller::Director', [
 
     var slice = Array.prototype.slice,
         uuid = 0,
-        director = _.extend({}, eventMixin, messageMixin, stateMixin);
+        director = _.extend({}, eventMixin, messageMixin, stateMixin),
+        Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone];
 
-    // 为类添加工厂方法
-    function create(opts) {
-        opts = opts || {};
-        opts.uuid = 'u' + (++uuid);
+    Classes.forEach(function (Class) {
+        Class.create = Class.create || function (opts) {
+            opts = opts || {};
+            opts.uuid = 'u' + (++uuid);
 
-        var instance = new this(opts);
-        director.add(opts.uuid, instance);
+            var instance = new Class(opts);
+            director.add(opts.uuid, instance);
 
-        // 向 view 派发创建指令
-        log('director', instance.type + '.create', opts.uuid, opts);
-        director.sendClient(instance.type, ['create', opts]);
+            // 向 view 派发创建指令
+            log('director', instance.type + '.create', opts.uuid, opts);
+            director.sendView(instance.type, ['create', instance.config()]);
 
-        return instance;
-    }
-
-    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
-        Class.create = create;
+            return instance;
+        };
     });
 
     // 方法分发器
@@ -114,7 +112,7 @@ elf.define('FS::Controller::Director', [
         onWeapon: function(uuid, action) {
             var args = slice.call(arguments, 2),
                 weapon = this.elements[uuid];
-            args.unshift(weapon);console.log(uuid, action);
+            args.unshift(weapon);
             switch(action) {
                 case 'finish':
                     this.attackFinish.apply(this, args);
@@ -162,12 +160,13 @@ elf.define('FS::Controller::Director', [
             // TODO 判断攻击合法性
 
             // 更新攻击数据
+            var weapon = this.elements[role.weapon];
             this.attacking = {
                 role: role,
                 force: force,
                 // 复制角色的武器
                 // TODO 待更新为工厂方法创建
-                weapon: Stone.create(role.weapon)
+                weapon: Stone.create(weapon)
             };
 
             // 切换到攻击状态
@@ -189,14 +188,16 @@ elf.define('FS::Controller::Director', [
                 timer = this.timer = Timer.create({}),
                 stage = this.stage = Stage.create({}),
                 roleGroup1 = this.roleGroup1 = [],
-                roleGroup2 = this.roleGroup2 = [];
+                roleGroup2 = this.roleGroup2 = [],
+                weapon1 = Stone.create({}),
+                weapon2 = Stone.create({});
 
             // 创建玩家一角色
             // TODO 待更新为工厂方法创建
             roleGroup1.push(Squirrel.create({
                 x: 50,
                 y: 120,
-                weapon: Stone.create({})
+                weapon: weapon1.uuid
             }));
 
             // 创建玩家二角色
@@ -204,7 +205,7 @@ elf.define('FS::Controller::Director', [
             roleGroup2.push(Squirrel.create({
                 x: 950,
                 y: 120,
-                weapon: Stone.create({})
+                weapon: weapon2.uuid
             }));
 
             // 监听计时器运行状态

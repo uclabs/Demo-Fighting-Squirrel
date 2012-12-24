@@ -11,7 +11,28 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             y: null,
             // 属性配置
             config: function (opts) {
-                _.extend(true, this, opts);
+                var isConfig = function(value) {
+                    var type = _.type(value);
+                    return type === 'string' || type === 'number' || type === 'boolean';
+                }
+                if (opts) {
+                    var filtedOpts = {};
+                    _.each(opts, function(value, key) {
+                        if (isConfig(value)) {
+                            filtedOpts[key] = value;
+                        }
+                    });
+                    _.extend(true, this, opts);
+                } else {
+                    opts = {};
+                    for (var key in this) {
+                        var value = this[key];
+                        if (isConfig(value)) {
+                            opts[key] = value;
+                        }
+                    }
+                    return opts;
+                }
             },
             // 插入元素
             append: function () {
@@ -30,12 +51,12 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                         push(arguments[i]);
                     }
                 }
-                this.sendClient(arr);
+                this.sendView(arr);
             },
             // 插入到某元素
             appendTo: function(parent) {
                 var pid = _.type(parent) === 'object' ? parent.id : parent;
-                this.sendClient(['appendTo', pid]);
+                this.sendView(['appendTo', pid]);
             },
             // 移动
             move: function (x, y) {
@@ -44,7 +65,8 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                     x = x.x;
                 }
                 if (_.type(x) === 'number' && _.type(y) === 'number') {
-                    this.sendClient(['move', x, y]);
+                    log('controller:' + this.type + ':' + this.uuid, 'move', x, y);
+                    this.sendView(['move', x, y]);
                 }
             },
             // 碰撞
