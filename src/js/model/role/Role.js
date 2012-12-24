@@ -28,20 +28,20 @@ elf.define('FS::Model::Role', [
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.bind(this.uuid, function() {
+                this.listenClient(this.uuid, function() {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
-                    that.postMessage(type, args);
+                    that.sendMessage(type, args);
                 });
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             active: function() {
-                this.fire(['active']);
+                this.sendClient(['active']);
             },
             idle: function() {
-                this.fire(['idle']);
+                this.sendClient(['idle']);
             },
             stateHandler: {
                 idle: {

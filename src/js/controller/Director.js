@@ -44,7 +44,7 @@ elf.define('FS::Controller::Director', [
 
         // 向 view 派发创建指令
         log('director', instance.type + '.create', opts.uuid, opts);
-        director.fire(instance.type, ['create', opts]);
+        director.sendClient(instance.type, ['create', opts]);
 
         return instance;
     }
@@ -78,6 +78,7 @@ elf.define('FS::Controller::Director', [
         round: 0, // 当前回合数
         attacking: {
             role: null, // 进攻角色
+            weapon: null, // 武器
             force: null // 攻击力量
         },
 
@@ -113,7 +114,7 @@ elf.define('FS::Controller::Director', [
         onWeapon: function(uuid, action) {
             var args = slice.call(arguments, 2),
                 weapon = this.elements[uuid];
-            args.unshift(weapon);
+            args.unshift(weapon);console.log(uuid, action);
             switch(action) {
                 case 'finish':
                     this.attackFinish.apply(this, args);
@@ -174,6 +175,7 @@ elf.define('FS::Controller::Director', [
         },
         // 攻击结束
         attackFinish: function(weapon) {
+            log('director', 'attackFinish', weapon);
             // 切换到攻击准备状态
             this.changeState('ready');
         },
@@ -234,7 +236,8 @@ elf.define('FS::Controller::Director', [
         // 判定超时
         assertTimeout: function() {
             // 计时器停止，如非正在攻击，则进入下回合
-            if (this.state !== 'attack') {console.log('timeout');
+            if (this.state !== 'attack') {
+                log('director', 'timeout');
                 this.changeState('ready');
             }
         },
@@ -274,12 +277,6 @@ elf.define('FS::Controller::Director', [
                     var weapon = this.attacking.weapon;
                     // 角色攻击
                     weapon.fire();
-
-                    async.series([
-                        function(callback){
-                            callback(null);
-                        },
-                    ]);
                 },
                 exit: function() {
                     // 判断胜负

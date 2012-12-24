@@ -6,7 +6,7 @@
 elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
     'use strict';
     var mixin = {
-            id: null,
+            uuid: null,
             x: null,
             y: null,
             // 属性配置
@@ -30,12 +30,12 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                         push(arguments[i]);
                     }
                 }
-                this.fire(arr);
+                this.sendClient(arr);
             },
             // 插入到某元素
             appendTo: function(parent) {
                 var pid = _.type(parent) === 'object' ? parent.id : parent;
-                this.fire(['appendTo', pid]);
+                this.sendClient(['appendTo', pid]);
             },
             // 移动
             move: function (x, y) {
@@ -44,13 +44,13 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                     x = x.x;
                 }
                 if (_.type(x) === 'number' && _.type(y) === 'number') {
-                    this.fire(['move', x, y]);
+                    this.sendClient(['move', x, y]);
                 }
             },
             // 碰撞
             collision: function(arg) {
                 // 广播物体被碰撞
-                this.postMessage('Element', [this.uuid, 'collision', arg]);
+                this.sendMessage('Element', [this.uuid, 'collision', arg]);
             }
         };
 

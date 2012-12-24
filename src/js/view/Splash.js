@@ -14,7 +14,7 @@ elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, ev
     _.extend(splash, eventMixin);
     
     // 绑定来自 manager 的指令
-    splash.bind('splash', function(method, args) {
+    splash.listenServer('splash', function(method, args) {
         splash[method].apply(splash, args);
     });
 

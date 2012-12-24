@@ -37,15 +37,15 @@ elf.define('FS::Model::Timer', [
                 this.timer = setInterval(function() {
                     that.tick();
                 }, 1000);
-                this.fire(['start', this._countdown]);
+                this.sendClient(['start', this._countdown]);
             },
             stop: function() {
                 clearInterval(this.timer);
-                this.fire(['stop']);
+                this.sendClient(['stop']);
             },
             tick: function() {
                 this._countdown--;
-                this.fire(['tick', this._countdown]);
+                this.sendClient(['tick', this._countdown]);
                 if (this._countdown <= 0) {
                     this.changeState('stop');
                 }

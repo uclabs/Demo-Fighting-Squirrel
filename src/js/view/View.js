@@ -51,7 +51,7 @@ elf.define('FS::View::View', [
             elements[opts.uuid] = instance;
             return instance;
         };
-        view.bind(Class.type, function(action, opts) {
+        view.listenServer(Class.type, function(action, opts) {
             if (action === 'create') {
                 Class.create(opts);
             }

@@ -26,10 +26,10 @@ elf.define('FS::Model::Weapon', [
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.bind(this.uuid, function() {
+                this.listenClient(this.uuid, function() {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
-                    that.postMessage(that.type, args);
+                    that.sendMessage(type, args);
                 });
             },
             mix: function () {
@@ -37,6 +37,7 @@ elf.define('FS::Model::Weapon', [
             },
             // 发射武器
             fire: function(force) {
+                log('Weapon:' + this.uuid, 'fire');
                 var that = this;
                 // 发射武器
                 // TODO box2d发射武器
@@ -46,8 +47,13 @@ elf.define('FS::Model::Weapon', [
                 // 绑定结束事件
                 // TODO 替换成监听box2d中的运动结束事件
                 setTimeout(function() {
-                    that.postMessage('Weapon', [that.uuid, 'finish']);
+                    that.finish();
                 }, Math.random() * 2000 + 1500);
+            },
+            // 发射完毕
+            finish: function() {
+                log('Weapon:' + this.uuid, 'finish');
+                this.sendMessage(type, [this.uuid, 'finish']);
             },
             // 获取当前位置
             position: function() {
