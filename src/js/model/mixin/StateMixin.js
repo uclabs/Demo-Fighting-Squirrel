@@ -17,10 +17,10 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
                     if (lastStateHandler && lastState.exit) {
                         lastStateHandler.exit.call(this);
                     }
+                    this.state = newState;
                     if (stateHandler && stateHandler.init) {
                         stateHandler.init.apply(this, args);
                     }
-                    this.state = newState;
                 }
                 
                 if (stateHandler.main) {

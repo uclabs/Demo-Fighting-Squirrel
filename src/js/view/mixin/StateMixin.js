@@ -1,7 +1,9 @@
 /**
  * StateMixin
+ *
+ * @import ../../../lib/elf/core/event.js
  */
-elf.define('FS::View::StateMixin', [], function () {
+elf.define('FS::View::StateMixin', ['event'], function (Event) {
     'use strict';
     var mixin = {
             state: null,
@@ -14,10 +16,10 @@ elf.define('FS::View::StateMixin', [], function () {
                     if (lastStateHandler && lastState.exit) {
                         lastStateHandler.exit.call(this);
                     }
+                    this.state = newState;
                     if (stateHandler && stateHandler.init) {
                         stateHandler.init.apply(this, args);
                     }
-                    this.state = newState;
                 }
                 
                 if (stateHandler.main) {
@@ -25,6 +27,10 @@ elf.define('FS::View::StateMixin', [], function () {
                 } else if (stateHandler) {
                     stateHandler.apply(this, args);
                 }
+                this.stateEvent.fire(this.state);
+            },
+            stateChange: function(state, callback) {
+                this.stateEvent.bind(state, callback);
             }
         };
 

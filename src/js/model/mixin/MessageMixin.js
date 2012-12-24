@@ -10,8 +10,12 @@ elf.define('FS::Model::MessageMixin', ['FS::Controller::Messager'], function (me
             listenMessage: function (event, handler) {
                 return messager.bind(event, handler);
             },
+            // 取消监听消息
+            unlistenMessage: function (event, handler) {
+                return messager.unbind(event, handler);
+            },
             // 派发消息
-            postMessage: function (event, args) {
+            sendMessage: function (event, args) {
                 return messager.fire(event, args);
             }
         };

@@ -23,21 +23,21 @@ elf.define('FS::Controller::Manager', [
                 manager[name] = {};
             }
             manager[name][method] = function () {
-                manager.fire(name, [method]);
+                manager.sendClient(name, [method]);
             };
         });
     });
 
-    manager.bind('config', function(opts) {
+    manager.listenClient('config', function(opts) {
         log('manager', 'config', opts);
-        manager.postMessage('director', ['config', opts]);
+        manager.sendMessage('director', ['config', opts]);
     });
 
-    manager.bind('game', function(action) {
+    manager.listenClient('game', function(action) {
         switch(action) {
             case 'start':
-                log('manager', 'postMessage', 'director.start');
-                manager.postMessage('director', ['start']);
+                log('manager', 'sendMessage', 'director.start');
+                manager.sendMessage('director', ['start']);
                 break;
 
             case 'exit':
@@ -45,25 +45,25 @@ elf.define('FS::Controller::Manager', [
                 break;
 
             case 'stop':
-                log('manager', 'postMessage', 'director.stop');
-                manager.postMessage('director', ['stop']);
+                log('manager', 'sendMessage', 'director.stop');
+                manager.sendMessage('director', ['stop']);
                 manager.mainMenu.show();
                 break;
 
             case 'restart':
-                log('manager', 'postMessage', 'director.restart');
-                manager.postMessage('director', ['restart']);
+                log('manager', 'sendMessage', 'director.restart');
+                manager.sendMessage('director', ['restart']);
                 break;
         }
     });
 
-    manager.bind('director', function(state) {
+    manager.listenClient('director', function(state) {
         switch(state) {
             case 'ready':
-                log('manager', 'postMessage', 'director.show');
+                log('manager', 'sendMessage', 'director.show');
                 manager.mainMenu.hide();
                 manager.gameMenu.show();
-                manager.postMessage('director', ['show']);
+                manager.sendMessage('director', ['show']);
                 break;
         }
     });

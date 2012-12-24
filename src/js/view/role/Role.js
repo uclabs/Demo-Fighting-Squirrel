@@ -22,7 +22,7 @@ elf.define('FS::View::Role', [
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
-                this.bind(opts.uuid, this.invoke.bind(this));
+                this.listenServer(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
@@ -36,15 +36,15 @@ elf.define('FS::View::Role', [
                 // TODO 完成后移除
                 var that = this;
                 setTimeout(function() {
-                    var fire = Math.random() < 0.85;
-                    if (fire) {
+                    var sendServer = Math.random() < 0.9;
+                    if (sendServer) {
                         that.attack({force: 123});
                     }
                 }, Math.random() * 10000);
             },
             attack: function(force) {
                 log(this.type + ':' + this.uuid, 'attack', force);
-                this.fire(['attack', force]);
+                this.sendServer(['attack', force]);
             }
         });
 

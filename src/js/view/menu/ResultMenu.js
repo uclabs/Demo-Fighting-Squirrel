@@ -12,7 +12,7 @@ elf.define('FS::View::ResultMenu', ['lang', 'FS::View::EventMixin'], function (_
     _.extend(menu, eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.bind('resultMenu', function(method, args) {
+    menu.listenServer('resultMenu', function(method, args) {
         menu[method].apply(menu, args);
     });
 
