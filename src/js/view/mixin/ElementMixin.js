@@ -28,6 +28,10 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
             // 移动元素
             move: function (x, y) {
                 log('view:' + this.type + ':' + this.uuid, 'move', x, y);
+            },
+            // 销毁
+            destroy: function() {
+                log('view:' + this.type + ':' + this.uuid, 'destroy');
             }
         };
 

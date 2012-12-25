@@ -2,7 +2,7 @@
  * Stone
  *
  * @import ../../../lib/elf/core/lang.js
- * @import Weapon.js
+ * @import ./Weapon.js
  */
 elf.define('FS::Model::Stone', [
     'lang',

@@ -1,7 +1,7 @@
 /**
  * Log
  *
- * @import Config.js
+ * @import ./Config.js
  */
 elf.define('FS::Log', ['FS::Config'], function (config) {
     'use strict';

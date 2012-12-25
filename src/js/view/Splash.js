@@ -2,7 +2,7 @@
  * Splash
  *
  * @import ../../lib/elf/core/lang.js
- * @import mixin/EventMixin.js
+ * @import ./mixin/EventMixin.js
  */
 elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
     'use strict';

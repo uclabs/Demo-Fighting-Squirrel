@@ -209,7 +209,7 @@ elf.define('FS::Controller::Director', [
             }));
 
             // 监听计时器运行状态
-            timer.stateChange('stop', function() {
+            timer.onStateChange('stop', function() {
                 that.assertTimeout();
             });
 
@@ -256,11 +256,11 @@ elf.define('FS::Controller::Director', [
                         idleGroup = this.side === 1 ? this.roleGroup2 : this.roleGroup1;
                     this.activeRoleGroup(activeGroup);
                     this.idleRoleGroup(idleGroup);
-
+                    
                     // 场景切换到就绪状态
                     this.scene.changeState('ready');
                     // 计时器开始
-                    this.timer.changeState('timing');
+                    this.timer.changeState('timing');console.log('ready', this.timer.state);
                 },
                 exit: function() {
 
@@ -274,12 +274,19 @@ elf.define('FS::Controller::Director', [
                     this.timer.changeState('stop');
                 },
                 main: function() {
-                    // 发动武器
-                    var weapon = this.attacking.weapon;
-                    // 角色攻击
+                    var that = this,
+                        weapon = this.attacking.weapon;
+                    // 监听武器状态改变，如果武器停止了就切换到下回合
+                    weapon.onStateChange('idle', function() {
+                        that.changeState('ready');
+                    });
+                    // 发射武器
                     weapon.fire();
                 },
                 exit: function() {
+                    // 移除武器
+                    var weapon = this.attacking.weapon;
+                    weapon.destroy();
                     // 判断胜负
                     this.assertWin();
                 }

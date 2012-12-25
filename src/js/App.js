@@ -1,11 +1,11 @@
 /**
  * Main Application
  *
- * @import Config.js
- * @import Log.js
- * @import controller/Director.js
- * @import controller/Manager.js
- * @import view/View.js
+ * @import ./Config.js
+ * @import ./Log.js
+ * @import ./controller/Director.js
+ * @import ./controller/Manager.js
+ * @import ./view/View.js
  */
 elf.define('FS::App', [
     'FS::Config',

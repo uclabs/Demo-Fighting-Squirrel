@@ -42,10 +42,10 @@ elf.define('FS::Model::Weapon', [
                 log('controller:Weapon:' + this.uuid, 'fire');
                 var that = this;
                 // 发射武器
-                // TODO box2d发射武器
+                // TODO-box2d 发射武器
 
                 // 绑定结束事件
-                // TODO 替换成监听box2d中的运动结束事件
+                // TODO-box2d 替换成监听box2d中的运动结束事件
                 setTimeout(function() {
                     that.changeState('idle');
                 }, Math.random() * 2000);
@@ -55,7 +55,7 @@ elf.define('FS::Model::Weapon', [
             },
             // 获取当前位置
             position: function() {
-                // TODO 替换成从box2d中取出位置
+                // TODO-box2d 替换成从box2d中取出位置
                 return {
                     x: Math.random() * 1024,
                     y: Math.random() * 600
