@@ -3,10 +3,16 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
+<<<<<<< HEAD
  * @import Resources.js
  * @import mixin/EventMixin.js
  * @import mixin/ElementMixin.js
  * @import mixin/StateMixin.js
+=======
+ * @import ./mixin/EventMixin.js
+ * @import ./mixin/ElementMixin.js
+ * @import ./mixin/StateMixin.js
+>>>>>>> 0704524385cf14cc613b94cae444278347a0a0a8
  */
 elf.define('FS::View::Stage', [
     'lang',

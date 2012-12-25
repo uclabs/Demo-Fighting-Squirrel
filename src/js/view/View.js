@@ -3,20 +3,20 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
- * @import Resources.js
- * @import mixin/EventMixin.js
- * @import Splash.js
- * @import menu/ExitMenu.js
- * @import menu/GameMenu.js
- * @import menu/MainMenu.js
- * @import menu/ResultMenu.js
- * @import Scene.js
- * @import Timer.js
- * @import Stage.js
- * @import role/Role.js
- * @import role/Squirrel.js
- * @import weapon/Weapon.js
- * @import weapon/Stone.js
+ * @import ./Resources.js
+ * @import ./mixin/EventMixin.js
+ * @import ./Splash.js
+ * @import ./menu/ExitMenu.js
+ * @import ./menu/GameMenu.js
+ * @import ./menu/MainMenu.js
+ * @import ./menu/ResultMenu.js
+ * @import ./Scene.js
+ * @import ./Timer.js
+ * @import ./Stage.js
+ * @import ./role/Role.js
+ * @import ./role/Squirrel.js
+ * @import ./weapon/Weapon.js
+ * @import ./weapon/Stone.js
  */
 elf.define('FS::View::View', [
     'lang',

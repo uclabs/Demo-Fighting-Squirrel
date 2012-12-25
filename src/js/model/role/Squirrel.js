@@ -2,7 +2,7 @@
  * Squirrel
  *
  * @import ../../../lib/elf/core/lang.js
- * @import Role.js
+ * @import ./Role.js
  */
 elf.define('FS::Model::Squirrel', [
     'lang',
