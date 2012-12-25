@@ -256,11 +256,11 @@ elf.define('FS::Controller::Director', [
                         idleGroup = this.side === 1 ? this.roleGroup2 : this.roleGroup1;
                     this.activeRoleGroup(activeGroup);
                     this.idleRoleGroup(idleGroup);
-                    
+
                     // 场景切换到就绪状态
                     this.scene.changeState('ready');
                     // 计时器开始
-                    this.timer.changeState('timing');console.log('ready', this.timer.state);
+                    this.timer.changeState('timing');
                 },
                 exit: function() {
 

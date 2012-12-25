@@ -21,7 +21,7 @@ elf.define('FS::View::Timer', [
             countdown: 30,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
-                this.config(opts);console.log('view-timer', opts);
+                this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: function () {
