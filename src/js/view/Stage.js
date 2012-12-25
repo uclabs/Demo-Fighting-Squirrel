@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
+ * @import Resources.js
  * @import mixin/EventMixin.js
  * @import mixin/ElementMixin.js
  * @import mixin/StateMixin.js
@@ -10,14 +11,21 @@
 elf.define('FS::View::Stage', [
     'lang',
     'class',
+    'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, resources, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         Stage = Class.extend({
             type: 'Stage',
+            stage: function () {
+                var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
+                sprite.setAnchorPoint(cc.p(0,0));
+                sprite.setPosition(0,  0);
+                return sprite;
+            },
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -26,11 +34,22 @@ elf.define('FS::View::Stage', [
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
-            stateHandler: {
+            stateHandler: function () {
+                alert(2);
             }
         });
 
     Stage.type = 'Stage';
+
+
+    var stageItems = [
+        {
+            name: 'main',
+            img: resources.s_main,
+            width: 480,
+            height: 320
+        }
+    ];
 
     return Stage;
 });

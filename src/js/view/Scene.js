@@ -15,19 +15,35 @@ elf.define('FS::View::Scene', [
     'FS::View::StateMixin'
 ], function (_, Class, eventMixin, elementMixin, stateMixin) {
     'use strict';
+    var Layer = cc.LayerGradient.extend({
+        ctor:function() {
+            this._super();
+            cc.associateWithNative( this, cc.LayerGradient );
+        },
+        append: function (child, zOrder, tag) {
+            this.addChild(child, zOrder || 1, tag || 1);
+        }
+    });
+    Layer.append = function (child, zOrder, tag) {
+        this.prototype.append(child, zOrder, tag);
+    }
+
     var concat = Array.prototype.concat,
         Scene = Class.extend({
             type: 'Scene',
+            scene: Layer,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
-            cocos2d: cc.Scene.extend({}),
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
-            stateHandler: {
+            stateHandler: function () {
+            },
+            add: function (child, zOrder, tag) {
+                this.scene.append(child, zOrder, tag);
             }
         });
 

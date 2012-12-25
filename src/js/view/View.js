@@ -86,14 +86,17 @@ elf.define('FS::View::View', [
             var director = cc.Director.getInstance();
 
             // run
-            director.runWithScene(new this.startScene());
+            director.runWithScene(new this.startScene ());
 
             return true;
         }
     });
 
-
     view.init = function() {
+        var Layer1 = new Scene({uuid:'u1'});
+        var myApp = new cocos2dApp(Layer1.scene);
+        var stage1 = new Stage({uuid:'u3', type: 'stage', name: 'main'});
+        Layer1.add(stage1.stage(), 1, 1);
         log('view', 'init');
     };
 
