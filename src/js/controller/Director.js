@@ -213,8 +213,10 @@ elf.define('FS::Controller::Director', [
                 that.assertTimeout();
             });
 
-            // 把元素放置到舞台上
-            scene.append(stage, roleGroup1, roleGroup2);
+            // 把元素放置到场景上
+            scene.addChild(stage, 1);
+            scene.addChild(roleGroup1, 2);
+            scene.addChild(roleGroup2, 3);
 
             // 游戏状态修改为准备
             this.changeState('ready');

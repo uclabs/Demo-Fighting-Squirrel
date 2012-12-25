@@ -24,18 +24,21 @@ elf.define('FS::View::Stage', [
 ], function (_, Class, resources, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
+        Sprite = function () {
+            var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
+            sprite.setAnchorPoint(cc.p(0,0));
+            sprite.setPosition(0,  0);
+            return sprite;
+        },
         Stage = Class.extend({
             type: 'Stage',
-            stage: function () {
-                var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
-                sprite.setAnchorPoint(cc.p(0,0));
-                sprite.setPosition(0,  0);
-                return sprite;
-            },
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
+                
+                // 创建 Cocos2d 对象
+                this.sprite = Sprite;
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));

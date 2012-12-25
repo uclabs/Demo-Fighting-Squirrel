@@ -35,28 +35,8 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                 }
             },
             // 插入元素
-            append: function () {
-                var arr = ['append'],
-                    push = function(child) {
-                        var uuid = _.type(child) === 'object' ? child.uuid : child;
-                        arr.push(uuid);
-                    };
-                for (var i = 0, len = arguments.length; i < len; i++) {
-                    if (Array.isArray(arguments[i])) {
-                        var children = arguments[i];
-                        for (var j = 0, count = children.length; j < count; j++) {
-                            push(children[j]);
-                        }
-                    } else {
-                        push(arguments[i]);
-                    }
-                }
-                this.sendView(arr);
-            },
-            // 插入到某元素
-            appendTo: function(parent) {
-                var pid = _.type(parent) === 'object' ? parent.id : parent;
-                this.sendView(['appendTo', pid]);
+            addChild: function (child, index) {
+                this.sendView(['addChild', child, index]);
             },
             // 移动
             move: function (x, y) {
