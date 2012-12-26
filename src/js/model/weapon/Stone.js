@@ -23,11 +23,11 @@ elf.define('FS::Model::Stone', [
         // 模型相关
         type = 'Stone',
         Stone = Weapon.extend({
+            type: type,
             density: 5, // 密度
             friction: 0.5, // 摩擦力
             restitution: 0, // 弹性
             width: 10,
-            type: type,
             createBody: function() {
                 // 物体定义
                 var bodyDef = new b2BodyDef;
@@ -43,20 +43,18 @@ elf.define('FS::Model::Stone', [
 
                 // 由世界创建物体
                 this.body = this.world.CreateBody(bodyDef);
-                this.body.uuid = this.uuid;
+                this.body.SetUserData({uuid: this.uuid});
                 // 创建物体相应的材质
                 this.fixture = this.body.CreateFixture(fixDef);
-                this.fixture.uuid = this.uuid;
                 return this.body;
             },
-            fire: function() {
-                var body = this.body,
-                    x = this.x;
+            fire: function(vector) {
+                var body = this.body;
                 body.ApplyForce(
-                    new b2Vec2(50, 50),
+                    vector,
                     body.GetWorldCenter()
                 );
-                this._super();
+                this._super(vector);
             }
         });
 

@@ -53,15 +53,11 @@ elf.define('FS::Model::Weapon', [
                 this.body = null;
             },
             // 发射武器
-            fire: function() {
-                log('controller:Weapon:' + this.uuid, 'fire');
+            fire: function(vector) {
+                log('controller:Weapon:' + this.uuid, 'fire', vector);
 
                 // 切换到攻击状态
                 this.changeState('attack');
-            },
-            // 获取当前位置
-            position: function() {
-                return this.body ? this.body.position : {x: 0, y: 0};
             },
             stateHandler: {
                 // 攻击中

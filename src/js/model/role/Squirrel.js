@@ -24,14 +24,12 @@ elf.define('FS::Model::Squirrel', [
         type = 'Squirrel',
         Squirrel = Role.extend({
             type: type,
-            width: 30,
-            height: 60,
+            width: 40,
+            height: 80,
             createBody: function() {
                 // 物体定义
                 var bodyDef = new b2BodyDef;
                 bodyDef.type = b2Body.b2_dynamicBody;
-                bodyDef.position.x = this.x;
-                bodyDef.position.y = this.y;
 
                 // 材质定义
                 var fixDef = new b2FixtureDef;
@@ -39,14 +37,14 @@ elf.define('FS::Model::Squirrel', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.width, this.height);
+                fixDef.shape.SetAsBox(this.width / 2, this.height / 2);
 
                 // 由世界创建物体
+                bodyDef.position = new b2Vec2(this.x, 560);
                 this.body = this.world.CreateBody(bodyDef);
-                this.body.uuid = this.uuid;
+                this.body.SetUserData({uuid: this.uuid});
                 // 创建物体相应的材质
                 this.fixture = this.body.CreateFixture(fixDef);
-                this.fixture.uuid = this.uuid;
                 return this.body;
             }
         });

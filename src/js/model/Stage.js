@@ -30,6 +30,8 @@ elf.define('FS::Model::Stage', [
         type = 'Stage',
         Stage = Class.extend({
             type: type,
+            width: 400,
+            height: 10,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -39,11 +41,10 @@ elf.define('FS::Model::Stage', [
                 _.extend.apply(_, concat.apply([true, this], arguments));
             },
             createBody: function() {
+                var userData = {uuid: this.uuid};
                 // 物体定义
                 var bodyDef = new b2BodyDef;
                 bodyDef.type = b2Body.b2_staticBody;
-                bodyDef.position.x = this.x;
-                bodyDef.position.y = this.y;
 
                 // 材质定义
                 var fixDef = new b2FixtureDef;
@@ -51,15 +52,23 @@ elf.define('FS::Model::Stage', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.width, this.height);
+                fixDef.shape.SetAsBox(this.width / 2, this.height / 2);
 
                 // 由世界创建物体
-                this.body = this.world.CreateBody(bodyDef);
-                this.body.uuid = this.uuid;
-                // 创建物体相应的材质
-                this.fixture = this.body.CreateFixture(fixDef);
-                this.fixture.uuid = this.uuid;
-                return this.body;
+                // 左树杈
+                bodyDef.position = new b2Vec2(200, 600);
+                var branch1 = this.world.CreateBody(bodyDef);
+                branch1.CreateFixture(fixDef);
+                branch1.SetUserData(userData);
+
+                // 右树杈
+                bodyDef.position = new b2Vec2(824, 600);
+                var branch2 = this.world.CreateBody(bodyDef);
+                branch2.CreateFixture(fixDef);
+                branch2.SetUserData(userData);
+
+                this.branches = [branch1, branch2];
+                return this.branches;
             }
         });
 

@@ -38,13 +38,13 @@ elf.define('FS::View::Role', [
                 setTimeout(function() {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
-                        that.attack({force: 123});
+                        that.attack({x: that.x, y: that.y - 20});
                     }
                 }, Math.random() * 10000);
             },
-            attack: function(force) {
-                log('view:' + this.type + ':' + this.uuid, 'attack', force);
-                this.sendController(['attack', force]);
+            attack: function(vector) {
+                log('view:' + this.type + ':' + this.uuid, 'attack', vector);
+                this.sendController(['attack', vector]);
             }
         });
 

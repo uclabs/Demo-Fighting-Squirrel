@@ -36,6 +36,13 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                 var uuid = _.type(child) === 'object' ? child.uuid : child;
                 this.sendView(['addChild', uuid, index]);
             },
+            // 获取当前位置
+            position: function() {
+                if (!this.body) {
+                    return {x: 0, y: 0};
+                }
+                return this.body.GetPosition();
+            },
             // 移动
             move: function (x, y) {
                 if (_.type(x) === 'object') {

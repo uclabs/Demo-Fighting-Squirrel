@@ -197,14 +197,14 @@ elf.define('FS::Controller::Director', [
             log('director', 'nextRound', this.round);
         },
         // 攻击
-        attack: function(role, force) {
+        attack: function(role, vector) {
             // TODO 判断攻击合法性
 
             // 更新攻击数据
             var weapon = this.get(role.weapon);
             this.attacking = {
                 role: role,
-                force: force,
+                vector: vector,
                 // 复制角色的武器
                 // TODO 待更新为工厂方法创建
                 weapon: this.create(Stone.type, weapon)
@@ -232,14 +232,14 @@ elf.define('FS::Controller::Director', [
                 roleGroup2 = this.roleGroup2 = [],
                 weapon1 = this.create(Stone.type, {}),
                 role1 = this.create(Squirrel.type, {
-                    x: 50,
-                    y: 120,
+                    x: 100,
+                    y: 560,
                     weapon: weapon1.uuid
                 }),
                 weapon2 = this.create(Stone.type, {}),
                 role2 = this.create(Squirrel.type, {
-                    x: 950,
-                    y: 120,
+                    x: 924,
+                    y: 560,
                     weapon: weapon2.uuid
                 });
 
@@ -321,13 +321,14 @@ elf.define('FS::Controller::Director', [
                     this.timer.changeState('stop');
                     // 准备发射武器
                     var that = this,
+                        vector = this.attacking.vector,
                         weapon = this.attacking.weapon;
                     // 监听武器状态改变，如果武器停止了就切换到下回合
                     weapon.onStateChange('idle', function() {
                         that.changeState('ready');
                     });
                     // 发射武器
-                    weapon.fire();
+                    weapon.fire(vector);
                 },
                 main: function() {
                     var that = this;
@@ -366,6 +367,7 @@ elf.define('FS::Controller::Director', [
         // 物理世界
         // Box2d 相关
         initWorld: function() {
+            var that = this;
             this.world = new b2World(
                 new b2Vec2(0, config.world.gravity), // 重力
                 true //allow sleep
@@ -377,6 +379,12 @@ elf.define('FS::Controller::Director', [
             // Called when two fixtures begin to touch.
             listener.BeginContact = function(contact) {
                 console.log('===========BeginContact');
+                var data1 = contact.GetFixtureA().GetBody().GetUserData(),
+                    data2 = contact.GetFixtureB().GetBody().GetUserData(),
+                    el1 = that.get(data1.uuid),
+                    el2 = that.get(data2.uuid);
+                console.log(data1, data2, data1.uuid, data2.uuid);
+                that.updateWorld();
             };
             // 监听碰撞结束
             // Called when two fixtures cease to touch.
