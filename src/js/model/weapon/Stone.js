@@ -13,6 +13,7 @@ elf.define('FS::Model::Stone', [
     'use strict';
     var slice = Array.prototype.slice,
         // Box2d 相关定义
+        b2Vec2 = Box2D.Common.Math.b2Vec2,
         b2BodyDef = Box2D.Dynamics.b2BodyDef,
         b2Body = Box2D.Dynamics.b2Body,
         b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
@@ -22,6 +23,10 @@ elf.define('FS::Model::Stone', [
         // 模型相关
         type = 'Stone',
         Stone = Weapon.extend({
+            density: 5, // 密度
+            friction: 0.5, // 摩擦力
+            restitution: 0, // 弹性
+            width: 10,
             type: type,
             createBody: function() {
                 // 物体定义
@@ -35,7 +40,6 @@ elf.define('FS::Model::Stone', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2CircleShape(this.width / 2);
-                fixDef.shape.SetAsBox(this.width, this.height);
 
                 // 由世界创建物体
                 this.body = this.world.CreateBody(bodyDef);
@@ -49,9 +53,10 @@ elf.define('FS::Model::Stone', [
                 var body = this.body,
                     x = this.x;
                 body.ApplyForce(
-                    new b2Vec2(x*(0.7+Math.random()), -x*(0.7+Math.random())),
-                    body.GetPosition()
+                    new b2Vec2(50, 50),
+                    body.GetWorldCenter()
                 );
+                this._super();
             }
         });
 

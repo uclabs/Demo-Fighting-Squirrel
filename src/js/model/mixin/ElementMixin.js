@@ -33,7 +33,8 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             },
             // 插入元素
             addChild: function (child, index) {
-                this.sendView(['addChild', child, index]);
+                var uuid = _.type(child) === 'object' ? child.uuid : child;
+                this.sendView(['addChild', uuid, index]);
             },
             // 移动
             move: function (x, y) {

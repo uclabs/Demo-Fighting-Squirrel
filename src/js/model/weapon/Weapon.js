@@ -24,6 +24,7 @@ elf.define('FS::Model::Weapon', [
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
         // Box2d 相关定义
+        b2Vec2 = Box2D.Common.Math.b2Vec2,
         b2BodyDef = Box2D.Dynamics.b2BodyDef,
         b2Body = Box2D.Dynamics.b2Body,
         b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
@@ -34,9 +35,6 @@ elf.define('FS::Model::Weapon', [
         type = 'Weapon',
         Weapon = Class.extend({
             type: type,
-            density: 5, // 密度
-            friction: 0.5, // 摩擦力
-            restitution: 0, // 弹性
             ctor: function (opts) {
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
@@ -55,17 +53,8 @@ elf.define('FS::Model::Weapon', [
                 this.body = null;
             },
             // 发射武器
-            fire: function(force) {
+            fire: function() {
                 log('controller:Weapon:' + this.uuid, 'fire');
-                var that = this;
-                // 发射武器
-                // TODO-box2d 发射武器
-
-                // 绑定结束事件
-                // TODO-box2d 替换成监听box2d中的运动结束事件
-                setTimeout(function() {
-                    that.changeState('idle');
-                }, Math.random() * 2000);
 
                 // 切换到攻击状态
                 this.changeState('attack');

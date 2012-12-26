@@ -231,27 +231,25 @@ elf.define('FS::Controller::Director', [
                 roleGroup1 = this.roleGroup1 = [],
                 roleGroup2 = this.roleGroup2 = [],
                 weapon1 = this.create(Stone.type, {}),
-                weapon2 = this.create(Stone.type, {});
+                role1 = this.create(Squirrel.type, {
+                    x: 50,
+                    y: 120,
+                    weapon: weapon1.uuid
+                }),
+                weapon2 = this.create(Stone.type, {}),
+                role2 = this.create(Squirrel.type, {
+                    x: 950,
+                    y: 120,
+                    weapon: weapon2.uuid
+                });
 
             // 创建玩家一角色
             // TODO 待更新为工厂方法创建
-            roleGroup1.push(this.create(Squirrel.type, {
-                x: 50,
-                y: 120,
-                width: 30,
-                height: 60,
-                weapon: weapon1.uuid
-            }));
+            roleGroup1.push(role1);
 
             // 创建玩家二角色
             // TODO 待更新为工厂方法创建
-            roleGroup2.push(this.create(Squirrel.type, {
-                x: 950,
-                y: 120,
-                width: 30,
-                height: 60,
-                weapon: weapon2.uuid
-            }));
+            roleGroup2.push(role2);
 
             // 监听计时器运行状态
             timer.onStateChange('stop', function() {
@@ -260,8 +258,8 @@ elf.define('FS::Controller::Director', [
 
             // 把元素放置到场景上
             scene.addChild(stage, 1);
-            scene.addChild(roleGroup1, 2);
-            scene.addChild(roleGroup2, 3);
+            scene.addChild(role1, 2);
+            scene.addChild(role2, 3);
 
             // 游戏状态修改为准备
             this.changeState('ready');
@@ -406,9 +404,8 @@ elf.define('FS::Controller::Director', [
             //setup debug draw
             var debugDraw = new b2DebugDraw();
             debugDraw.SetSprite(document.getElementById("debug").getContext("2d"));
-            // debugDraw.SetDrawScale(SCALE); // 放大，应该可以用来适应屏幕
             debugDraw.SetFillAlpha(0.3); // 透明度
-            //debugDraw.SetLineThickness(1.0); // 线粗细
+            debugDraw.SetLineThickness(1.0); // 线粗细
             debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit); // 不明白干嘛的
             this.world.SetDebugDraw(debugDraw);
 

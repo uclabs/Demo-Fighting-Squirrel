@@ -13,6 +13,7 @@ elf.define('FS::Model::Squirrel', [
     'use strict';
     var slice = Array.prototype.slice,
         // Box2d 相关定义
+        b2Vec2 = Box2D.Common.Math.b2Vec2,
         b2BodyDef = Box2D.Dynamics.b2BodyDef,
         b2Body = Box2D.Dynamics.b2Body,
         b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
@@ -23,6 +24,8 @@ elf.define('FS::Model::Squirrel', [
         type = 'Squirrel',
         Squirrel = Role.extend({
             type: type,
+            width: 30,
+            height: 60,
             createBody: function() {
                 // 物体定义
                 var bodyDef = new b2BodyDef;

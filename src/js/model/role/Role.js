@@ -22,6 +22,7 @@ elf.define('FS::Model::Role', [
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
         // Box2d 相关定义
+        b2Vec2 = Box2D.Common.Math.b2Vec2,
         b2BodyDef = Box2D.Dynamics.b2BodyDef,
         b2Body = Box2D.Dynamics.b2Body,
         b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
