@@ -6,9 +6,6 @@
 elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
     'use strict';
     var mixin = {
-            uuid: null,
-            x: null,
-            y: null,
             // 属性配置
             config: function (opts) {
                 var isConfig = function(value) {

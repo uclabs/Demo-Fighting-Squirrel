@@ -9,13 +9,13 @@
     {{=tpl.genTags('js', data.jsFiles) }}
 </head>
 <body>
+
 <div style="width:480px;margin:100px auto;background:black">
     <canvas id="scene" width="480" height="320"></canvas>
 </div>
-<!--
-<canvas id="splash"></canvas>
-<canvas id="scene"></canvas>
--->
+<canvas id="splash" width="1024" height="768"></canvas>
+<canvas id="scene" width="1024" height="768"></canvas>
+<canvas id="debug" width="1024" height="768"></canvas>
 
 <script>
 elf.require(['FS::Config'], function (config) {
@@ -28,5 +28,6 @@ elf.require(['FS::Config'], function (config) {
     });
 });
 </script>
+
 </body>
 </html>

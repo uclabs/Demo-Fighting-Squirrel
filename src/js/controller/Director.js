@@ -4,6 +4,7 @@
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
  * @import ../../lib/elf/mod/async.js
+ * @import ../../lib/elf/mod/box2d.js
  * @import ../Config.js
  * @import ../model/mixin/EventMixin.js
  * @import ../model/mixin/MessageMixin.js
@@ -18,6 +19,7 @@ elf.define('FS::Controller::Director', [
     'lang',
     'class',
     'async',
+    'box2d',
     'FS::Config',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
@@ -29,11 +31,28 @@ elf.define('FS::Controller::Director', [
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, Class, async, config, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, Class, async, Box2D, config, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var slice = Array.prototype.slice,
         concat = Array.prototype.concat,
+
+        // Box2d 相关定义
+        b2Vec2 = Box2D.Common.Math.b2Vec2, // 向量(x ,y)
+        // Box2D.Dynamics.Contacts>>>碰撞管理包
+        b2BodyDef = Box2D.Dynamics.b2BodyDef, // 刚体定义.
+        b2Body = Box2D.Dynamics.b2Body, // 刚体或叫物体.
+        b2FixtureDef = Box2D.Dynamics.b2FixtureDef, // 材质定义类
+        b2Fixture = Box2D.Dynamics.b2Fixture, // 材质类
+        b2World = Box2D.Dynamics.b2World, // 物理世界
+        b2Listener = Box2D.Dynamics.b2ContactListener, // 碰撞监听
+        b2DebugDraw = Box2D.Dynamics.b2DebugDraw, //调试绘图,用于调试.
+        // Box2D.Collision.Shapes>>>碰撞形状形变包；
+        b2MassData = Box2D.Collision.Shapes.b2MassData, // 质量运算器.
+        b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape, // 凸多边形.
+        b2CircleShape = Box2D.Collision.Shapes.b2CircleShape, //圆外形
+
+        // 游戏相关定义
         uuid = 0,
         Director,
         Classes = {};
@@ -42,7 +61,7 @@ elf.define('FS::Controller::Director', [
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
-            opts.uuid = 'u' + (++uuid);console.log(opts);
+            opts.uuid = 'u' + (++uuid);
             return new Class(opts);
         };
     });
@@ -79,6 +98,10 @@ elf.define('FS::Controller::Director', [
             log('director', 'init', opts);
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
+
+            // 创建 Box2d 的物理世界
+            this.initWorld();
+
             this.listenMessage('director', dispactor.bind(this));
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
@@ -95,6 +118,8 @@ elf.define('FS::Controller::Director', [
             var Class = Classes[type],
                 instance;
             if (Class) {
+                opts = opts || {};
+                opts.world = this.world;
                 instance = Class.create(opts);
                 // 添加入元素列表中
                 this.add(opts.uuid, instance);
@@ -213,6 +238,8 @@ elf.define('FS::Controller::Director', [
             roleGroup1.push(this.create(Squirrel.type, {
                 x: 50,
                 y: 120,
+                width: 30,
+                height: 60,
                 weapon: weapon1.uuid
             }));
 
@@ -221,6 +248,8 @@ elf.define('FS::Controller::Director', [
             roleGroup2.push(this.create(Squirrel.type, {
                 x: 950,
                 y: 120,
+                width: 30,
+                height: 60,
                 weapon: weapon2.uuid
             }));
 
@@ -286,12 +315,13 @@ elf.define('FS::Controller::Director', [
             },
             attack: {
                 init: function() {
+                    // 清除攻击定时器
+                    clearTimeout(this.attackTimer);
                     // 场景切换到攻击状态
                     this.scene.changeState('attack');
                     // 计时器停止
                     this.timer.changeState('stop');
-                },
-                main: function() {
+                    // 准备发射武器
                     var that = this,
                         weapon = this.attacking.weapon;
                     // 监听武器状态改变，如果武器停止了就切换到下回合
@@ -301,7 +331,20 @@ elf.define('FS::Controller::Director', [
                     // 发射武器
                     weapon.fire();
                 },
+                main: function() {
+                    var that = this;
+                    // 更新 Box2D 世界状态
+                    this.updateWorld();
+                    // 攻击未结束前，持续更新
+                    this.attackTimer = setTimeout(function() {
+                        if (that.state === 'idle') {
+                            that.changeState('attack');
+                        }
+                    }, config.frameInterval);
+                },
                 exit: function() {
+                    // 清除攻击定时器
+                    clearTimeout(this.attackTimer);
                     // 移除武器
                     var weapon = this.attacking.weapon;
                     weapon.destroy();
@@ -320,6 +363,67 @@ elf.define('FS::Controller::Director', [
                     
                 }
             }
+        },
+
+        // 物理世界
+        // Box2d 相关
+        initWorld: function() {
+            this.world = new b2World(
+                new b2Vec2(0, config.world.gravity), // 重力
+                true //allow sleep
+            );
+
+            // 创建碰撞监听器
+            var listener = new b2Listener;
+            // 监听碰撞开始
+            // Called when two fixtures begin to touch.
+            listener.BeginContact = function(contact) {
+                console.log('===========BeginContact');
+            };
+            // 监听碰撞结束
+            // Called when two fixtures cease to touch.
+            listener.EndContact = function(contact) {
+                console.log('===========EndContact');
+                //console.log(contact.GetFixtureA().GetBody().GetUserData());
+            };
+            listener.PostSolve = function(contact, impulse) {
+                console.log(impulse.normalImpulses);//法向量?
+                /*
+                if (contact.GetFixtureA().GetBody().GetUserData() == 'ball' || contact.GetFixtureB().GetBody().GetUserData() == 'ball') {
+                    var impulse = impulse.normalImpulses[0];
+                    if (impulse < 0.2) return; //threshold ignore small impacts
+                    world.ball.impulse = impulse > 0.6 ? 0.5 : impulse;
+                    console.log(world.ball.impulse);
+                }
+                */
+            };
+            listener.PreSolve = function(contact, oldManifold) {
+                // PreSolve
+            };
+            // 设置世界碰撞监听器
+            this.world.SetContactListener(listener);
+
+            //setup debug draw
+            var debugDraw = new b2DebugDraw();
+            debugDraw.SetSprite(document.getElementById("debug").getContext("2d"));
+            // debugDraw.SetDrawScale(SCALE); // 放大，应该可以用来适应屏幕
+            debugDraw.SetFillAlpha(0.3); // 透明度
+            //debugDraw.SetLineThickness(1.0); // 线粗细
+            debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit); // 不明白干嘛的
+            this.world.SetDebugDraw(debugDraw);
+
+            return this.world;
+        },
+        // 更新和绘制世界
+        updateWorld: function() {
+            // Take a time step. This performs collision detection, integration, and constraint solution.
+            this.world.Step(
+                1 / config.frameRate, //frame-rate 帧率
+                10, //velocity iterations 速率
+                10  //position iterations
+            );
+            this.world.DrawDebugData(); //绘制调试数据
+            this.world.ClearForces(); //绘制完毕后清除外力
         }
     });
 

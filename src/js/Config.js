@@ -13,6 +13,10 @@ elf.define('FS::Config', function () {
         frameRate: frameRate,
         // 帧间隔
         frameInterval: Math.floor(1000 / frameRate),
+        // 游戏世界定义
+        world: {
+            gravity: 9.8
+        },
         // Cocos2D Config
         ccConfig: {
             COCOS2D_DEBUG: 2, // 0 to turn debug off, 1 for basic debug, and 2 for full debug

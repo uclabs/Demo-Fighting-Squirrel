@@ -3,6 +3,7 @@
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
+ * @import ../../../lib/elf/mod/box2d.js
  * @import ../../Config.js
  * @import ../mixin/EventMixin.js
  * @import ../mixin/MessageMixin.js
@@ -12,22 +13,35 @@
 elf.define('FS::Model::Weapon', [
     'lang',
     'class',
+    'box2d',
     'FS::Config',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::ElementMixin',
     'FS::Model::StateMixin'
-], function (_, Class, config, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, Box2D, config, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
+        // Box2d 相关定义
+        b2BodyDef = Box2D.Dynamics.b2BodyDef,
+        b2Body = Box2D.Dynamics.b2Body,
+        b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
+        b2Fixture = Box2D.Dynamics.b2Fixture,
+        b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
+        b2CircleShape = Box2D.Collision.Shapes.b2CircleShape,
+        // 模型相关
         type = 'Weapon',
         Weapon = Class.extend({
             type: type,
+            density: 5, // 密度
+            friction: 0.5, // 摩擦力
+            restitution: 0, // 弹性
             ctor: function (opts) {
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
+                this.createBody();
                 this.listenView(this.uuid, function() {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
@@ -36,6 +50,9 @@ elf.define('FS::Model::Weapon', [
             },
             mix: function () {
                 _.extend.apply(_, concat.apply([true, this], arguments));
+            },
+            createBody: function() {
+                this.body = null;
             },
             // 发射武器
             fire: function(force) {
@@ -55,17 +72,12 @@ elf.define('FS::Model::Weapon', [
             },
             // 获取当前位置
             position: function() {
-                // TODO-box2d 替换成从box2d中取出位置
-                return {
-                    x: Math.random() * 1024,
-                    y: Math.random() * 600
-                };
+                return this.body ? this.body.position : {x: 0, y: 0};
             },
             stateHandler: {
                 // 攻击中
                 attack: {
                     init: function () {
-                        clearTimeout(this.attackTimer);
                     },
                     main: function () {
                         var that = this,
@@ -73,22 +85,13 @@ elf.define('FS::Model::Weapon', [
 
                         // 获取当前位置并发回
                         this.move(position);
-
-                        // 攻击未结束前，持续更新
-                        this.attackTimer = setTimeout(function() {
-                            if (that.state !== 'idle') {
-                                that.changeState('attack');
-                            }
-                        }, config.frameInterval);
                     },
                     exit: function () {
-                        clearTimeout(this.attackTimer);
                     }
                 },
                 // 发射完毕
                 idle: {
                     init: function () {
-                        clearTimeout(this.attackTimer);
                     },
                     main: function () {
                         log('controller:Weapon:' + this.uuid, 'idle');
