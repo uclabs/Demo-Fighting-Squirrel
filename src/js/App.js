@@ -13,14 +13,15 @@ elf.define('FS::App', [
     'FS::Controller::Director',
     'FS::Controller::Manager',
     'FS::View::View'
-], function (config, log, director, manager, view) {
+], function (config, log, Director, manager, view) {
     'use strict';
 
-    var exports = {};
+    var exports = {},
+        director;
 
     exports.init = function () {
         log('app', '-----init-----');
-        director.init();
+        director = new Director();
         view.init();
         manager.init();
     };

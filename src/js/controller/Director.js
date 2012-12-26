@@ -2,6 +2,7 @@
  * Director
  *
  * @import ../../lib/elf/core/lang.js
+ * @import ../../lib/elf/mod/class.js
  * @import ../../lib/elf/mod/async.js
  * @import ../Config.js
  * @import ../model/mixin/EventMixin.js
@@ -15,6 +16,7 @@
  */
 elf.define('FS::Controller::Director', [
     'lang',
+    'class',
     'async',
     'FS::Config',
     'FS::Model::EventMixin',
@@ -27,27 +29,21 @@ elf.define('FS::Controller::Director', [
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, async, config, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, Class, async, config, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var slice = Array.prototype.slice,
+        concat = Array.prototype.concat,
         uuid = 0,
-        director = _.extend({}, eventMixin, messageMixin, stateMixin),
-        Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone];
+        Director,
+        Classes = {};
 
-    Classes.forEach(function (Class) {
+    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function(Class) {
+        Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
-            opts.uuid = 'u' + (++uuid);
-
-            var instance = new Class(opts);
-            director.add(opts.uuid, instance);
-
-            // 向 view 派发创建指令
-            log('director', instance.type + '.create', opts.uuid, opts);
-            director.sendView(instance.type, ['create', instance.config()]);
-
-            return instance;
+            opts.uuid = 'u' + (++uuid);console.log(opts);
+            return new Class(opts);
         };
     });
 
@@ -61,7 +57,7 @@ elf.define('FS::Controller::Director', [
         }
     }
 
-    director = _.extend(director, {
+    Director = Class.extend({
         // 配置属性
         player1: {
             race: ''
@@ -79,28 +75,48 @@ elf.define('FS::Controller::Director', [
             weapon: null, // 武器
             force: null // 攻击力量
         },
-
-        init: function (opts) {
+        ctor: function(opts) {
             log('director', 'init', opts);
+            this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
             this.listenMessage('director', dispactor.bind(this));
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
+        },
+        mix: function () {
+            _.extend.apply(_, concat.apply([true, this], arguments));
         },
         config: function(opts) {
             log('director', 'config', opts);
             _.extend(true, this, opts);
         },
 
+        create: function(type, opts) {
+            var Class = Classes[type],
+                instance;
+            if (Class) {
+                instance = Class.create(opts);
+                // 添加入元素列表中
+                this.add(opts.uuid, instance);
+                // 向 view 派发创建指令
+                log('director', instance.type + '.create', opts.uuid, opts);
+                this.sendView(instance.type, ['create', instance.config()]);
+                return instance;
+            }
+        },
         // 把元素加入列表中
         add: function(uuid, element) {
             this.elements[uuid] = element;
+        },
+        // 获取元素
+        get: function(uuid) {
+            return this.elements[uuid];
         },
 
         // 角色响应方法
         onRole: function(uuid, action) {
             var args = slice.call(arguments, 2),
-                role = this.elements[uuid];
+                role = this.get(uuid);
             args.unshift(role);
             switch(action) {
                 case 'attack':
@@ -111,7 +127,7 @@ elf.define('FS::Controller::Director', [
         // 武器响应方法
         onWeapon: function(uuid, action) {
             var args = slice.call(arguments, 2),
-                weapon = this.elements[uuid];
+                weapon = this.get(uuid);
             args.unshift(weapon);
             switch(action) {
                 case 'finish':
@@ -160,13 +176,13 @@ elf.define('FS::Controller::Director', [
             // TODO 判断攻击合法性
 
             // 更新攻击数据
-            var weapon = this.elements[role.weapon];
+            var weapon = this.get(role.weapon);
             this.attacking = {
                 role: role,
                 force: force,
                 // 复制角色的武器
                 // TODO 待更新为工厂方法创建
-                weapon: Stone.create(weapon)
+                weapon: this.create(Stone.type, weapon)
             };
 
             // 切换到攻击状态
@@ -184,17 +200,17 @@ elf.define('FS::Controller::Director', [
             log('director', 'start', opts);
             // 初始化各元素
             var that = this,
-                scene = this.scene = Scene.create({}),
-                timer = this.timer = Timer.create({}),
-                stage = this.stage = Stage.create({}),
+                scene = this.scene = this.create(Scene.type, {}),
+                timer = this.timer = this.create(Timer.type, {}),
+                stage = this.stage = this.create(Stage.type, {}),
                 roleGroup1 = this.roleGroup1 = [],
                 roleGroup2 = this.roleGroup2 = [],
-                weapon1 = Stone.create({}),
-                weapon2 = Stone.create({});
+                weapon1 = this.create(Stone.type, {}),
+                weapon2 = this.create(Stone.type, {});
 
             // 创建玩家一角色
             // TODO 待更新为工厂方法创建
-            roleGroup1.push(Squirrel.create({
+            roleGroup1.push(this.create(Squirrel.type, {
                 x: 50,
                 y: 120,
                 weapon: weapon1.uuid
@@ -202,7 +218,7 @@ elf.define('FS::Controller::Director', [
 
             // 创建玩家二角色
             // TODO 待更新为工厂方法创建
-            roleGroup2.push(Squirrel.create({
+            roleGroup2.push(this.create(Squirrel.type, {
                 x: 950,
                 y: 120,
                 weapon: weapon2.uuid
@@ -307,5 +323,5 @@ elf.define('FS::Controller::Director', [
         }
     });
 
-    return director;
+    return Director;
 });

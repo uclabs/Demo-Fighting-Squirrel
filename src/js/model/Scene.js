@@ -3,9 +3,9 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
- * @import mixin/EventMixin.js
- * @import mixin/ElementMixin.js
- * @import mixin/StateMixin.js
+ * @import ./mixin/EventMixin.js
+ * @import ./mixin/ElementMixin.js
+ * @import ./mixin/StateMixin.js
  */
 elf.define('FS::Model::Scene', [
     'lang',
@@ -16,8 +16,9 @@ elf.define('FS::Model::Scene', [
 ], function (_, Class, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
+        type = 'Scene',
         Scene = Class.extend({
-            type: 'Scene',
+            type: type,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -58,6 +59,8 @@ elf.define('FS::Model::Scene', [
                 }
             }
         });
+
+    Scene.type = type;
 
     return Scene;
 });

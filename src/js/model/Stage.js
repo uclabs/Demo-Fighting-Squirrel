@@ -16,8 +16,9 @@ elf.define('FS::Model::Stage', [
 ], function (_, Class, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
+        type = 'Stage',
         Stage = Class.extend({
-            type: 'Stage',
+            type: type,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -28,6 +29,8 @@ elf.define('FS::Model::Stage', [
             stateHandler: {
             }
         });
+
+    Stage.type = type;
 
     return Stage;
 });
