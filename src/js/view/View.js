@@ -86,19 +86,19 @@ elf.define('FS::View::View', [
         applicationDidFinishLaunching: function () {
             // initialize director
             var director = cc.Director.getInstance();
-
+            var scene = cc.Scene.create();
             // run
-            director.runWithScene(new this.startScene());
+            director.runWithScene(scene);
             return true;
         }
     });
 
     view.init = function() {
         // 监听 Scene 创建
-        this.listenMessage('Scene:create', function(secene) {
+        this.listenMessage('Scene:create', function() {
             if (!cocos2dApp) {
                 log('view:cocos2d', 'app');
-                cocos2dApp = new Cocos2dApp(secene.sprite);
+                cocos2dApp = new Cocos2dApp();
             }
         });
         log('view', 'init');
