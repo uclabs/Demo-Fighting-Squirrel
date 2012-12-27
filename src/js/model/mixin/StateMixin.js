@@ -10,7 +10,7 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
             stateEvent: null,
             // 改变状态
             changeState: function (newState, args) {
-                var lastState = this.stat,
+                var lastState = this.state,
                     lastStateHandler = this.stateHandler[lastState],
                     stateHandler = this.stateHandler[newState];
                     

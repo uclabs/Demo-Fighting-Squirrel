@@ -2,10 +2,13 @@
  * ElementMixin
  *
  * @import ../../../lib/elf/core/lang.js
+ * @import ../../Config.js
+ * @import ../../Util.js
  */
-elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
+elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], function (_, config, util) {
     'use strict';
-    var mixin = {
+    var comparePosition = util.comparePosition,
+        mixin = {
             // 属性配置
             config: function (opts) {
                 var isConfig = function(value) {
@@ -36,13 +39,6 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                 var uuid = _.type(child) === 'object' ? child.uuid : child;
                 this.sendView(['addChild', uuid, index]);
             },
-            // 获取当前位置
-            position: function() {
-                if (!this.body) {
-                    return {x: 0, y: 0};
-                }
-                return this.body.GetPosition();
-            },
             // 移动
             move: function (x, y) {
                 if (_.type(x) === 'object') {
@@ -50,8 +46,24 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                     x = x.x;
                 }
                 if (_.type(x) === 'number' && _.type(y) === 'number') {
-                    log('controller:' + this.type + ':' + this.uuid, 'move', x, y);
+                    // log('controller:' + this.type + ':' + this.uuid, 'move', x, y);
+                    this.lastPosition = {x: x, y: y};
                     this.sendView(['move', x, y]);
+                }
+            },
+            // 获取当前位置
+            position: function() {
+                if (!this.body) {
+                    return {x: 0, y: 0};
+                }
+                return this.body.GetPosition();
+            },
+            updatePosition: function() {
+                var position = this.position();
+
+                // 只有位置改变，才需要更新
+                if (!comparePosition(position, this.lastPosition)) {
+                    this.move(position);
                 }
             },
             // 撞击
@@ -66,6 +78,9 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
             collision: function(arg) {
                 // 广播物体被碰撞
                 this.sendMessage('Element', [this.uuid, 'collision', arg]);
+            },
+            scale: function(value) {
+                return value / config.world.scale;
             }
         };
 

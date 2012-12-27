@@ -29,5 +29,12 @@ elf.define('FS::Util', ['lang'], function (_) {
         return false;
     };
 
+    exports.comparePosition = function(v1, v2) {
+        if (!v1 || !v2) {
+            return false;
+        }
+        return (v1.x === v2.x) && (v1.y === v2.y);
+    }
+
     return exports;
 });

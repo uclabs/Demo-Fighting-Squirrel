@@ -4,7 +4,7 @@
 elf.define('FS::Config', function () {
     'use strict';
 
-    var frameRate = 60;
+    var frameRate = 30;
     
     return {
         // 输出日志开关
@@ -15,6 +15,7 @@ elf.define('FS::Config', function () {
         frameInterval: Math.floor(1000 / frameRate),
         // 游戏世界定义
         world: {
+            scale: 30,
             gravity: 9.80665
         },
         // Cocos2D Config

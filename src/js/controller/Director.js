@@ -234,16 +234,26 @@ elf.define('FS::Controller::Director', [
                 stage = this.stage = this.create(Stage.type, {}),
                 roleGroup1 = this.roleGroup1 = [],
                 roleGroup2 = this.roleGroup2 = [],
-                weapon1 = this.create(Stone.type, {}),
+                role1x = 100,
+                role1y = 540,
+                role2x = 920,
+                role2y = 540,
+                weapon1 = this.create(Stone.type, {
+                    x: role1x + 40,
+                    y: role1y - 20
+                }),
                 role1 = this.create(Squirrel.type, {
-                    x: 100,
-                    y: 560,
+                    x: role1x,
+                    y: role1y,
                     weapon: weapon1.uuid
                 }),
-                weapon2 = this.create(Stone.type, {}),
+                weapon2 = this.create(Stone.type, {
+                    x: role2x - 40,
+                    y: role2y - 20
+                }),
                 role2 = this.create(Squirrel.type, {
-                    x: 924,
-                    y: 560,
+                    x: role2x,
+                    y: role2y,
                     weapon: weapon2.uuid
                 });
 
@@ -335,15 +345,12 @@ elf.define('FS::Controller::Director', [
                     var that = this,
                         vector = this.attacking.vector,
                         weapon = this.attacking.weapon;
-                    // 监听武器状态改变，如果武器停止了就切换到下回合
-                    weapon.onStateChange('idle', function() {
-                        that.changeState('ready');
-                    });
                     // 发射武器
                     weapon.fire(vector);
                 },
                 main: function() {
                     var that = this,
+                        weapon = this.attacking.weapon,
                         outOfStage = false,
                         weaponSleep = false;
 
@@ -351,6 +358,7 @@ elf.define('FS::Controller::Director', [
                     this.updateWorld();
 
                     // 更新武器位置
+                    weapon.updatePosition();
 
                     // TODO-box2d 判断是否飞出屏幕
 
@@ -358,7 +366,7 @@ elf.define('FS::Controller::Director', [
 
                     // 攻击未结束前，持续更新
                     this.attackTimer = setTimeout(function() {
-                        if (that.state === 'idle') {
+                        if (that.state === 'attack') {
                             that.changeState('attack');
                         }
                     }, config.frameInterval);
@@ -425,7 +433,7 @@ elf.define('FS::Controller::Director', [
                 var elements = getElements(contact);
                 elements.forEach(function(element) {
                     if (isRole(element)) {
-                        impact.fire('impact:start', [element]);
+                        impact.fire('impact:end', [element]);
                     }
                 });
             };
@@ -437,7 +445,7 @@ elf.define('FS::Controller::Director', [
                     force = normalImpulses[0]; // 撞击力量
                 elements.forEach(function(element) {
                     if (isRole(element)) {
-                        impact.fire('impact:impact', [element, force]);
+                        // impact.fire('impact:impact', [element, force]);
                         element.impact(force);
                     }
                 });
@@ -462,7 +470,7 @@ elf.define('FS::Controller::Director', [
             // 设置显示对象
             debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
             // 物理世界缩放
-            debugDraw.SetDrawScale(1);
+            debugDraw.SetDrawScale(config.world.scale);
             this.world.SetDebugDraw(debugDraw);
 
             return this.world;
