@@ -2,10 +2,12 @@
  * Director
  *
  * @import ../../lib/elf/core/lang.js
+ * @import ../../lib/elf/core/event.js
  * @import ../../lib/elf/mod/class.js
  * @import ../../lib/elf/mod/async.js
  * @import ../../lib/elf/mod/box2d.js
  * @import ../Config.js
+ * @import ../Util.js
  * @import ../model/mixin/EventMixin.js
  * @import ../model/mixin/MessageMixin.js
  * @import ../model/mixin/StateMixin.js
@@ -17,10 +19,12 @@
  */
 elf.define('FS::Controller::Director', [
     'lang',
+    'event',
     'class',
     'async',
     'box2d',
     'FS::Config',
+    'FS::Util',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::StateMixin',
@@ -31,7 +35,7 @@ elf.define('FS::Controller::Director', [
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, Class, async, Box2D, config, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, Event, Class, async, Box2D, config, util, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var slice = Array.prototype.slice,
@@ -51,6 +55,10 @@ elf.define('FS::Controller::Director', [
         b2MassData = Box2D.Collision.Shapes.b2MassData, // 质量运算器.
         b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape, // 凸多边形.
         b2CircleShape = Box2D.Collision.Shapes.b2CircleShape, //圆外形
+
+        // 工具方法
+        isRole = util.isRole,
+        isWeapon = util.isWeapon,
 
         // 游戏相关定义
         uuid = 0,
@@ -94,10 +102,15 @@ elf.define('FS::Controller::Director', [
             weapon: null, // 武器
             force: null // 攻击力量
         },
+
+        // 构造函数
         ctor: function(opts) {
             log('director', 'init', opts);
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
+
+            // 创建碰撞事件
+            this.impact = new Event();
 
             // 创建 Box2d 的物理世界
             this.initWorld();
@@ -154,11 +167,6 @@ elf.define('FS::Controller::Director', [
             var args = slice.call(arguments, 2),
                 weapon = this.get(uuid);
             args.unshift(weapon);
-            switch(action) {
-                case 'finish':
-                    this.attackFinish.apply(this, args);
-                    break;
-            }
         },
 
         // 冻结
@@ -188,22 +196,18 @@ elf.define('FS::Controller::Director', [
                 });
             }
         },
-
-        // 进入下一回合
-        nextRound: function() {
-            // 增加回合数
-            this.round++;
-            this.side = this.round % 2;
-            log('director', 'nextRound', this.round);
-        },
         // 攻击
         attack: function(role, vector) {
             // TODO 判断攻击合法性
+            // 判断是否为该回合激活的角色
+            // 判断是否攻击已超时
 
             // 更新攻击数据
             var weapon = this.get(role.weapon);
             this.attacking = {
+                // 进攻的角色
                 role: role,
+                // 攻击参数
                 vector: vector,
                 // 复制角色的武器
                 // TODO 待更新为工厂方法创建
@@ -277,7 +281,7 @@ elf.define('FS::Controller::Director', [
         },
         // 判定胜利
         assertWin: function() {
-
+            log('director', 'assertWin');
         },
         // 判定超时
         assertTimeout: function() {
@@ -294,13 +298,21 @@ elf.define('FS::Controller::Director', [
                 },
                 main: function() {
                     // 进入下一回合
-                    this.nextRound();
+                    // 增加回合数
+                    this.round++;
+                    log('director', 'round', this.round);
+
+                    // 判断回合方
+                    this.side = this.round % 2;
 
                     // 激活该回合角色
                     var activeGroup = this.side === 1 ? this.roleGroup1 : this.roleGroup2,
                         idleGroup = this.side === 1 ? this.roleGroup2 : this.roleGroup1;
                     this.activeRoleGroup(activeGroup);
                     this.idleRoleGroup(idleGroup);
+
+                    // 变更回合方
+                    this.scene.changeSide(this.side);
 
                     // 场景切换到就绪状态
                     this.scene.changeState('ready');
@@ -331,9 +343,19 @@ elf.define('FS::Controller::Director', [
                     weapon.fire(vector);
                 },
                 main: function() {
-                    var that = this;
+                    var that = this,
+                        outOfStage = false,
+                        weaponSleep = false;
+
                     // 更新 Box2D 世界状态
                     this.updateWorld();
+
+                    // 更新武器位置
+
+                    // TODO-box2d 判断是否飞出屏幕
+
+                    // TPDO-box2d 判断武器是否睡眠
+
                     // 攻击未结束前，持续更新
                     this.attackTimer = setTimeout(function() {
                         if (that.state === 'idle') {
@@ -347,6 +369,8 @@ elf.define('FS::Controller::Director', [
                     // 移除武器
                     var weapon = this.attacking.weapon;
                     weapon.destroy();
+                    // 移除攻击信息
+                    this.attacking = null;
                     // 判断胜负
                     this.assertWin();
                 }
@@ -367,54 +391,78 @@ elf.define('FS::Controller::Director', [
         // 物理世界
         // Box2d 相关
         initWorld: function() {
-            var that = this;
+            var that = this,
+                impact = this.impact;
+
+            // 创建新世界
             this.world = new b2World(
                 new b2Vec2(0, config.world.gravity), // 重力
-                true //allow sleep
+                true // allow sleep
             );
+            // Enable/disable warm starting. For testing.
+            this.world.SetWarmStarting(true);
 
             // 创建碰撞监听器
-            var listener = new b2Listener;
-            // 监听碰撞开始
+            var listener = new b2Listener,
+                getElements = function(contact) {
+                    var data1 = contact.GetFixtureA().GetBody().GetUserData(),
+                        data2 = contact.GetFixtureB().GetBody().GetUserData();
+                    return [that.get(data1.uuid), that.get(data2.uuid)];
+                };
+            // 碰撞开始
             // Called when two fixtures begin to touch.
             listener.BeginContact = function(contact) {
-                console.log('===========BeginContact');
-                var data1 = contact.GetFixtureA().GetBody().GetUserData(),
-                    data2 = contact.GetFixtureB().GetBody().GetUserData(),
-                    el1 = that.get(data1.uuid),
-                    el2 = that.get(data2.uuid);
-                console.log(data1, data2, data1.uuid, data2.uuid);
-                that.updateWorld();
+                var elements = getElements(contact);
+                elements.forEach(function(element) {
+                    if (isRole(element)) {
+                        impact.fire('impact:start', [element]);
+                    }
+                });
             };
-            // 监听碰撞结束
+            // 碰撞结束
             // Called when two fixtures cease to touch.
             listener.EndContact = function(contact) {
-                console.log('===========EndContact');
-                //console.log(contact.GetFixtureA().GetBody().GetUserData());
+                var elements = getElements(contact);
+                elements.forEach(function(element) {
+                    if (isRole(element)) {
+                        impact.fire('impact:start', [element]);
+                    }
+                });
             };
+            // 碰撞
+            // This lets you inspect a contact after the solver is finished.
             listener.PostSolve = function(contact, impulse) {
-                console.log(impulse.normalImpulses);//法向量?
-                /*
-                if (contact.GetFixtureA().GetBody().GetUserData() == 'ball' || contact.GetFixtureB().GetBody().GetUserData() == 'ball') {
-                    var impulse = impulse.normalImpulses[0];
-                    if (impulse < 0.2) return; //threshold ignore small impacts
-                    world.ball.impulse = impulse > 0.6 ? 0.5 : impulse;
-                    console.log(world.ball.impulse);
-                }
-                */
+                var elements = getElements(contact),
+                    normalImpulses = impulse.normalImpulses, // 普通冲量向量
+                    force = normalImpulses[0]; // 撞击力量
+                elements.forEach(function(element) {
+                    if (isRole(element)) {
+                        impact.fire('impact:impact', [element, force]);
+                        element.impact(force);
+                    }
+                });
             };
+            // This is called after a contact is updated.
             listener.PreSolve = function(contact, oldManifold) {
                 // PreSolve
             };
             // 设置世界碰撞监听器
             this.world.SetContactListener(listener);
 
-            //setup debug draw
+            // 配置调试绘制
             var debugDraw = new b2DebugDraw();
+            // 绘制对象
             debugDraw.SetSprite(document.getElementById("debug").getContext("2d"));
-            debugDraw.SetFillAlpha(0.3); // 透明度
-            debugDraw.SetLineThickness(1.0); // 线粗细
-            debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit); // 不明白干嘛的
+            // 设置边框厚度
+            debugDraw.SetLineThickness(1.0);
+            // 边框透明度
+            debugDraw.SetAlpha(1.0);
+            // 填充透明度
+            debugDraw.SetFillAlpha(0.4);
+            // 设置显示对象
+            debugDraw.SetFlags(b2DebugDraw.e_shapeBit);
+            // 物理世界缩放
+            debugDraw.SetDrawScale(1);
             this.world.SetDebugDraw(debugDraw);
 
             return this.world;
@@ -427,8 +475,10 @@ elf.define('FS::Controller::Director', [
                 10, //velocity iterations 速率
                 10  //position iterations
             );
-            this.world.DrawDebugData(); //绘制调试数据
-            this.world.ClearForces(); //绘制完毕后清除外力
+            // 绘制调试数据
+            this.world.DrawDebugData();
+            // 绘制完毕后清除外力，提高效率
+            this.world.ClearForces();
         }
     });
 

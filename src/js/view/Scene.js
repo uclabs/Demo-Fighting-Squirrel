@@ -57,6 +57,10 @@ elf.define('FS::View::Scene', [
         },
         stateHandler: function () {
         },
+        // 改变回合方
+        changeSide: function(side) {
+            log('view:' + this.type + ':' + this.uuid, 'side', side);
+        },
         addChild: function(child, zOrder, tag) {
             this.sprite.addChild(child, zOrder || 1, tag || 1);
         }

@@ -15,7 +15,7 @@ elf.define('FS::Config', function () {
         frameInterval: Math.floor(1000 / frameRate),
         // 游戏世界定义
         world: {
-            gravity: 9.8
+            gravity: 9.80665
         },
         // Cocos2D Config
         ccConfig: {

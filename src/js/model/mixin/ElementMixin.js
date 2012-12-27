@@ -54,6 +54,10 @@ elf.define('FS::Model::ElementMixin', ['lang'], function (_) {
                     this.sendView(['move', x, y]);
                 }
             },
+            // 撞击
+            impact: function(force) {
+                this.sendView(['impact', force]);
+            },
             // 销毁
             destroy: function() {
                 log('controller:' + this.type + ':' + this.uuid, 'destroy');
