@@ -33,6 +33,10 @@ elf.define('FS::Model::Scene', [
             changeSide: function(side) {
                 this.sendView(['changeSide', side]);
             },
+            // 
+            replace: function(transition, time) {
+                this.sendView(['replace', transition, time]);
+            },
             stateHandler: {
                 // 冻结
                 freeze: function() {

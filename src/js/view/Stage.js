@@ -15,29 +15,34 @@ elf.define('FS::View::Stage', [
     'FS::Util',
     'FS::View::Resources',
     'FS::View::EventMixin',
+    'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, util, resources, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, resources, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
-    var Sprite = function () {
-            var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
-            sprite.setAnchorPoint(cc.p(0,0));
-            sprite.setPosition(0,  0);
-            return sprite;
+    var Point = resources.ccAnchorPoint,
+        Sprite = function () {
+            var stageBg = stageItems[0], 
+                bg = cc.Sprite.create(stageBg.img, stageBg.rect),
+                winSize = cc.Director.getInstance().getWinSize();
+            bg.setAnchorPoint(stageBg.point);
+            bg.setPosition(stageBg.position.x, stageBg.position.y);
+            bg.setScale(winSize.width/stageBg.width, winSize.height/stageBg.height);
+            return bg;
         },
         Stage = Class.extend({
             type: 'Stage',
             ctor: function (opts) {
-                this.mix(eventMixin, elementMixin, stateMixin);
+                this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
                 
                 // 创建 Cocos2d 对象
-                this.sprite = Sprite;
+                this.sprite = Sprite();
             },
             mix: util.mix,
             stateHandler: function () {
-                alert(2);
+               
             }
         });
 
@@ -48,8 +53,11 @@ elf.define('FS::View::Stage', [
         {
             name: 'main',
             img: resources.s_main,
-            width: 480,
-            height: 320
+            width: 960,
+            height: 640,
+            rect: cc.rect(2, 2, 960, 640),
+            point: Point.BL,
+            position: {x: 0, y: 0}
         }
     ];
 

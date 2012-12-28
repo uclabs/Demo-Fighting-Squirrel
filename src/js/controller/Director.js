@@ -273,6 +273,9 @@ elf.define('FS::Controller::Director', [
             scene.addChild(role1, 2);
             scene.addChild(role2, 3);
 
+            // 切换到场景
+            scene.replace();
+
             // 游戏状态修改为准备
             this.changeState('ready');
         },

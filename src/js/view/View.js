@@ -72,6 +72,7 @@ elf.define('FS::View::View', [
 
             log('view', Class.type + '.create', opts.uuid, opts);
             var instance = new Class(opts);
+            instance.elements = view.elements;
             view.elements[opts.uuid] = instance;
 
             return instance;
@@ -103,20 +104,25 @@ elf.define('FS::View::View', [
             // initialize director
             var director = cc.Director.getInstance();
             var scene = cc.Scene.create();
+
             // run
             director.runWithScene(scene);
             return true;
         }
     });
 
+    if (!cocos2dApp) {
+        cocos2dApp = new Cocos2dApp();
+    }
+
     view.init = function() {
         // 监听 Scene 创建
-        this.listenMessage('Scene:create', function() {
+        /*this.listenMessage('Scene:create', function() {
             if (!cocos2dApp) {
                 log('view:cocos2d', 'app');
                 cocos2dApp = new Cocos2dApp();
             }
-        });
+        });*/
         log('view', 'init');
     };
     return view;
