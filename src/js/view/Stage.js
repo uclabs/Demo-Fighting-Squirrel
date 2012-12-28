@@ -20,10 +20,14 @@ elf.define('FS::View::Stage', [
     'FS::View::StateMixin'
 ], function (_, Class, util, resources, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
-    var Sprite = function () {
-            var bg = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
-                bg.setAnchorPoint(cc.p(0,0));
-                bg.setPosition(0,  0);
+    var Point = resources.ccAnchorPoint,
+        Sprite = function () {
+            var stageBg = stageItems[0], 
+                bg = cc.Sprite.create(stageBg.img, stageBg.rect),
+                winSize = cc.Director.getInstance().getWinSize();
+            bg.setAnchorPoint(stageBg.point);
+            bg.setPosition(stageBg.position.x, stageBg.position.y);
+            bg.setScale(winSize.width/stageBg.width, winSize.height/stageBg.height);
             return bg;
         },
         Stage = Class.extend({
@@ -38,7 +42,7 @@ elf.define('FS::View::Stage', [
             },
             mix: util.mix(),
             stateHandler: function () {
-                alert(2);
+               
             }
         });
 
@@ -49,8 +53,11 @@ elf.define('FS::View::Stage', [
         {
             name: 'main',
             img: resources.s_main,
-            width: 480,
-            height: 320
+            width: 960,
+            height: 640,
+            rect: cc.rect(2, 2, 960, 640),
+            point: Point.BL,
+            position: {x: 0, y: 0}
         }
     ];
 
