@@ -10,7 +10,10 @@ elf.define('FS::View::Squirrel', [
 ], function (_, Role) {
     'use strict';
     var Squirrel = Role.extend({
-            type: 'Squirrel'
+            type: 'Squirrel',
+            sprite: function () {
+
+            }
         });
 
     Squirrel.type = 'Squirrel';

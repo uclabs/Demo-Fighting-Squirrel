@@ -15,25 +15,26 @@ elf.define('FS::View::Stage', [
     'FS::Util',
     'FS::View::Resources',
     'FS::View::EventMixin',
+    'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, util, resources, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, resources, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     var Sprite = function () {
-            var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
-            sprite.setAnchorPoint(cc.p(0,0));
-            sprite.setPosition(0,  0);
-            return sprite;
+            var bg = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
+                bg.setAnchorPoint(cc.p(0,0));
+                bg.setPosition(0,  0);
+            return bg;
         },
         Stage = Class.extend({
             type: 'Stage',
             ctor: function (opts) {
-                this.mix(eventMixin, elementMixin, stateMixin);
+                this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
                 
                 // 创建 Cocos2d 对象
-                this.sprite = Sprite;
+                this.sprite = Sprite();
             },
             mix: util.mix(),
             stateHandler: function () {

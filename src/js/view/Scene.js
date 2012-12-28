@@ -28,7 +28,6 @@ elf.define('FS::View::Scene', [
                 var scene = cc.Scene.create(),
                     transition = null;
                 scene.addChild(Sprite);
-                time = time || 0;
                 switch (type) {
                     case 'Fade' :      //淡出前一场景
                         transition = cc.TransitionFade.create(time, scene);
@@ -60,7 +59,7 @@ elf.define('FS::View::Scene', [
                 this.listenController(opts.uuid, this.invoke.bind(this));
 
                 // 派发场景创建消息
-                this.sendMessage('Scene:create', [this]);
+                //this.sendMessage('Scene:create', [this]);
                 
                 // 创建 Cocos2d 对象
                 this.sprite = new Sprite();
@@ -72,8 +71,13 @@ elf.define('FS::View::Scene', [
             changeSide: function(side) {
                 log('view:' + this.type + ':' + this.uuid, 'side', side);
             },
-            addChild: function(child, zOrder, tag) {
-                this.sprite.addChild(child, zOrder || 1, tag || 1);
+            // 
+            replace: function(transition, time) {
+                this.sprite.replaceScene(this.sprite, transition || 'Fade', time || 0);
+            },
+            addChild: function(uuid, zOrder, tag) {
+                var child = this.elements[uuid];
+                this.sprite.addChild(child.sprite, zOrder || 1, tag || 1);
             }
         });
 
