@@ -65,11 +65,6 @@ elf.define('FS::Model::Weapon', [
                     init: function () {
                     },
                     main: function () {
-                        var that = this,
-                            position = this.position();
-
-                        // 获取当前位置并发回
-                        this.move(position);
                     },
                     exit: function () {
                     }
@@ -79,8 +74,6 @@ elf.define('FS::Model::Weapon', [
                     init: function () {
                     },
                     main: function () {
-                        log('controller:Weapon:' + this.uuid, 'idle');
-                        this.sendMessage(type, [this.uuid, 'idle']);
                     },
                     exit: function () {}
                 }

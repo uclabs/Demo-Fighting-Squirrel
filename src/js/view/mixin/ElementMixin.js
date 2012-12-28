@@ -25,6 +25,10 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
             move: function (x, y) {
                 log('view:' + this.type + ':' + this.uuid, 'move', x, y);
             },
+            // 撞击
+            impact: function(force) {
+                log('view:' + this.type + ':' + this.uuid, 'impact', force);
+            },
             // 销毁
             destroy: function() {
                 log('view:' + this.type + ':' + this.uuid, 'destroy');

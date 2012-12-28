@@ -33,9 +33,6 @@ elf.define('FS::Model::Role', [
         type = 'Role',
         Role = Class.extend({
             type: type,
-            density: 1, // 密度
-            friction: 0.7, // 摩擦力
-            restitution: 0.2, // 弹性
             ctor: function (opts) {
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);

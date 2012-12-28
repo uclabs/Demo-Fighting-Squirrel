@@ -33,14 +33,15 @@ elf.define('FS::View::Role', [
             active: function() {
                 log('view:' + this.type + ':' + this.uuid, 'active');
                 // 模拟玩家进行攻击
-                // TODO 完成后移除
-                var that = this;
+                // TODO-delete 完成后移除
+                var that = this,
+                    weapon = this.weapon;
                 setTimeout(function() {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
-                        that.attack({x: that.x, y: that.y - 20});
+                        that.attack({x: weapon.x + 50, y: weapon.y - 520});
                     }
-                }, Math.random() * 10000);
+                }, Math.random() * 7000);
             },
             attack: function(vector) {
                 log('view:' + this.type + ':' + this.uuid, 'attack', vector);

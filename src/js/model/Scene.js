@@ -29,6 +29,10 @@ elf.define('FS::Model::Scene', [
             // 冻结场景
             freeze: function() {
             },
+            // 改变回合方
+            changeSide: function(side) {
+                this.sendView(['changeSide', side]);
+            },
             stateHandler: {
                 // 冻结
                 freeze: function() {

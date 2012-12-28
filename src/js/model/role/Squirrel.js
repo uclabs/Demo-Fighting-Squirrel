@@ -24,6 +24,9 @@ elf.define('FS::Model::Squirrel', [
         type = 'Squirrel',
         Squirrel = Role.extend({
             type: type,
+            density: 1, // 密度
+            friction: 1, // 摩擦力
+            restitution: 0.2, // 弹性
             width: 40,
             height: 80,
             createBody: function() {
@@ -37,10 +40,10 @@ elf.define('FS::Model::Squirrel', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.width / 2, this.height / 2);
+                fixDef.shape.SetAsBox(this.scale(this.width / 2), this.scale(this.height / 2));
 
                 // 由世界创建物体
-                bodyDef.position = new b2Vec2(this.x, 560);
+                bodyDef.position = new b2Vec2(this.scale(this.x), this.scale(this.y));
                 this.body = this.world.CreateBody(bodyDef);
                 this.body.SetUserData({uuid: this.uuid});
                 // 创建物体相应的材质

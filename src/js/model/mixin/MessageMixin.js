@@ -1,7 +1,7 @@
 /**
  * MessageMixin
  *
- * @import ../../Dispatcher.js
+ * @import ../../controller/Messager.js
  */
 elf.define('FS::Model::MessageMixin', ['FS::Controller::Messager'], function (messager) {
     'use strict';

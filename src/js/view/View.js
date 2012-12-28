@@ -54,6 +54,15 @@ elf.define('FS::View::View', [
                 return;
             }
 
+            // 把uuid替换成物体
+            for (var name in opts) {
+                var value = opts[name],
+                    element = view.elements[value];
+                if (element) {
+                    opts[name] = element;
+                }
+            }
+
             log('view', Class.type + '.create', opts.uuid, opts);
             var instance = new Class(opts);
             view.elements[opts.uuid] = instance;
