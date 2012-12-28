@@ -3,19 +3,25 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
+ * @import ../Util.js
  * @import ../model/mixin/EventMixin.js
  * @import ../model/mixin/MessageMixin.js
  */
 elf.define('FS::Controller::Manager', [
     'lang',
     'async',
+    'FS::Util',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin'
-], function (_, async, eventMixin, messageMixin) {
+], function (_, async, util, eventMixin, messageMixin) {
     'use strict';
 
-    var manager = _.extend({}, eventMixin, messageMixin),
+    var manager = {
+            mix: util.mix()
+        },
         views = ['splash', 'mainMenu', 'resultMenu', 'gameMenu', 'exitMenu'];
+
+    manager.mix(eventMixin, messageMixin)
 
     views.forEach(function (name) {
         ['show', 'hide'].forEach(function(method) {

@@ -4,6 +4,7 @@
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
  * @import ../../lib/elf/mod/box2d.js
+ * @import ../Util.js
  * @import ./mixin/EventMixin.js
  * @import ./mixin/ElementMixin.js
  * @import ./mixin/StateMixin.js
@@ -12,10 +13,11 @@ elf.define('FS::Model::Stage', [
     'lang',
     'class',
     'box2d',
+    'FS::Util',
     'FS::Model::EventMixin',
     'FS::Model::ElementMixin',
     'FS::Model::StateMixin'
-], function (_, Class, Box2D, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, Box2D, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         // Box2d 相关定义
@@ -40,9 +42,7 @@ elf.define('FS::Model::Stage', [
                 this.config(opts);
                 this.createBody();
             },
-            mix: function () {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            },
+            mix: util.mix(),
             createBody: function() {
                 var userData = {uuid: this.uuid};
                 // 物体定义

@@ -2,16 +2,19 @@
  * Splash
  *
  * @import ../../lib/elf/core/lang.js
+ * @import ../Util.js
  * @import ./mixin/EventMixin.js
  */
-elf.define('FS::View::Splash', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
+elf.define('FS::View::Splash', ['lang', 'FS::Util', 'FS::View::EventMixin'], function (_, util, eventMixin) {
     'use strict';
 
-    var splash = {},
+    var splash = {
+            mix: util.mix()
+        },
         _splash = document.getElementById('splash');
 
     // 把事件 mixin
-    _.extend(splash, eventMixin);
+    splash.mix(eventMixin);
     
     // 绑定来自 manager 的指令
     splash.listenController('splash', function(method, args) {

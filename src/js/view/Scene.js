@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
+ * @import ../Util.js
  * @import ./mixin/EventMixin.js
  * @import ./mixin/MessageMixin.js
  * @import ./mixin/ElementMixin.js
@@ -11,14 +12,14 @@
 elf.define('FS::View::Scene', [
     'lang',
     'class',
+    'FS::Util',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
-    var concat = Array.prototype.concat,
-        Sprite = cc.Layer.extend({
+    var Sprite = cc.Layer.extend({
             ctor: function () {
                 this._super();
                 cc.associateWithNative( this, cc.Layer );
@@ -52,9 +53,7 @@ elf.define('FS::View::Scene', [
             this.sprite = new Sprite.scene ();
            
         },
-        mix: function () {
-            _.extend.apply(_, concat.apply([true, this], arguments));
-        },
+        mix: util.mix(),
         stateHandler: function () {
         },
         // 改变回合方

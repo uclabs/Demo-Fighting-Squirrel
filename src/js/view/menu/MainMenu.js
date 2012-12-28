@@ -2,14 +2,17 @@
  * MainMenu
  *
  * @import ../../../lib/elf/core/lang.js
+ * @import ../../Util.js
  * @import ../mixin/EventMixin.js
  */
-elf.define('FS::View::MainMenu', ['lang', 'FS::View::EventMixin'], function (_, eventMixin) {
+elf.define('FS::View::MainMenu', ['lang', 'FS::Util', 'FS::View::EventMixin'], function (_, util, eventMixin) {
     'use strict';
-    var menu = {};
+    var menu = {
+        mix: util.mix()
+    };
 
     // 把事件 mixin
-    _.extend(menu, eventMixin);
+    menu.mix(eventMixin);
     
     // 绑定来自 manager 的指令
     menu.listenController('mainMenu', function(method, args) {

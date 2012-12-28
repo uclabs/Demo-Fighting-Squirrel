@@ -3,6 +3,8 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
+ * @import ../Config.js
+ * @import ../Util.js
  * @import ./Resources.js
  * @import ./mixin/EventMixin.js
  * @import ./mixin/MessageMixin.js
@@ -23,6 +25,7 @@ elf.define('FS::View::View', [
     'lang',
     'async',
     'FS::Config',
+    'FS::Util',
     'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
@@ -38,14 +41,18 @@ elf.define('FS::View::View', [
     'FS::View::Squirrel',
     'FS::View::Weapon',
     'FS::View::Stone'
-], function (_, async, config, resources, eventMixin, messageMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, config, util, resources, eventMixin, messageMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
-    var view = _.extend({
-                elements: {}
-            }, eventMixin, messageMixin),
+    var view = {
+                elements: {},
+                mix: util.mix()
+            },
         Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone],
         Cocos2dApp, cocos2dApp;
+
+    // 把事件和消息 mixin
+    view.mix(eventMixin, messageMixin);
 
     // 为类添加工厂方法
     Classes.forEach(function (Class) {
@@ -112,6 +119,5 @@ elf.define('FS::View::View', [
         });
         log('view', 'init');
     };
-
     return view;
 });

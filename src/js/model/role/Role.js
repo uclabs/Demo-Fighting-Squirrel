@@ -4,6 +4,7 @@
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
  * @import ../../../lib/elf/mod/box2d.js
+ * @import ../../Util.js
  * @import ../mixin/EventMixin.js
  * @import ../mixin/MessageMixin.js
  * @import ../mixin/ElementMixin.js
@@ -13,11 +14,12 @@ elf.define('FS::Model::Role', [
     'lang',
     'class',
     'box2d',
+    'FS::Util',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::ElementMixin',
     'FS::Model::StateMixin'
-], function (_, Class, Box2D, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, Box2D, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
@@ -44,9 +46,7 @@ elf.define('FS::Model::Role', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: function () {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            },
+            mix: util.mix(),
             active: function() {
                 this.sendView(['active']);
             },

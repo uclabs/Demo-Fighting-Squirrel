@@ -119,9 +119,7 @@ elf.define('FS::Controller::Director', [
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
         },
-        mix: function () {
-            _.extend.apply(_, concat.apply([true, this], arguments));
-        },
+        mix: util.mix(),
         config: function(opts) {
             log('director', 'config', opts);
             _.extend(true, this, opts);

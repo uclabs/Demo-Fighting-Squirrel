@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
+ * @import ../Util.js
  * @import Resources.js
  * @import mixin/EventMixin.js
  * @import mixin/ElementMixin.js
@@ -11,14 +12,14 @@
 elf.define('FS::View::Stage', [
     'lang',
     'class',
+    'FS::Util',
     'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, resources, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, resources, eventMixin, elementMixin, stateMixin) {
     'use strict';
-    var concat = Array.prototype.concat,
-        Sprite = function () {
+    var Sprite = function () {
             var sprite = cc.Sprite.create(stageItems[0].img, cc.rect(1, 1, 480, 320)); 
             sprite.setAnchorPoint(cc.p(0,0));
             sprite.setPosition(0,  0);
@@ -34,9 +35,7 @@ elf.define('FS::View::Stage', [
                 // 创建 Cocos2d 对象
                 this.sprite = Sprite;
             },
-            mix: function () {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            },
+            mix: util.mix(),
             stateHandler: function () {
                 alert(2);
             }

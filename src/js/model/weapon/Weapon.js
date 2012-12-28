@@ -5,6 +5,7 @@
  * @import ../../../lib/elf/mod/class.js
  * @import ../../../lib/elf/mod/box2d.js
  * @import ../../Config.js
+ * @import ../../Util.js
  * @import ../mixin/EventMixin.js
  * @import ../mixin/MessageMixin.js
  * @import ../mixin/ElementMixin.js
@@ -15,11 +16,12 @@ elf.define('FS::Model::Weapon', [
     'class',
     'box2d',
     'FS::Config',
+    'FS::Util',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::ElementMixin',
     'FS::Model::StateMixin'
-], function (_, Class, Box2D, config, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, Box2D, config, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
@@ -46,9 +48,7 @@ elf.define('FS::Model::Weapon', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: function () {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            },
+            mix: util.mix(),
             createBody: function() {
                 this.body = null;
             },

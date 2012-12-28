@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/class.js
+ * @import ../Util.js
  * @import ./mixin/EventMixin.js
  * @import ./mixin/ElementMixin.js
  * @import ./mixin/StateMixin.js
@@ -10,10 +11,11 @@
 elf.define('FS::View::Timer', [
     'lang',
     'class',
+    'FS::Util',
     'FS::View::EventMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
     var concat = Array.prototype.concat,
         Timer = Class.extend({
@@ -24,9 +26,7 @@ elf.define('FS::View::Timer', [
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
-            mix: function () {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            },
+            mix: util.mix(),
             start: function(countdown) {
                 this.countdown = countdown;
                 log('view:' + this.type + ':' + this.uuid, 'start');
