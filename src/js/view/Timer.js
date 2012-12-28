@@ -26,7 +26,7 @@ elf.define('FS::View::Timer', [
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
-            mix: util.mix(),
+            mix: util.mix,
             start: function(countdown) {
                 this.countdown = countdown;
                 log('view:' + this.type + ':' + this.uuid, 'start');

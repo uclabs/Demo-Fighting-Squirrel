@@ -25,7 +25,7 @@ elf.define('FS::View::Weapon', [
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
-            mix: util.mix(),
+            mix: util.mix,
             stateHandler: {
                 idle: {
                     init: function () {},

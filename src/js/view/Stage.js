@@ -35,7 +35,7 @@ elf.define('FS::View::Stage', [
                 // 创建 Cocos2d 对象
                 this.sprite = Sprite;
             },
-            mix: util.mix(),
+            mix: util.mix,
             stateHandler: function () {
                 alert(2);
             }

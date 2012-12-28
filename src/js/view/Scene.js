@@ -65,7 +65,7 @@ elf.define('FS::View::Scene', [
                 // 创建 Cocos2d 对象
                 this.sprite = new Sprite();
             },
-            mix: util.mix(),
+            mix: util.mix,
             stateHandler: function () {
             },
             // 改变回合方

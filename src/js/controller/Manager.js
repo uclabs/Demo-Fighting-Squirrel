@@ -17,7 +17,7 @@ elf.define('FS::Controller::Manager', [
     'use strict';
 
     var manager = {
-            mix: util.mix()
+            mix: util.mix
         },
         views = ['splash', 'mainMenu', 'resultMenu', 'gameMenu', 'exitMenu'];
 

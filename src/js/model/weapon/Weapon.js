@@ -48,7 +48,7 @@ elf.define('FS::Model::Weapon', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: util.mix(),
+            mix: util.mix,
             createBody: function() {
                 this.body = null;
             },

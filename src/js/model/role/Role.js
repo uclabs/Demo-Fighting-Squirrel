@@ -46,7 +46,7 @@ elf.define('FS::Model::Role', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: util.mix(),
+            mix: util.mix,
             active: function() {
                 this.sendView(['active']);
             },

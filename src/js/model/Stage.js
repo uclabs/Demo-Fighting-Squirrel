@@ -42,7 +42,7 @@ elf.define('FS::Model::Stage', [
                 this.config(opts);
                 this.createBody();
             },
-            mix: util.mix(),
+            mix: util.mix,
             createBody: function() {
                 var userData = {uuid: this.uuid};
                 // 物体定义

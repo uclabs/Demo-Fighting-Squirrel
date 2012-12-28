@@ -8,7 +8,7 @@
 elf.define('FS::View::ResultMenu', ['lang', 'FS::Util', 'FS::View::EventMixin'], function (_, util, eventMixin) {
     'use strict';
     var menu = {
-        mix: util.mix()
+        mix: util.mix
     };
 
     // 把事件 mixin

@@ -46,7 +46,7 @@ elf.define('FS::View::View', [
 
     var view = {
                 elements: {},
-                mix: util.mix()
+                mix: util.mix
             },
         Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone],
         Cocos2dApp, cocos2dApp;

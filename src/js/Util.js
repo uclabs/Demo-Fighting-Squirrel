@@ -39,23 +39,21 @@ elf.define('FS::Util', ['lang'], function (_) {
     };
 
     exports.mix = function () {
-        return function() {
-            var override = arguments[0] === true;
-            if (override) {
-                _.extend.apply(_, concat.apply([true, this], arguments));
-            } else {
-                var startIndex = _.type(arguments[0]) === 'boolean' ? 1 : 0,
-                    args = slice.call(arguments, startIndex);
-                for (var i = 0, len = args.length; i < len; i++) {
-                    var arg = args[i];
-                    for (var name in arg) {
-                        if (this[name]) {
-                            delete arg[name];
-                        }
+        var override = arguments[0] === true;
+        if (override) {
+            _.extend.apply(_, concat.apply([true, this], arguments));
+        } else {
+            var startIndex = _.type(arguments[0]) === 'boolean' ? 1 : 0,
+                args = slice.call(arguments, startIndex);
+            for (var i = 0, len = args.length; i < len; i++) {
+                var arg = args[i];
+                for (var name in arg) {
+                    if (this[name]) {
+                        delete arg[name];
                     }
                 }
-                _.extend.apply(_, concat.apply([true, this], args));
             }
+            _.extend.apply(_, concat.apply([true, this], args));
         }
     };
 

@@ -25,7 +25,7 @@ elf.define('FS::Model::Scene', [
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
-            mix: util.mix(),
+            mix: util.mix,
             // 冻结场景
             freeze: function() {
             },

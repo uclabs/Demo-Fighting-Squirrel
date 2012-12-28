@@ -9,7 +9,7 @@ elf.define('FS::View::Splash', ['lang', 'FS::Util', 'FS::View::EventMixin'], fun
     'use strict';
 
     var splash = {
-            mix: util.mix()
+            mix: util.mix
         },
         _splash = document.getElementById('splash');
 

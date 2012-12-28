@@ -28,7 +28,7 @@ elf.define('FS::Model::Timer', [
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
-            mix: util.mix(),
+            mix: util.mix,
             reset: function() {
                 this._countdown = this.countdown;
             },

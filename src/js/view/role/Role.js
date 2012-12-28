@@ -26,7 +26,7 @@ elf.define('FS::View::Role', [
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
-            mix: util.mix(),
+            mix: util.mix,
             idle: function() {
                 log('view:' + this.type + ':' + this.uuid, 'idle');
             },
