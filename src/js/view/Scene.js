@@ -27,7 +27,7 @@ elf.define('FS::View::Scene', [
         Scene;
     Sprite.create = function () {
         var sg = new Sprite();
-        if (sg && sg.init()) {
+        if (sg) {
             return sg;
         }
         return null;
