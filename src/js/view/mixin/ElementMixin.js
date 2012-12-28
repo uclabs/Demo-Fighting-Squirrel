@@ -7,11 +7,11 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
     'use strict';
     var mixin = {
             // 配置属性
-            config: function(opts) {
+            config: function (opts) {
                 _.extend(true, this, opts);
             },
             // 调用方法
-            invoke: function() {
+            invoke: function () {
                 var action = arguments[0],
                     fn = this[action],
                     args = Array.prototype.slice.call(arguments, 1);
@@ -26,11 +26,11 @@ elf.define('FS::View::ElementMixin', ['lang'], function (_) {
                 log('view:' + this.type + ':' + this.uuid, 'move', x, y);
             },
             // 撞击
-            impact: function(force) {
+            impact: function (force) {
                 log('view:' + this.type + ':' + this.uuid, 'impact', force);
             },
             // 销毁
-            destroy: function() {
+            destroy: function () {
                 log('view:' + this.type + ':' + this.uuid, 'destroy');
             }
         };

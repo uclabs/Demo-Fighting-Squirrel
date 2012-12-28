@@ -42,18 +42,18 @@ elf.define('FS::Model::Weapon', [
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.createBody();
-                this.listenView(this.uuid, function() {
+                this.listenView(this.uuid, function () {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
                     that.sendMessage(type, args);
                 });
             },
             mix: util.mix,
-            createBody: function() {
+            createBody: function () {
                 this.body = null;
             },
             // 发射武器
-            fire: function(vector) {
+            fire: function (vector) {
                 log('controller:Weapon:' + this.uuid, 'fire', vector);
 
                 // 切换到攻击状态
@@ -63,10 +63,46 @@ elf.define('FS::Model::Weapon', [
                 // 攻击中
                 attack: {
                     init: function () {
+                        clearTimeout(this.attackTimer);
                     },
                     main: function () {
+                        var that = this,
+                            position = this.position(),
+                            x = position.x,
+                            y = position.y,
+                            lastAttackPosition = this.lastAttackPosition;
+
+                        // 判断是否飞出场景
+                        if (x < 0|| x > config.world.width ||
+                            y < 0 || y > config.world.height) {
+                            if (this.state !== 'idle') {
+                                log('controller:' + this.type + ':' + this.uuid, 'out of scene');
+                                this.changeState('idle');
+                            }
+                            return;
+                        }
+
+                        // 判断是否停止移动
+                        if (lastAttackPosition &&
+                            (Math.abs(lastAttackPosition.x - x) < 10 &&
+                            Math.abs(lastAttackPosition.y - y) < 10)) {
+                            if (this.state !== 'idle') {
+                                log('controller:' + this.type + ':' + this.uuid, 'not move');
+                                this.changeState('idle');
+                            }
+                            return;
+                        }
+
+                        // 记录最后更新的攻击位置
+                        this.lastAttackPosition = position;
+
+                        // 攻击状态循环
+                        this.attackTimer = setTimeout(function() {
+                            that.changeState('attack');
+                        }, 200);
                     },
                     exit: function () {
+                        clearTimeout(this.attackTimer);
                     }
                 },
                 // 发射完毕

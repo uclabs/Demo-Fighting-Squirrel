@@ -15,7 +15,7 @@ elf.define('FS::View::ResultMenu', ['lang', 'FS::Util', 'FS::View::EventMixin'],
     menu.mix(eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenController('resultMenu', function(method, args) {
+    menu.listenController('resultMenu', function (method, args) {
         menu[method].apply(menu, args);
     });
 

@@ -40,17 +40,17 @@ elf.define('FS::Model::Role', [
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.createBody();
-                this.listenView(this.uuid, function() {
+                this.listenView(this.uuid, function () {
                     var args = slice.apply(arguments);
                     args.unshift(that.uuid);
                     that.sendMessage(type, args);
                 });
             },
             mix: util.mix,
-            active: function() {
+            active: function () {
                 this.sendView(['active']);
             },
-            idle: function() {
+            idle: function () {
                 this.sendView(['idle']);
             },
             stateHandler: {

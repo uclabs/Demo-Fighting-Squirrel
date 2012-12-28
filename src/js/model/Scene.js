@@ -27,19 +27,19 @@ elf.define('FS::Model::Scene', [
             },
             mix: util.mix,
             // 冻结场景
-            freeze: function() {
+            freeze: function () {
             },
             // 改变回合方
-            changeSide: function(side) {
+            changeSide: function (side) {
                 this.sendView(['changeSide', side]);
             },
             // 
-            replace: function(transition, time) {
+            replace: function (transition, time) {
                 this.sendView(['replace', transition, time]);
             },
             stateHandler: {
                 // 冻结
-                freeze: function() {
+                freeze: function () {
                     this.freeze();
                 },
                 // 攻击预备阶段

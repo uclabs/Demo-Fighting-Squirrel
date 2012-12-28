@@ -17,7 +17,7 @@ elf.define('FS::View::Splash', ['lang', 'FS::Util', 'FS::View::EventMixin'], fun
     splash.mix(eventMixin);
     
     // 绑定来自 manager 的指令
-    splash.listenController('splash', function(method, args) {
+    splash.listenController('splash', function (method, args) {
         splash[method].apply(splash, args);
     });
 

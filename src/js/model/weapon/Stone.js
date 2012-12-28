@@ -28,18 +28,18 @@ elf.define('FS::Model::Stone', [
             friction: 1, // 摩擦力
             restitution: 0, // 弹性
             width: 10,
-            createBody: function() {
+            createBody: function () {
                 // 物体定义
                 var bodyDef = new b2BodyDef;
                 bodyDef.type = b2Body.b2_dynamicBody;
-                bodyDef.position= new b2Vec2(this.scale(this.x), this.scale(this.y));
+                bodyDef.position= new b2Vec2(this.zoomIn(this.x), this.zoomIn(this.y));
 
                 // 材质定义
                 var fixDef = new b2FixtureDef;
                 fixDef.density = this.density;
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
-                fixDef.shape = new b2CircleShape(this.scale(this.width / 2));
+                fixDef.shape = new b2CircleShape(this.zoomIn(this.width / 2));
 
                 // 由世界创建物体
                 this.body = this.world.CreateBody(bodyDef);
@@ -48,7 +48,7 @@ elf.define('FS::Model::Stone', [
                 this.fixture = this.body.CreateFixture(fixDef);
                 return this.body;
             },
-            fire: function(vector) {
+            fire: function (vector) {
                 var body = this.body;
                 body.ApplyForce(
                     vector,

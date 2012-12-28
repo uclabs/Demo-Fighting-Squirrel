@@ -15,7 +15,7 @@ elf.define('FS::View::GameMenu', ['lang', 'FS::Util', 'FS::View::EventMixin'], f
     menu.mix(eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenController('gameMenu', function(method, args) {
+    menu.listenController('gameMenu', function (method, args) {
         menu[method].apply(menu, args);
     });
 

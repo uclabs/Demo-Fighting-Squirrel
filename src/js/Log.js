@@ -7,7 +7,7 @@ elf.define('FS::Log', ['FS::Config'], function (config) {
     'use strict';
     // 格式 log(class, method, ...agrs)
     var log = window.log = config.log ?
-        function(name, method) {
+        function (name, method) {
             var slice = Array.prototype.slice,
                 args = slice.call(arguments, 2);
             if (typeof method === 'undefined') {
@@ -20,6 +20,6 @@ elf.define('FS::Log', ['FS::Config'], function (config) {
                 logs = logs.concat('(', args, ')');
             }
             console.log.apply(console, logs);
-        } : function() {};
+        } : function () {};
     return log;
 });

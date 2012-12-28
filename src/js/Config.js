@@ -15,6 +15,8 @@ elf.define('FS::Config', function () {
         frameInterval: Math.floor(1000 / frameRate),
         // 游戏世界定义
         world: {
+            width: 1024,
+            height: 768,
             scale: 30,
             gravity: 9.80665
         },

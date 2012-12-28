@@ -27,23 +27,23 @@ elf.define('FS::View::Role', [
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: util.mix,
-            idle: function() {
+            idle: function () {
                 log('view:' + this.type + ':' + this.uuid, 'idle');
             },
-            active: function() {
+            active: function () {
                 log('view:' + this.type + ':' + this.uuid, 'active');
                 // 模拟玩家进行攻击
                 // TODO-delete 完成后移除
                 var that = this,
                     weapon = this.weapon;
-                setTimeout(function() {
+                setTimeout(function () {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
                         that.attack({x: weapon.x + 50, y: weapon.y - 520});
                     }
-                }, Math.random() * 7000);
+                }, Math.random() * 6000 + 1500);
             },
-            attack: function(vector) {
+            attack: function (vector) {
                 log('view:' + this.type + ':' + this.uuid, 'attack', vector);
                 this.sendController(['attack', vector]);
             }

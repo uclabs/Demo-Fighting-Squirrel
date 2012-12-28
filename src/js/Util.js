@@ -9,7 +9,7 @@ elf.define('FS::Util', ['lang'], function (_) {
         slice = Array.prototype.slice,
         exports = {};
 
-    exports.isRole = function(obj) {
+    exports.isRole = function (obj) {
         var types = ['Role', 'Squirrel'],
             type = _.type(obj) === 'object' ? obj.type : obj;
         for (var i = 0, len = types.length; i < len; i++) {
@@ -20,7 +20,7 @@ elf.define('FS::Util', ['lang'], function (_) {
         return false;
     };
 
-    exports.isWeapon = function(obj) {
+    exports.isWeapon = function (obj) {
         var types = ['Weapon', 'Stone'],
             type = _.type(obj) === 'object' ? obj.type : obj;
         for (var i = 0, len = types.length; i < len; i++) {
@@ -31,7 +31,7 @@ elf.define('FS::Util', ['lang'], function (_) {
         return false;
     };
 
-    exports.comparePosition = function(v1, v2) {
+    exports.comparePosition = function (v1, v2) {
         if (!v1 || !v2) {
             return false;
         }

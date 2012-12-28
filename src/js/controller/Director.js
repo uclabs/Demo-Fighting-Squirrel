@@ -65,7 +65,7 @@ elf.define('FS::Controller::Director', [
         Director,
         Classes = {};
 
-    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function(Class) {
+    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
@@ -104,7 +104,7 @@ elf.define('FS::Controller::Director', [
         },
 
         // 构造函数
-        ctor: function(opts) {
+        ctor: function (opts) {
             log('director', 'init', opts);
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
@@ -120,12 +120,12 @@ elf.define('FS::Controller::Director', [
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
         },
         mix: util.mix,
-        config: function(opts) {
+        config: function (opts) {
             log('director', 'config', opts);
             _.extend(true, this, opts);
         },
 
-        create: function(type, opts) {
+        create: function (type, opts) {
             var Class = Classes[type],
                 instance;
             if (Class) {
@@ -141,16 +141,16 @@ elf.define('FS::Controller::Director', [
             }
         },
         // 把元素加入列表中
-        add: function(uuid, element) {
+        add: function (uuid, element) {
             this.elements[uuid] = element;
         },
         // 获取元素
-        get: function(uuid) {
+        get: function (uuid) {
             return this.elements[uuid];
         },
 
         // 角色响应方法
-        onRole: function(uuid, action) {
+        onRole: function (uuid, action) {
             var args = slice.call(arguments, 2),
                 role = this.get(uuid);
             args.unshift(role);
@@ -161,41 +161,41 @@ elf.define('FS::Controller::Director', [
             }
         },
         // 武器响应方法
-        onWeapon: function(uuid, action) {
+        onWeapon: function (uuid, action) {
             var args = slice.call(arguments, 2),
                 weapon = this.get(uuid);
             args.unshift(weapon);
         },
 
         // 冻结
-        freeze: function() {
+        freeze: function () {
             this.freezeRoleGroup();
         },
         // 冻结角色
-        idleRoleGroup: function(roleGroup) {
+        idleRoleGroup: function (roleGroup) {
             if (roleGroup) {
-                roleGroup.forEach(function(role) {
+                roleGroup.forEach(function (role) {
                     role.changeState('idle');
                 });
             } else {
-                [this.roleGroup1, this.roleGroup2].forEach(function(group) {
+                [this.roleGroup1, this.roleGroup2].forEach(function (group) {
                     this.freezeRoleGroup(group);
                 });
             }
         },
-        activeRoleGroup: function(roleGroup) {
+        activeRoleGroup: function (roleGroup) {
             if (roleGroup) {
-                roleGroup.forEach(function(role) {
+                roleGroup.forEach(function (role) {
                     role.changeState('active');
                 });
             } else {
-                [this.roleGroup1, this.roleGroup2].forEach(function(group) {
+                [this.roleGroup1, this.roleGroup2].forEach(function (group) {
                     this.activeRoleGroup(group);
                 });
             }
         },
         // 攻击
-        attack: function(role, vector) {
+        attack: function (role, vector) {
             // TODO 判断攻击合法性
             // 判断是否为该回合激活的角色
             // 判断是否攻击已超时
@@ -214,12 +214,6 @@ elf.define('FS::Controller::Director', [
 
             // 切换到攻击状态
             this.changeState('attack');
-        },
-        // 攻击结束
-        attackFinish: function(weapon) {
-            log('director', 'attackFinish', weapon);
-            // 切换到攻击准备状态
-            this.changeState('ready');
         },
 
         // 游戏逻辑
@@ -264,7 +258,7 @@ elf.define('FS::Controller::Director', [
             roleGroup2.push(role2);
 
             // 监听计时器运行状态
-            timer.onStateChange('stop', function() {
+            timer.onStateChange('stop', function () {
                 that.assertTimeout();
             });
 
@@ -284,18 +278,18 @@ elf.define('FS::Controller::Director', [
             var scene = this.scene;
             scene.changeState('freeze');
         },
-        show: function() {
+        show: function () {
 
         },
-        hide: function() {
+        hide: function () {
 
         },
         // 判定胜利
-        assertWin: function() {
+        assertWin: function () {
             log('director', 'assertWin');
         },
         // 判定超时
-        assertTimeout: function() {
+        assertTimeout: function () {
             // 计时器停止，如非正在攻击，则进入下回合
             if (this.state !== 'attack') {
                 log('director', 'timeout');
@@ -304,10 +298,9 @@ elf.define('FS::Controller::Director', [
         },
         stateHandler: {
             ready: {
-                init: function() {
-
+                init: function () {
                 },
-                main: function() {
+                main: function () {
                     // 进入下一回合
                     // 增加回合数
                     this.round++;
@@ -315,7 +308,7 @@ elf.define('FS::Controller::Director', [
 
                     // 判断回合方
                     this.side = this.round % 2;
-
+                    
                     // 激活该回合角色
                     var activeGroup = this.side === 1 ? this.roleGroup1 : this.roleGroup2,
                         idleGroup = this.side === 1 ? this.roleGroup2 : this.roleGroup1;
@@ -330,14 +323,14 @@ elf.define('FS::Controller::Director', [
                     // 计时器开始
                     this.timer.changeState('timing');
                 },
-                exit: function() {
+                exit: function () {
 
                 }
             },
             attack: {
-                init: function() {
+                init: function () {
                     // 清除攻击定时器
-                    clearTimeout(this.attackTimer);
+                    clearInterval(this.attackTimer);
                     // 场景切换到攻击状态
                     this.scene.changeState('attack');
                     // 计时器停止
@@ -346,35 +339,34 @@ elf.define('FS::Controller::Director', [
                     var that = this,
                         vector = this.attacking.vector,
                         weapon = this.attacking.weapon;
+                    // 监听武器状态
+                    weapon.onStateChange('idle', function() {
+                        // 切换到攻击准备状态
+                        that.changeState('ready');
+                    });
                     // 发射武器
                     weapon.fire(vector);
+                    // 将所有元素受到撞击的力量重置为0
+                    for (var uuid in this.elements) {
+                        var element = this.elements[uuid];
+                        element.impactForce = 0;
+                    }
                 },
-                main: function() {
+                main: function () {
                     var that = this,
-                        weapon = this.attacking.weapon,
-                        outOfStage = false,
-                        weaponSleep = false;
-
-                    // 更新 Box2D 世界状态
-                    this.updateWorld();
-
-                    // 更新武器位置
-                    weapon.updatePosition();
-
-                    // TODO-box2d 判断是否飞出屏幕
-
-                    // TPDO-box2d 判断武器是否睡眠
+                        weapon = this.attacking.weapon;
 
                     // 攻击未结束前，持续更新
-                    this.attackTimer = setTimeout(function() {
-                        if (that.state === 'attack') {
-                            that.changeState('attack');
-                        }
+                    this.attackTimer = setInterval(function () {
+                        // 更新 Box2D 世界状态
+                        that.updateWorld();
+                        // 更新武器位置
+                        weapon.updatePosition();
                     }, config.frameInterval);
                 },
-                exit: function() {
+                exit: function () {
                     // 清除攻击定时器
-                    clearTimeout(this.attackTimer);
+                    clearInterval(this.attackTimer);
                     // 移除武器
                     var weapon = this.attacking.weapon;
                     weapon.destroy();
@@ -385,13 +377,13 @@ elf.define('FS::Controller::Director', [
                 }
             },
             freeze: {
-                init: function() {
+                init: function () {
 
                 },
-                main: function() {
+                main: function () {
 
                 },
-                exit: function() {
+                exit: function () {
                     
                 }
             }
@@ -399,7 +391,7 @@ elf.define('FS::Controller::Director', [
 
         // 物理世界
         // Box2d 相关
-        initWorld: function() {
+        initWorld: function () {
             var that = this,
                 impact = this.impact;
 
@@ -413,46 +405,52 @@ elf.define('FS::Controller::Director', [
 
             // 创建碰撞监听器
             var listener = new b2Listener,
-                getElements = function(contact) {
+                getElements = function (contact) {
                     var data1 = contact.GetFixtureA().GetBody().GetUserData(),
                         data2 = contact.GetFixtureB().GetBody().GetUserData();
                     return [that.get(data1.uuid), that.get(data2.uuid)];
                 };
             // 碰撞开始
             // Called when two fixtures begin to touch.
-            listener.BeginContact = function(contact) {
+            listener.BeginContact = function (contact) {
                 var elements = getElements(contact);
-                elements.forEach(function(element) {
-                    if (isRole(element)) {
-                        impact.fire('impact:start', [element]);
+                elements.forEach(function (element) {
+                    if (isWeapon(element)) {
                     }
                 });
             };
             // 碰撞结束
             // Called when two fixtures cease to touch.
-            listener.EndContact = function(contact) {
+            listener.EndContact = function (contact) {
                 var elements = getElements(contact);
-                elements.forEach(function(element) {
+                elements.forEach(function (element) {
                     if (isRole(element)) {
-                        impact.fire('impact:end', [element]);
                     }
                 });
             };
             // 碰撞
             // This lets you inspect a contact after the solver is finished.
-            listener.PostSolve = function(contact, impulse) {
+            listener.PostSolve = function (contact, impulse) {
                 var elements = getElements(contact),
                     normalImpulses = impulse.normalImpulses, // 普通冲量向量
-                    force = normalImpulses[0]; // 撞击力量
-                elements.forEach(function(element) {
+                    force = normalImpulses[0], // 撞击力量
+                    role = null,
+                    weapon = null;
+                elements.forEach(function (element) {
                     if (isRole(element)) {
-                        // impact.fire('impact:impact', [element, force]);
-                        element.impact(force);
+                        role = element;
+                    } else if (isWeapon(element)) {
+                        weapon = element;
                     }
                 });
+                if (role && weapon &&
+                    (!role.impactForce || role.impactForce < force)) {
+                    log('impact', role.uuid, force);
+                    role.impactForce = force;
+                }
             };
             // This is called after a contact is updated.
-            listener.PreSolve = function(contact, oldManifold) {
+            listener.PreSolve = function (contact, oldManifold) {
                 // PreSolve
             };
             // 设置世界碰撞监听器
@@ -477,7 +475,7 @@ elf.define('FS::Controller::Director', [
             return this.world;
         },
         // 更新和绘制世界
-        updateWorld: function() {
+        updateWorld: function () {
             // Take a time step. This performs collision detection, integration, and constraint solution.
             this.world.Step(
                 1 / config.frameRate, //frame-rate 帧率

@@ -22,54 +22,60 @@ elf.define('FS::Model::Timer', [
         Timer = Class.extend({
             type: type,
             countdown: 10,
-            _countdown: 0,
+            remain: 0,
             timer: null,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
             mix: util.mix,
-            reset: function() {
-                this._countdown = this.countdown;
-            },
-            start: function() {
-                log('controller:' + this.type + ':' + this.uuid, 'start');
-                var that = this;
-                this.reset();
-                this.timer = setInterval(function() {
-                    that.tick();
-                }, 1000);
-
-                this.sendView(['start', this._countdown]);
-            },
-            stop: function() {
-                log('controller:' + this.type + ':' + this.uuid, 'stop');
-                clearInterval(this.timer);
-
-                this.sendView(['stop']);
-            },
-            tick: function() {
+            tick: function () {
                 // 递减倒计时时间
-                this._countdown--;
-                log('controller:' + this.type + ':' + this.uuid, 'tick', this._countdown);
+                this.remain -= 1;
+                log('controller:' + this.type + ':' + this.uuid, 'tick', this.remain);
 
                 // 发送倒计时时间
-                this.sendView(['tick', this._countdown]);
-
-                // 判断是否倒计时结束
-                if (this._countdown <= 0) {
-                    this.changeState('stop');
-                }
+                this.sendView(['tick', this.remain]);
             },
             stateHandler: {
-                timing: function() {
-                    this.start();
+                timing: {
+                    init: function() {
+                        clearInterval(this.timer);
+                        this.remain = this.countdown;
+                    },
+                    main: function () {
+                        log('controller:' + this.type + ':' + this.uuid, 'start');
+                        var that = this;
+
+                        this.timer = setInterval(function () {
+                            that.tick();
+
+                            // 判断是否倒计时结束
+                            if (that.remain <= 0) {
+                                that.changeState('stop');
+                            }
+                        }, 1000);
+
+                        this.sendView(['start', this.remain]);
+                    },
+                    exit: function() {
+                        clearInterval(this.timer);
+                    }
                 },
-                pause: function() {
+                stop: {
+                    init: function() {
+
+                    },
+                    main: function () {
+                        log('controller:' + this.type + ':' + this.uuid, 'stop');
+                        this.sendView(['stop']);
+                    },
+                    exit: function() {
+
+                    }
+                },
+                pause: function () {
                     
-                },
-                stop: function() {
-                    this.stop();
                 }
             }
         });

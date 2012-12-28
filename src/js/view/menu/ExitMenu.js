@@ -15,7 +15,7 @@ elf.define('FS::View::ExitMenu', ['lang', 'FS::Util', 'FS::View::EventMixin'], f
     menu.mix(eventMixin);
     
     // 绑定来自 manager 的指令
-    menu.listenController('exitMenu', function(method, args) {
+    menu.listenController('exitMenu', function (method, args) {
         menu[method].apply(menu, args);
     });
 

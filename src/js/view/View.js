@@ -77,7 +77,7 @@ elf.define('FS::View::View', [
 
             return instance;
         };
-        view.listenController(Class.type, function(action, opts) {
+        view.listenController(Class.type, function (action, opts) {
             if (action === 'create') {
                 Class.create(opts);
             }
@@ -115,9 +115,9 @@ elf.define('FS::View::View', [
         cocos2dApp = new Cocos2dApp();
     }
 
-    view.init = function() {
+    view.init = function () {
         // 监听 Scene 创建
-        /*this.listenMessage('Scene:create', function() {
+        /*this.listenMessage('Scene:create', function () {
             if (!cocos2dApp) {
                 log('view:cocos2d', 'app');
                 cocos2dApp = new Cocos2dApp();

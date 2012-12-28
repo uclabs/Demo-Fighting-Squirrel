@@ -68,16 +68,16 @@ elf.define('FS::View::Scene', [
             stateHandler: function () {
             },
             // 改变回合方
-            changeSide: function(side) {
+            changeSide: function (side) {
                 log('view:' + this.type + ':' + this.uuid, 'side', side);
             },
             // 
-            replace: function(transition, time) {
+            replace: function (transition, time) {
                 this.sprite.replaceScene(this.sprite, transition || 'Fade', time || 0);
             },
-            addChild: function(uuid, zOrder, tag) {
+            addChild: function (uuid, zOrder, tag) {
                 var child = this.elements[uuid];
-                this.sprite.addChild(child.sprite, zOrder || 1, tag || 1);
+                // this.sprite.addChild(child.sprite, zOrder || 1, tag || 1);
             }
         });
 

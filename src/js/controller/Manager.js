@@ -24,7 +24,7 @@ elf.define('FS::Controller::Manager', [
     manager.mix(eventMixin, messageMixin)
 
     views.forEach(function (name) {
-        ['show', 'hide'].forEach(function(method) {
+        ['show', 'hide'].forEach(function (method) {
             if (!manager[name]) {
                 manager[name] = {};
             }
@@ -34,12 +34,12 @@ elf.define('FS::Controller::Manager', [
         });
     });
 
-    manager.listenView('config', function(opts) {
+    manager.listenView('config', function (opts) {
         log('manager', 'config', opts);
         manager.sendMessage('director', ['config', opts]);
     });
 
-    manager.listenView('game', function(action) {
+    manager.listenView('game', function (action) {
         switch(action) {
             case 'start':
                 log('manager', 'sendMessage', 'director.start');
@@ -63,7 +63,7 @@ elf.define('FS::Controller::Manager', [
         }
     });
 
-    manager.listenView('director', function(state) {
+    manager.listenView('director', function (state) {
         switch(state) {
             case 'ready':
                 log('manager', 'sendMessage', 'director.show');

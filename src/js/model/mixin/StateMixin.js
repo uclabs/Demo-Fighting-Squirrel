@@ -35,7 +35,7 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
                     this.stateEvent.fire(this.state);
                 }
             },
-            onStateChange: function(state, callback) {
+            onStateChange: function (state, callback) {
                 if (!this.stateEvent) {
                     this.stateEvent = new Event();
                 }

@@ -29,7 +29,7 @@ elf.define('FS::Model::Squirrel', [
             restitution: 0.2, // 弹性
             width: 40,
             height: 80,
-            createBody: function() {
+            createBody: function () {
                 // 物体定义
                 var bodyDef = new b2BodyDef;
                 bodyDef.type = b2Body.b2_dynamicBody;
@@ -40,10 +40,10 @@ elf.define('FS::Model::Squirrel', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.scale(this.width / 2), this.scale(this.height / 2));
+                fixDef.shape.SetAsBox(this.zoomIn(this.width / 2), this.zoomIn(this.height / 2));
 
                 // 由世界创建物体
-                bodyDef.position = new b2Vec2(this.scale(this.x), this.scale(this.y));
+                bodyDef.position = new b2Vec2(this.zoomIn(this.x), this.zoomIn(this.y));
                 this.body = this.world.CreateBody(bodyDef);
                 this.body.SetUserData({uuid: this.uuid});
                 // 创建物体相应的材质

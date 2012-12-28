@@ -11,13 +11,13 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
         mixin = {
             // 属性配置
             config: function (opts) {
-                var isConfig = function(value) {
+                var isConfig = function (value) {
                     var type = _.type(value);
                     return type === 'string' || type === 'number' || type === 'boolean';
                 }
                 if (opts) {
                     var filtedOpts = {};
-                    _.each(opts, function(value, key) {
+                    _.each(opts, function (value, key) {
                         if (isConfig(value)) {
                             filtedOpts[key] = value;
                         }
@@ -52,13 +52,16 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
                 }
             },
             // 获取当前位置
-            position: function() {
+            position: function () {
                 if (!this.body) {
                     return {x: 0, y: 0};
                 }
-                return this.body.GetPosition();
+                var position = this.body.GetPosition(),
+                    x = this.zoomOut(position.x),
+                    y = this.zoomOut(position.y);
+                return {x: x, y: y};
             },
-            updatePosition: function() {
+            updatePosition: function () {
                 var position = this.position();
 
                 // 只有位置改变，才需要更新
@@ -67,20 +70,26 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
                 }
             },
             // 撞击
-            impact: function(force) {
+            impact: function (force) {
+                force = this.zoomOut(force);
                 this.sendView(['impact', force]);
             },
             // 销毁
-            destroy: function() {
+            destroy: function () {
                 log('controller:' + this.type + ':' + this.uuid, 'destroy');
             },
             // 碰撞
-            collision: function(arg) {
+            collision: function (arg) {
                 // 广播物体被碰撞
                 this.sendMessage('Element', [this.uuid, 'collision', arg]);
             },
-            scale: function(value) {
+            // 把外界数值转化为小世界的数值
+            zoomIn: function (value) {
                 return value / config.world.scale;
+            },
+            // 吧小世界的数值转化为大世界的数值
+            zoomOut: function (value) {
+                return value * config.world.scale;
             }
         };
 
