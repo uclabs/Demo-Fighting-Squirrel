@@ -57,8 +57,8 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
                     return {x: 0, y: 0};
                 }
                 var position = this.body.GetPosition(),
-                    x = this.zoomOut(position.x),
-                    y = this.zoomOut(position.y);
+                    x = this.scaleOut(position.x),
+                    y = this.scaleOut(position.y);
                 return {x: x, y: y};
             },
             updatePosition: function () {
@@ -71,24 +71,25 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
             },
             // 撞击
             impact: function (force) {
-                force = this.zoomOut(force);
+                force = this.scaleOut(force);
                 this.sendView(['impact', force]);
             },
             // 销毁
             destroy: function () {
                 log('controller:' + this.type + ':' + this.uuid, 'destroy');
-            },
-            // 碰撞
-            collision: function (arg) {
-                // 广播物体被碰撞
-                this.sendMessage('Element', [this.uuid, 'collision', arg]);
+                // 从物理世界中销毁
+                if (this.world && this.body) {
+                    this.world.DestroyBody(this.body);
+                }
+                // 发送销毁命令到 view
+                this.sendView(['destroy']);
             },
             // 把外界数值转化为小世界的数值
-            zoomIn: function (value) {
+            scaleIn: function (value) {
                 return value / config.world.scale;
             },
             // 吧小世界的数值转化为大世界的数值
-            zoomOut: function (value) {
+            scaleOut: function (value) {
                 return value * config.world.scale;
             }
         };

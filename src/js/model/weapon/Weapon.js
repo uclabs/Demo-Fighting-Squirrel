@@ -63,7 +63,6 @@ elf.define('FS::Model::Weapon', [
                 // 攻击中
                 attack: {
                     init: function () {
-                        clearTimeout(this.attackTimer);
                     },
                     main: function () {
                         var that = this,
@@ -75,10 +74,8 @@ elf.define('FS::Model::Weapon', [
                         // 判断是否飞出场景
                         if (x < 0|| x > config.world.width ||
                             y < 0 || y > config.world.height) {
-                            if (this.state !== 'idle') {
-                                log('controller:' + this.type + ':' + this.uuid, 'out of scene');
-                                this.changeState('idle');
-                            }
+                            log('controller:' + this.type + ':' + this.uuid, 'out of scene');
+                            this.changeState('idle');
                             return;
                         }
 
@@ -86,10 +83,8 @@ elf.define('FS::Model::Weapon', [
                         if (lastAttackPosition &&
                             (Math.abs(lastAttackPosition.x - x) < 10 &&
                             Math.abs(lastAttackPosition.y - y) < 10)) {
-                            if (this.state !== 'idle') {
-                                log('controller:' + this.type + ':' + this.uuid, 'not move');
-                                this.changeState('idle');
-                            }
+                            log('controller:' + this.type + ':' + this.uuid, 'not move');
+                            this.changeState('idle');
                             return;
                         }
 
@@ -97,11 +92,14 @@ elf.define('FS::Model::Weapon', [
                         this.lastAttackPosition = position;
 
                         // 攻击状态循环
+                        clearTimeout(this.attackTimer);
                         this.attackTimer = setTimeout(function() {
-                            that.changeState('attack');
+                            if (that.state === 'attack') {
+                                that.changeState('attack');
+                            }
                         }, 200);
                     },
-                    exit: function () {
+                    exit: function () { 
                         clearTimeout(this.attackTimer);
                     }
                 },

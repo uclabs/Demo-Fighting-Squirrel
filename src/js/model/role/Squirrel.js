@@ -40,10 +40,10 @@ elf.define('FS::Model::Squirrel', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.zoomIn(this.width / 2), this.zoomIn(this.height / 2));
+                fixDef.shape.SetAsBox(this.scaleIn(this.width / 2), this.scaleIn(this.height / 2));
 
                 // 由世界创建物体
-                bodyDef.position = new b2Vec2(this.zoomIn(this.x), this.zoomIn(this.y));
+                bodyDef.position = new b2Vec2(this.scaleIn(this.x), this.scaleIn(this.y));
                 this.body = this.world.CreateBody(bodyDef);
                 this.body.SetUserData({uuid: this.uuid});
                 // 创建物体相应的材质

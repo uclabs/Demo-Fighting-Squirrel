@@ -301,6 +301,11 @@ elf.define('FS::Controller::Director', [
                 init: function () {
                 },
                 main: function () {
+                    // 如果计时器还在跑，则表明回合未结束
+                    if (this.timer.state === 'timing') {
+                        return;
+                    }
+                    
                     // 进入下一回合
                     // 增加回合数
                     this.round++;
@@ -346,9 +351,10 @@ elf.define('FS::Controller::Director', [
                     });
                     // 发射武器
                     weapon.fire(vector);
-                    // 将所有元素受到撞击的力量重置为0
+                    // 将所有元素的武器置空，受到撞击的力量置0
                     for (var uuid in this.elements) {
                         var element = this.elements[uuid];
+                        element.impactWeapon = null;
                         element.impactForce = 0;
                     }
                 },

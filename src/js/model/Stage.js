@@ -55,17 +55,17 @@ elf.define('FS::Model::Stage', [
                 fixDef.friction = this.friction;
                 fixDef.restitution = this.restitution;
                 fixDef.shape = new b2PolygonShape;
-                fixDef.shape.SetAsBox(this.zoomIn(this.width / 2), this.zoomIn(this.height / 2));
+                fixDef.shape.SetAsBox(this.scaleIn(this.width / 2), this.scaleIn(this.height / 2));
 
                 // 由世界创建物体
                 // 左树杈
-                bodyDef.position = new b2Vec2(this.zoomIn(200), this.zoomIn(600));
+                bodyDef.position = new b2Vec2(this.scaleIn(200), this.scaleIn(600));
                 var branch1 = this.world.CreateBody(bodyDef);
                 branch1.CreateFixture(fixDef);
                 branch1.SetUserData(userData);
 
                 // 右树杈
-                bodyDef.position = new b2Vec2(this.zoomIn(824), this.zoomIn(600));
+                bodyDef.position = new b2Vec2(this.scaleIn(824), this.scaleIn(600));
                 var branch2 = this.world.CreateBody(bodyDef);
                 branch2.CreateFixture(fixDef);
                 branch2.SetUserData(userData);

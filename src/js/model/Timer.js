@@ -40,13 +40,14 @@ elf.define('FS::Model::Timer', [
             stateHandler: {
                 timing: {
                     init: function() {
-                        clearInterval(this.timer);
-                        this.remain = this.countdown;
                     },
                     main: function () {
                         log('controller:' + this.type + ':' + this.uuid, 'start');
                         var that = this;
 
+                        clearInterval(this.timer);
+                        this.remain = this.countdown;
+                        
                         this.timer = setInterval(function () {
                             that.tick();
 
