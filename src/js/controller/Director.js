@@ -59,6 +59,7 @@ elf.define('FS::Controller::Director', [
         // 工具方法
         isRole = util.isRole,
         isWeapon = util.isWeapon,
+        isSame = util.isSame,
 
         // 游戏相关定义
         uuid = 0,
@@ -109,12 +110,10 @@ elf.define('FS::Controller::Director', [
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
 
-            // 创建碰撞事件
-            this.impact = new Event();
-
             // 创建 Box2d 的物理世界
             this.initWorld();
 
+            // 监听其他消息
             this.listenMessage('director', dispactor.bind(this));
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
@@ -178,8 +177,9 @@ elf.define('FS::Controller::Director', [
                     role.changeState('idle');
                 });
             } else {
-                [this.roleGroup0, this.roleGroup1].forEach(function (group) {
-                    this.freezeRoleGroup(group);
+                [this.player0, this.player1].forEach(function (player) {
+                    var roles = player.roles;
+                    this.freezeRoleGroup(roles);
                 });
             }
         },
@@ -189,16 +189,39 @@ elf.define('FS::Controller::Director', [
                     role.changeState('active');
                 });
             } else {
-                [this.roleGroup0, this.roleGroup1].forEach(function (group) {
-                    this.activeRoleGroup(group);
+                [this.player0, this.player1].forEach(function (player) {
+                    var roles = player.roles;
+                    this.activeRoleGroup(roles);
                 });
             }
         },
         // 攻击
         attack: function (role, vector) {
             // TODO 判断攻击合法性
+            if (!role || !vector) {
+                return;
+            }
+
+            var player = this['player' + this.side],
+                roles = player.roles,
+                isActiveRole = false;
+
             // 判断是否为该回合激活的角色
+            roles.forEach(function(r) {
+                if (isSame(role, r)) {
+                    isActiveRole = true;
+                }
+            });
+            if (!isActiveRole) {
+                log('director', 'attack', 'not active role');
+                return;
+            }
+
             // 判断是否攻击已超时
+            if (this.timer.state !== 'timing') {
+                log('director', 'attack', 'timeout');
+                return;
+            }
 
             // 更新攻击数据
             var weapon = this.get(role.weapon);
@@ -227,8 +250,8 @@ elf.define('FS::Controller::Director', [
             var that = this,
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {}),
-                roleGroup0 = this.roleGroup0 = [],
-                roleGroup1 = this.roleGroup1 = [],
+                roles0 = this.player0.roles = [],
+                roles1 = this.player1.roles = [],
                 role0x = 100,
                 role0y = 540,
                 role1x = 920,
@@ -254,11 +277,11 @@ elf.define('FS::Controller::Director', [
 
             // 创建玩家一角色
             // TODO 待更新为工厂方法创建
-            roleGroup0.push(role0);
+            roles0.push(role0);
 
             // 创建玩家二角色
             // TODO 待更新为工厂方法创建
-            roleGroup1.push(role1);
+            roles1.push(role1);
 
             // 监听计时器运行状态
             timer.onStateChange('stop', function () {
@@ -316,10 +339,10 @@ elf.define('FS::Controller::Director', [
                     this.side = this.round % 2;
                     
                     // 激活该回合角色
-                    var activeGroup = this.side === 0 ? this.roleGroup0 : this.roleGroup1,
-                        idleGroup = this.side === 0 ? this.roleGroup1 : this.roleGroup0;
-                    this.activeRoleGroup(activeGroup);
-                    this.idleRoleGroup(idleGroup);
+                    var activeRoles = this.side === 0 ? this.player0.roles : this.player1.roles,
+                        idleRoles = this.side === 0 ? this.player1.roles : this.player0.roles;
+                    this.activeRoleGroup(activeRoles);
+                    this.idleRoleGroup(idleRoles);
 
                     // 变更回合方
                     this.sendMessage('scene', ['changeSide', this.side]);
@@ -399,8 +422,7 @@ elf.define('FS::Controller::Director', [
         // 物理世界
         // Box2d 相关
         initWorld: function () {
-            var that = this,
-                impact = this.impact;
+            var that = this;
 
             // 创建新世界
             this.world = new b2World(
