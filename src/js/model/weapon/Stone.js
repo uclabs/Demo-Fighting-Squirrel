@@ -52,7 +52,7 @@ elf.define('FS::Model::Stone', [
             fire: function (vector) {
                 var body = this.body;
                 body.ApplyForce(
-                    vector,
+                    this.scaleIn(vector),
                     body.GetPosition()
                 );
                 this._super(vector);

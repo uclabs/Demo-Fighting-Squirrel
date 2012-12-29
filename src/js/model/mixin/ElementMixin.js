@@ -86,11 +86,29 @@ elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], functi
             },
             // 把外界数值转化为小世界的数值
             scaleIn: function (value) {
-                return value / config.world.scale;
+                if (_.type(value) === 'object') {
+                    for (var name in value) {
+                        if (_.type(value[name]) === 'number') {
+                            value[name] /= config.world.scale;
+                        }
+                    }
+                    return value;
+                } else {
+                    return value / config.world.scale;
+                }
             },
             // 吧小世界的数值转化为大世界的数值
             scaleOut: function (value) {
-                return value * config.world.scale;
+                if (_.type(value) === 'object') {
+                    for (var name in value) {
+                        if (_.type(value[name]) === 'number') {
+                            value[name] *= config.world.scale;
+                        }
+                    }
+                    return value;
+                } else {
+                    return value * config.world.scale;
+                }
             }
         };
 

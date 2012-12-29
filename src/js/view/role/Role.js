@@ -39,7 +39,7 @@ elf.define('FS::View::Role', [
                 setTimeout(function () {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
-                        that.attack({x: weapon.x + 50, y: weapon.y - 520});
+                        that.attack({x: -200, y: -400});
                     }
                 }, Math.random() * 6000 + 1500);
             },
