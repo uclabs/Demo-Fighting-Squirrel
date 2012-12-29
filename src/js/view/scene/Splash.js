@@ -15,16 +15,15 @@ elf.define('FS::View::Splash', [
     'FS::Util',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
-    'FS::View::ElementMixin',
-    'FS::View::StateMixin'
-], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
+    'FS::View::ElementMixin'
+], function (_, Class, util, eventMixin, messageMixin, elementMixin) {
     'use strict';
 
     var type = 'Splash',
         Splash = Class.extend({
             type: type,
             ctor: function (opts) {
-                this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
+                this.mix(eventMixin, messageMixin, elementMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
                 
@@ -32,11 +31,8 @@ elf.define('FS::View::Splash', [
                 this.sprite = document.getElementById('splash');
             },
             mix: util.mix,
-            stateHandler: function () {
-            },
-            // 切换到本场景
-            hide: function (transition, time) {
-                log('view:' + this.type + ':' + this.uuid, 'replace', transition, time);
+            hide: function () {
+                log('view:' + this.type + ':' + this.uuid, 'hide');
                 this.sprite.style.display = "none";
                 var gameCanvas = document.getElementById('game_canvas');
                 if(gameCanvas){

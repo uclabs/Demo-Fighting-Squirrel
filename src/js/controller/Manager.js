@@ -61,8 +61,8 @@ elf.define('FS::Controller::Manager', [
         }
     });
 
-    manager.listenMessage('director', function (state) {
-        switch(state) {
+    manager.listenMessage('game', function (action) {
+        switch(action) {
             case 'ready':
                 log('manager', 'sendMessage', 'scene.replace');
                 scene.replace();
@@ -81,7 +81,7 @@ elf.define('FS::Controller::Manager', [
         menu = new Menu({uuid: 'menu'});
         log('manager', 'Menu.create', 'menu', menu.config());
         manager.sendView(Menu.type, ['create', menu.config()]);
-        
+
         scene = new Scene({uuid: 'scene'});
         log('manager', 'Scene.create', 'scene', scene.config());
         manager.sendView(Scene.type, ['create', scene.config()]);
@@ -91,6 +91,7 @@ elf.define('FS::Controller::Manager', [
         manager.sendView(Splash.type, ['create', splash.config()]);
 
         // 切换到菜单场景
+        splash.hide();
         menu.replace();
     };
 
