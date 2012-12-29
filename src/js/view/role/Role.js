@@ -35,11 +35,15 @@ elf.define('FS::View::Role', [
                 // 模拟玩家进行攻击
                 // TODO-delete 完成后移除
                 var that = this,
-                    weapon = this.weapon;
+                    weapon = this.weapon,
+                    vector = {x: 1500 + Math.random() * 800, y: -200 + Math.random() * -300};
+                if (this.x > 600) {
+                    vector.x = -vector.x;
+                }
                 setTimeout(function () {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
-                        that.attack({x: -200, y: -400});
+                        that.attack(vector);
                     }
                 }, Math.random() * 6000 + 1500);
             },

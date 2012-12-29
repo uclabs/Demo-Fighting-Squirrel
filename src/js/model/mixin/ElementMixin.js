@@ -5,7 +5,11 @@
  * @import ../../Config.js
  * @import ../../Util.js
  */
-elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], function (_, config, util) {
+elf.define('FS::Model::ElementMixin', [
+    'lang',
+    'FS::Config',
+    'FS::Util'
+], function (_, config, util) {
     'use strict';
     
     var comparePosition = util.comparePosition,

@@ -3,7 +3,9 @@
  *
  * @import ../../Dispatcher.js
  */
-elf.define('FS::Model::EventMixin', ['FS::Dispatcher'], function (dispatcher) {
+elf.define('FS::Model::EventMixin', [
+    'FS::Dispatcher'
+], function (dispatcher) {
     'use strict';
     
     var uplink = dispatcher.uplink,
