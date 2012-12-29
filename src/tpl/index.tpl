@@ -11,11 +11,11 @@
 <body>
 
 <div style="width:1024px;margin:0 auto;background:black">
-    <canvas id="scene" width="1024" height="768"></canvas>
+    <canvas id="game_canvas" width="1024" height="768" style="display:none;"></canvas>
 </div>
 <canvas id="splash" width="1024" height="768"></canvas>
 <!-- <canvas id="scene" width="1024" height="768"></canvas>
- --><canvas id="debug" width="1024" height="768"></canvas>
+ --><canvas id="debug" width="1024" height="768" style="display:none;"></canvas>
 
 <script>
 elf.require(['FS::Config'], function (config) {

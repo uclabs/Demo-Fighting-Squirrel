@@ -13,13 +13,85 @@ elf.define('FS::View::Menu', [
     'lang',
     'class',
     'FS::Util',
+    'FS::View:Messager',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, util, observer, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     
+    // 主屏配置
+    var config = {
+        bgImg: "../img/main.png",
+        bgRect: cc.rect(0, 0, 1000, 700),
+        beginBtnImg: "../img/localized",
+        beginBtnRect: cc.rect(0, 0, 200, 200),
+        optionBtnImg: "../img/localized",
+        optionBtnRect: cc.rect(0, 0, 200, 200),
+        label: "战斗吧，松鼠",
+        labelSize: cc.size(200, 200),
+        labelFontSize: 32,
+        labelFontType: "Times New Roman",
+
+        beginGameEvent: "FS::View::MainMenu::beginGame",
+        optionEvent: "FS::View::MainMenu::option",
+    }
+
+    // 主屏层
+    var MainMenuLayer = cc.Layer.extend({
+        init:function(){
+            var s = cc.Director.getInstance().getWinSize();
+
+            //背景
+            var bgSprite = cc.Sprite.create(config.bgImg, config.bgRect);
+            bgSprite.setPosition(cc.p(0, 0));
+            this.addChild(bgSprite);
+
+            //开始按钮
+            var beginBtn = cc.MenuItemImage.create();
+            beginBtn.setCallback(this.beginGame);
+            var beginBtnFrame = cc.SpriteFrame.create(config.beginBtnImg, config.beginBtnRect);
+            beginBtn.setNormalSpriteFrame(beginBtnFrame);
+            beginBtn.setPosition(cc.p(s.width/2 - 100, s.height/2));
+
+            //选项按钮
+            var optionBtn = cc.MenuItemImage.create();
+            optionBtn.setCallback(this.gameOption);
+            var optionBtnFrame = cc.SpriteFrame.create(config.optionBtnImg, config.optionBtnRect);
+            optionBtn.setNormalSpriteFrame(optionBtnFrame);
+            optionBtn.setPosition(cc.p(s.width/2 - 100, s.height/2 - 100));
+
+            //title Label
+            var titleLabel = cc.LabelTTF.create(
+                config.label,
+                config.labelFontType,
+                config.labelFontSize, 
+                config.labelSize
+                cc.TEXT_ALIGNMENT_CENTER);
+            titleLabel.setPosition(cc.p(s.width/2 - 100, s.height/2 + 100));
+            this.addChild(titleLabel);
+            this.addChild(beginBtn);
+            this.addChild(optionBtn);
+        },
+        beginGame:function(){
+            observer.fire(config.beginGameEvent);
+        },
+        gameOption:function(){
+            observer.fire(config.optionEvent)
+        }
+    });
+
+    // 主屏场景
+    var MainMenuScene = cc.Scene.extend({
+        onEnter:function(){
+            this._super();
+            var mainLayer = new MainMenuLayer();
+            mainLayer.init();
+            this.addChild(mainLayer);
+        }
+    });
+
     var type = 'Menu',
         Menu = Class.extend({
             type: type,
@@ -30,6 +102,7 @@ elf.define('FS::View::Menu', [
 
                 // 派发场景创建消息
                 //this.sendMessage('Scene:create', [this]);
+                this.sprite = new MainMenuScene();
             },
             mix: util.mix,
             stateHandler: function () {
@@ -48,9 +121,22 @@ elf.define('FS::View::Menu', [
             },
             addChild: function (uuid, zOrder, tag) {
                 var child = this.elements[uuid];
+            },
+            beginGame: function(){
+                this.sendController('config', [{mode: 'multi-player'}]);
+                this.sendController('game', ['start']);
+            },
+            optionGame: function(){
+                this.sendController('game', ['option']);
+            },
+            replace: function(){
+
             }
         });
 
+    //绑定初始化事件
+    observer.bind(config.beginGameEvent, MainMenu.beginGame);
+    observer.bind(config.optionEvent, MainMenu.option);
     Menu.type = type;
 
     return Menu;

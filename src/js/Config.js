@@ -28,7 +28,7 @@ elf.define('FS::Config', function () {
             showFPS: true,
             frameRate: frameRate,
             loadExtension: false,
-            tag: 'scene', //the dom element to run cocos2d on
+            tag: 'game_canvas', //the dom element to run cocos2d on
             engineDir: 'public/lib/cocos2d/',
             appFiles: []
         }

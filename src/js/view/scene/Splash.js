@@ -35,8 +35,13 @@ elf.define('FS::View::Splash', [
             stateHandler: function () {
             },
             // 切换到本场景
-            replace: function (transition, time) {
+            hide: function (transition, time) {
                 log('view:' + this.type + ':' + this.uuid, 'replace', transition, time);
+                this.sprite.style.display = "none";
+                var gameCanvas = document.getElementById('game_canvas');
+                if(gameCanvas){
+                    gameCanvas.style.display = "block";
+                }
             }
         });
 
