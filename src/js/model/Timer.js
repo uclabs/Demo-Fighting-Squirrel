@@ -17,6 +17,7 @@ elf.define('FS::Model::Timer', [
     'FS::Model::StateMixin'
 ], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
+    
     var concat = Array.prototype.concat,
         type = 'Timer',
         Timer = Class.extend({
@@ -47,7 +48,7 @@ elf.define('FS::Model::Timer', [
 
                         clearInterval(this.timer);
                         this.remain = this.countdown;
-                        
+
                         this.timer = setInterval(function () {
                             that.tick();
 

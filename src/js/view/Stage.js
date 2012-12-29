@@ -20,6 +20,7 @@ elf.define('FS::View::Stage', [
     'FS::View::StateMixin'
 ], function (_, Class, util, resources, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
+    
     var Point = resources.ccAnchorPoint,
         Sprite = function () {
             var stageBg = stageItems[0], 
@@ -30,8 +31,9 @@ elf.define('FS::View::Stage', [
             bg.setScale(winSize.width/stageBg.width, winSize.height/stageBg.height);
             return bg;
         },
+        type = 'Stage',
         Stage = Class.extend({
-            type: 'Stage',
+            type: type,
             ctor: function (opts) {
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
@@ -46,7 +48,7 @@ elf.define('FS::View::Stage', [
             }
         });
 
-    Stage.type = 'Stage';
+    Stage.type = type;
 
 
     var stageItems = [

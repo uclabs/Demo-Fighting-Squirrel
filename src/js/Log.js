@@ -5,6 +5,7 @@
  */
 elf.define('FS::Log', ['FS::Config'], function (config) {
     'use strict';
+    
     // 格式 log(class, method, ...agrs)
     var log = window.log = config.log ?
         function (name, method) {

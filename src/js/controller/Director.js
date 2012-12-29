@@ -11,11 +11,12 @@
  * @import ../model/mixin/EventMixin.js
  * @import ../model/mixin/MessageMixin.js
  * @import ../model/mixin/StateMixin.js
- * @import ../model/Scene.js
  * @import ../model/Timer.js
  * @import ../model/Stage.js
  * @import ../model/role/Role.js
+ * @import ../model/role/Squirrel.js
  * @import ../model/weapon/Weapon.js
+ * @import ../model/weapon/Stone.js
  */
 elf.define('FS::Controller::Director', [
     'lang',
@@ -28,14 +29,13 @@ elf.define('FS::Controller::Director', [
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::StateMixin',
-    'FS::Model::Scene',
     'FS::Model::Timer',
     'FS::Model::Stage',
     'FS::Model::Role',
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, Event, Class, async, Box2D, config, util, eventMixin, messageMixin, stateMixin, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, Event, Class, async, Box2D, config, util, eventMixin, messageMixin, stateMixin, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var slice = Array.prototype.slice,
@@ -65,11 +65,11 @@ elf.define('FS::Controller::Director', [
         Director,
         Classes = {};
 
-    [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
+    [Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
-            opts.uuid = 'u' + (++uuid);
+            opts.uuid = 'd' + (++uuid);
             return new Class(opts);
         };
     });
@@ -216,12 +216,15 @@ elf.define('FS::Controller::Director', [
             this.changeState('attack');
         },
 
+        addChild: function(child, index) {
+            var uuid = _.type(child) === 'object' ? child.uuid : child;
+            this.sendMessage('scene', ['addChild', uuid, index]);
+        },
         // 游戏逻辑
         start: function (opts) {
             log('director', 'start', opts);
             // 初始化各元素
             var that = this,
-                scene = this.scene = this.create(Scene.type, {}),
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {}),
                 roleGroup1 = this.roleGroup1 = [],
@@ -263,20 +266,15 @@ elf.define('FS::Controller::Director', [
             });
 
             // 把元素放置到场景上
-            scene.addChild(stage, 1);
-            scene.addChild(role1, 2);
-            scene.addChild(role2, 3);
-
-            // 切换到场景
-            scene.replace();
+            this.addChild(stage, 1);
+            this.addChild(role1, 2);
+            this.addChild(role2, 3);
 
             // 游戏状态修改为准备
             this.changeState('ready');
         },
         stop: function () {
             log('director', 'stop');
-            var scene = this.scene;
-            scene.changeState('freeze');
         },
         show: function () {
 
@@ -305,7 +303,7 @@ elf.define('FS::Controller::Director', [
                     if (this.timer.state === 'timing') {
                         return;
                     }
-                    
+
                     // 进入下一回合
                     // 增加回合数
                     this.round++;
@@ -321,10 +319,10 @@ elf.define('FS::Controller::Director', [
                     this.idleRoleGroup(idleGroup);
 
                     // 变更回合方
-                    this.scene.changeSide(this.side);
+                    this.sendMessage('scene', ['changeSide', this.side]);
 
                     // 场景切换到就绪状态
-                    this.scene.changeState('ready');
+                    this.sendMessage('scene', ['changeState', 'ready']);
                     // 计时器开始
                     this.timer.changeState('timing');
                 },
@@ -337,7 +335,7 @@ elf.define('FS::Controller::Director', [
                     // 清除攻击定时器
                     clearInterval(this.attackTimer);
                     // 场景切换到攻击状态
-                    this.scene.changeState('attack');
+                    this.sendMessage('scene', ['changeState', 'attack']);
                     // 计时器停止
                     this.timer.changeState('stop');
                     // 准备发射武器

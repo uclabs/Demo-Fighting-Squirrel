@@ -18,7 +18,7 @@ elf.define('FS::App', [
 
     var exports = {},
         director;
-
+        
     exports.init = function () {
         log('app', '-----init-----');
         director = new Director();

@@ -7,6 +7,7 @@
  */
 elf.define('FS::Model::ElementMixin', ['lang', 'FS::Config', 'FS::Util'], function (_, config, util) {
     'use strict';
+    
     var comparePosition = util.comparePosition,
         mixin = {
             // 属性配置

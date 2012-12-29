@@ -17,9 +17,10 @@ elf.define('FS::View::Timer', [
     'FS::View::StateMixin'
 ], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
-    var concat = Array.prototype.concat,
+    
+    var type = 'Timer',
         Timer = Class.extend({
-            type: 'Timer',
+            type: type,
             countdown: 30,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
@@ -40,7 +41,7 @@ elf.define('FS::View::Timer', [
             }
         });
 
-    Timer.type = 'Timer';
+    Timer.type = type;
 
     return Timer;
 });

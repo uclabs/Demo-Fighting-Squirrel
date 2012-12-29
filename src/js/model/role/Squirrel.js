@@ -11,6 +11,7 @@ elf.define('FS::Model::Squirrel', [
     'FS::Model::Role'
 ], function (_, Box2D, Role) {
     'use strict';
+    
     var slice = Array.prototype.slice,
         // Box2d 相关定义
         b2Vec2 = Box2D.Common.Math.b2Vec2,

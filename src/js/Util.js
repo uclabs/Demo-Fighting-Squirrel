@@ -5,6 +5,7 @@
  */
 elf.define('FS::Util', ['lang'], function (_) {
     'use strict';
+    
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
         exports = {};

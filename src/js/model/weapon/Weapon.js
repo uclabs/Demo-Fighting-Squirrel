@@ -23,6 +23,7 @@ elf.define('FS::Model::Weapon', [
     'FS::Model::StateMixin'
 ], function (_, Class, Box2D, config, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
+    
     var concat = Array.prototype.concat,
         slice = Array.prototype.slice,
         // Box2d 相关定义

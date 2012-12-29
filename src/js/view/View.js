@@ -8,12 +8,9 @@
  * @import ./Resources.js
  * @import ./mixin/EventMixin.js
  * @import ./mixin/MessageMixin.js
- * @import ./Splash.js
- * @import ./menu/ExitMenu.js
- * @import ./menu/GameMenu.js
- * @import ./menu/MainMenu.js
- * @import ./menu/ResultMenu.js
- * @import ./Scene.js
+ * @import ./scene/Menu.js
+ * @import ./scene/Scene.js
+ * @import ./scene/Splash.js
  * @import ./Timer.js
  * @import ./Stage.js
  * @import ./role/Role.js
@@ -29,26 +26,23 @@ elf.define('FS::View::View', [
     'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
-    'FS::View::Splash',
-    'FS::View::ExitMenu',
-    'FS::View::GameMenu',
-    'FS::View::MainMenu',
-    'FS::View::ResultMenu',
+    'FS::View::Menu',
     'FS::View::Scene',
+    'FS::View::Splash',
     'FS::View::Timer',
     'FS::View::Stage',
     'FS::View::Role',
     'FS::View::Squirrel',
     'FS::View::Weapon',
     'FS::View::Stone'
-], function (_, async, config, util, resources, eventMixin, messageMixin, splash, exitMenu, gameMenu, mainMenu, resultMenu, Scene, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, config, util, resources, eventMixin, messageMixin, Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var view = {
                 elements: {},
                 mix: util.mix
             },
-        Classes = [Scene, Timer, Stage, Role, Squirrel, Weapon, Stone],
+        Classes = [Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone],
         Cocos2dApp, cocos2dApp;
 
     // 把事件和消息 mixin

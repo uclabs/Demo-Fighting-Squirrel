@@ -5,6 +5,7 @@
  */
 elf.define('FS::Model::MessageMixin', ['FS::Controller::Messager'], function (messager) {
     'use strict';
+    
     var mixin = {
             // 监听消息
             listenMessage: function (event, handler) {

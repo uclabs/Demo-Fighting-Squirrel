@@ -5,6 +5,7 @@
  */
 elf.define('FS::Model::StateMixin', ['event'], function (Event) {
     'use strict';
+    
     var mixin = {
             state: null,
             stateEvent: null,

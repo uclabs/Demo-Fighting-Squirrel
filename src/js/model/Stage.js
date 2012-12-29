@@ -19,6 +19,7 @@ elf.define('FS::Model::Stage', [
     'FS::Model::StateMixin'
 ], function (_, Class, Box2D, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
+    
     var concat = Array.prototype.concat,
         // Box2d 相关定义
         b2Vec2 = Box2D.Common.Math.b2Vec2,
