@@ -33,6 +33,7 @@ elf.define('FS::Model::Stone', [
                 // 物体定义
                 var bodyDef = new b2BodyDef;
                 bodyDef.type = b2Body.b2_dynamicBody;
+                bodyDef.bullet = true;
                 bodyDef.position= new b2Vec2(this.scaleIn(this.x), this.scaleIn(this.y));
 
                 // 材质定义

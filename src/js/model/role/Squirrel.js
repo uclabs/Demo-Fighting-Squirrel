@@ -25,7 +25,7 @@ elf.define('FS::Model::Squirrel', [
         type = 'Squirrel',
         Squirrel = Role.extend({
             type: type,
-            density: 1, // 密度
+            density: 7, // 密度
             friction: 1, // 摩擦力
             restitution: 0.2, // 弹性
             width: 40,
