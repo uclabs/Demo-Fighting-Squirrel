@@ -1,9 +1,13 @@
 /**
  * StateMixin
  *
+ * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/core/event.js
  */
-elf.define('FS::Model::StateMixin', ['event'], function (Event) {
+elf.define('FS::Model::StateMixin', [
+    'lang',
+    'event'
+], function (_, Event) {
     'use strict';
     
     var mixin = {
@@ -12,10 +16,11 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
             // 改变状态
             changeState: function (newState, args) {
                 var lastState = this.state,
+                    stateChange = newState !== lastState,
                     lastStateHandler = this.stateHandler[lastState],
                     stateHandler = this.stateHandler[newState];
                     
-                if (newState !== lastState) {
+                if (stateChange) {
                     if (lastStateHandler && lastStateHandler.exit) {
                         lastStateHandler.exit.call(this);
                     }
@@ -32,13 +37,18 @@ elf.define('FS::Model::StateMixin', ['event'], function (Event) {
                 }
 
                 // 派发状态改变事件
-                if (this.stateEvent) {
-                    this.stateEvent.fire(this.state);
+                if (this.stateEvent && stateChange) {
+                    this.stateEvent.fire('_all_', [this.state]);
+                    this.stateEvent.fire(this.state, [this.state]);
                 }
             },
             onStateChange: function (state, callback) {
                 if (!this.stateEvent) {
                     this.stateEvent = new Event();
+                }
+                if (_.type(state) === 'function') {
+                    callback = state;
+                    state = '_all_';
                 }
                 this.stateEvent.bind(state, callback);
             }

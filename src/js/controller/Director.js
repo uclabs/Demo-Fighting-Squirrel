@@ -270,6 +270,9 @@ elf.define('FS::Controller::Director', [
             this.addChild(role1, 2);
             this.addChild(role2, 3);
 
+            // 游戏准备完毕
+            this.sendMessage('game', ['ready']);
+
             // 游戏状态修改为准备
             this.changeState('ready');
         },
