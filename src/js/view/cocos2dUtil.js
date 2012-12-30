@@ -30,7 +30,6 @@
                     transition = cc.TransitionMoveInR.create(time, scene);
                     break;
             }
-            console.log(transition);
             cc.Director.getInstance().replaceScene(transition);
         }
  	}

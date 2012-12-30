@@ -24,12 +24,12 @@ elf.define('FS::View::Menu', [
     
     // 主屏配置
     var config = {
-        bgImg: "../img/main.png",
-        bgRect: cc.rect(0, 0, 1000, 700),
-        beginBtnImg: "../img/localized",
-        beginBtnRect: cc.rect(0, 0, 200, 200),
-        optionBtnImg: "../img/localized",
-        optionBtnRect: cc.rect(0, 0, 200, 200),
+        bgImg: "/public/img/main.png",
+        bgRect: cc.rect(2, 0, 1000, 500),
+        beginBtnImg: "/public/img/localized.png",
+        beginBtnRect: cc.rect(0, 120, 160, 40),
+        optionBtnImg: "/public/img/localized.png",
+        optionBtnRect: cc.rect(225, 89, 150, 38),
         label: "战斗吧，松鼠",
         labelSize: cc.size(200, 200),
         labelFontSize: 32,
@@ -44,26 +44,30 @@ elf.define('FS::View::Menu', [
             this.mix(eventMixin);
             var s = cc.Director.getInstance().getWinSize();
 
-            var greenLayer = cc.LayerColor.create(cc.c4(0, 255, 0, 255), s.width, s.height);
-            this.addChild(greenLayer);
+            //var greenLayer = cc.LayerColor.create(cc.c4(0, 255, 0, 255), s.width, s.height);
+            //this.addChild(greenLayer);
             //背景
             var bgSprite = cc.Sprite.create(config.bgImg, config.bgRect);
+            bgSprite.setAnchorPoint(cc.p(0, 0));
+            bgSprite.setScale(1.15, 1.55);  //临时放大
             bgSprite.setPosition(cc.p(0, 0));
             this.addChild(bgSprite);
 
             //开始按钮
             var beginBtn = cc.MenuItemImage.create();
-            beginBtn.setCallback(this.beginGame);
+            beginBtn.setEnabled(true);
+            beginBtn.setCallback(this.beginGame, this);
             var beginBtnFrame = cc.SpriteFrame.create(config.beginBtnImg, config.beginBtnRect);
             beginBtn.setNormalSpriteFrame(beginBtnFrame);
-            beginBtn.setPosition(cc.p(s.width/2 - 100, s.height/2));
+            beginBtn.setPosition(cc.p(s.width/2, s.height/2));
 
             //选项按钮
             var optionBtn = cc.MenuItemImage.create();
-            optionBtn.setCallback(this.gameOption);
+            optionBtn.setEnabled(true);
+            optionBtn.setCallback(this.gameOption, this);
             var optionBtnFrame = cc.SpriteFrame.create(config.optionBtnImg, config.optionBtnRect);
             optionBtn.setNormalSpriteFrame(optionBtnFrame);
-            optionBtn.setPosition(cc.p(s.width/2 - 100, s.height/2 - 100));
+            optionBtn.setPosition(cc.p(s.width/2, s.height/2 - 80));
 
             //title Label
             var titleLabel = cc.LabelTTF.create(
@@ -72,16 +76,21 @@ elf.define('FS::View::Menu', [
                 config.labelFontSize, 
                 config.labelSize,
                 cc.TEXT_ALIGNMENT_CENTER);
-            titleLabel.setPosition(cc.p(s.width/2 - 100, s.height/2 + 100));
+            titleLabel.setColor(cc.c3(255, 255, 51));
+            titleLabel.setPosition(cc.p(s.width/2, s.height/2 + 100));
             this.addChild(titleLabel);
-            this.addChild(beginBtn);
-            this.addChild(optionBtn);
+
+            var gameMenu = cc.Menu.create(beginBtn, optionBtn);
+            gameMenu.setPosition(cc.p(0, 0));
+            this.addChild(gameMenu);
         },
         beginGame:function(){
+            console.log("begin game");
             this.sendController('config', [{mode: 'multi-player'}]);
             this.sendController('game', ['start']);
         },
         gameOption:function(){
+            console.log("option game");
             this.sendController('game', ['option']);
         }
     });
@@ -119,6 +128,7 @@ elf.define('FS::View::Menu', [
 
 
                 console.log("replace with menu main");
+                //cocos2dUtils.replaceScene(this.sprite, 'Fade', 0.5);
                 var tranScene = cc.TransitionMoveInL.create(0.5, this.sprite);
                 cc.Director.getInstance().replaceScene(tranScene);
                 /*setTimeout(function () {
