@@ -81,8 +81,12 @@ elf.define('FS::View::View', [
     // Cocos2d Application
     Cocos2dApp = cc.Application.extend({
         config: config.ccConfig,
+        mix: util.mix,
         ctor: function (scene) {
+            var that = this;
             this._super();
+            this.mix(messageMixin);
+            this.mix(eventMixin);
             this.startScene = scene;
             cc.COCOS2D_DEBUG = this.config.COCOS2D_DEBUG;
             cc.setup(this.config.tag);
@@ -91,23 +95,20 @@ elf.define('FS::View::View', [
             };
             cc.Loader.getInstance().onload = function () {
                 cc.AppController.shareAppController().didFinishLaunchingWithOptions();
+                that.sendController('cocos2d_onload');
             };
             cc.Loader.getInstance().preload(resources.ccRessources);
         },
         applicationDidFinishLaunching: function () {
             // initialize director
             var director = cc.Director.getInstance();
-            var scene = cc.Scene.create();
+            var scene = new cc.Scene();
 
             // run
             director.runWithScene(scene);
             return true;
         }
     });
-
-    if (!cocos2dApp) {
-        cocos2dApp = new Cocos2dApp();
-    }
 
     view.init = function () {
         // 监听 Scene 创建
@@ -118,6 +119,13 @@ elf.define('FS::View::View', [
             }
         });*/
         log('view', 'init');
+        if (!cocos2dApp) {
+            cocos2dApp = new Cocos2dApp();
+        }
+        // cocos2dOnload: function(){
+        //     this.
+        // }
+
     };
     return view;
 });

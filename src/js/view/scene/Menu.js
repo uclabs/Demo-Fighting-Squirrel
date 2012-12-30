@@ -8,17 +8,18 @@
  * @import ../mixin/MessageMixin.js
  * @import ../mixin/ElementMixin.js
  * @import ../mixin/StateMixin.js
+ * @impirt ../cocos2dUtils.js
  */
 elf.define('FS::View::Menu', [
     'lang',
     'class',
     'FS::Util',
-    'FS::View:Messager',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
-    'FS::View::StateMixin'
-], function (_, Class, util, observer, eventMixin, messageMixin, elementMixin, stateMixin) {
+    'FS::View::StateMixin',
+    'FS::View::Cocos2dUtils'
+], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin, cocos2dUtils) {
     'use strict';
     
     // 主屏配置
@@ -33,16 +34,18 @@ elf.define('FS::View::Menu', [
         labelSize: cc.size(200, 200),
         labelFontSize: 32,
         labelFontType: "Times New Roman",
-
-        beginGameEvent: "FS::View::MainMenu::beginGame",
-        optionEvent: "FS::View::MainMenu::option",
     }
 
     // 主屏层
     var MainMenuLayer = cc.Layer.extend({
+        mix: util.mix,
         init:function(){
+            console.log("abc");
+            this.mix(eventMixin);
             var s = cc.Director.getInstance().getWinSize();
 
+            var greenLayer = cc.LayerColor.create(cc.c4(0, 255, 0, 255), s.width, s.height);
+            this.addChild(greenLayer);
             //背景
             var bgSprite = cc.Sprite.create(config.bgImg, config.bgRect);
             bgSprite.setPosition(cc.p(0, 0));
@@ -67,7 +70,7 @@ elf.define('FS::View::Menu', [
                 config.label,
                 config.labelFontType,
                 config.labelFontSize, 
-                config.labelSize
+                config.labelSize,
                 cc.TEXT_ALIGNMENT_CENTER);
             titleLabel.setPosition(cc.p(s.width/2 - 100, s.height/2 + 100));
             this.addChild(titleLabel);
@@ -75,10 +78,11 @@ elf.define('FS::View::Menu', [
             this.addChild(optionBtn);
         },
         beginGame:function(){
-            observer.fire(config.beginGameEvent);
+            this.sendController('config', [{mode: 'multi-player'}]);
+            this.sendController('game', ['start']);
         },
         gameOption:function(){
-            observer.fire(config.optionEvent)
+            this.sendController('game', ['option']);
         }
     });
 
@@ -112,31 +116,24 @@ elf.define('FS::View::Menu', [
                 log('view:' + this.type + ':' + this.uuid, 'replace', transition, time);
                 // 由于没有界面，先用计时器模拟玩家延迟点击“开始游戏”按钮
                 var that = this;
-                setTimeout(function () {
+
+
+                console.log("replace with menu main");
+                var tranScene = cc.TransitionMoveInL.create(0.5, this.sprite);
+                cc.Director.getInstance().replaceScene(tranScene);
+                /*setTimeout(function () {
                     // 向 manager 发送游戏开始的消息
                     that.sendController('config', [{mode: 'multi-player'}]);
                     that.sendController('game', ['start']);
-                }, 1000);
+                }, 1000);*/
                 // this.sprite.replaceScene(this.sprite, transition || 'Fade', time || 0);
             },
             addChild: function (uuid, zOrder, tag) {
                 var child = this.elements[uuid];
-            },
-            beginGame: function(){
-                this.sendController('config', [{mode: 'multi-player'}]);
-                this.sendController('game', ['start']);
-            },
-            optionGame: function(){
-                this.sendController('game', ['option']);
-            },
-            replace: function(){
-
             }
         });
 
     //绑定初始化事件
-    observer.bind(config.beginGameEvent, MainMenu.beginGame);
-    observer.bind(config.optionEvent, MainMenu.option);
     Menu.type = type;
 
     return Menu;
