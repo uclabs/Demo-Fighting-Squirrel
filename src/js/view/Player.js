@@ -15,7 +15,7 @@ elf.define('FS::View::Player', [
     'FS::View::EventMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, Box2D, util, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
     
     var type = 'Player',

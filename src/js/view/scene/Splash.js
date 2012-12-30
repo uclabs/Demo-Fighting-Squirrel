@@ -38,6 +38,10 @@ elf.define('FS::View::Splash', [
                 if(gameCanvas){
                     gameCanvas.style.display = "block";
                 }
+                var debugCanvas = document.getElementById('debug');
+                if(debugCanvas){
+                    debugCanvas.style.display = "block";
+                }
             }
         });
 

@@ -204,7 +204,7 @@ elf.define('FS::Controller::Director', [
                 return;
             }
 
-            var player = this['player' + this.side],
+            var player = this.players[this.side],
                 roles = player.roles,
                 isActiveRole = false;
 
@@ -251,11 +251,11 @@ elf.define('FS::Controller::Director', [
             // 初始化各元素
             var that = this,
                 player0 = this.create(Player.type, {}),
-                palyer1 = this.create(Player.type, {});
+                player1 = this.create(Player.type, {}),
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {}),
-                roles0 = this.player0.roles = [],
-                roles1 = this.player1.roles = [],
+                roles0 = player0.roles = [],
+                roles1 = player1.roles = [],
                 role0x = 100,
                 role0y = 540,
                 role1x = 920,
@@ -346,8 +346,10 @@ elf.define('FS::Controller::Director', [
                     this.side = this.round % 2;
                     
                     // 激活该回合角色
-                    var activeRoles = this.side === 0 ? this.player0.roles : this.player1.roles,
-                        idleRoles = this.side === 0 ? this.player1.roles : this.player0.roles;
+                    var activeSide = this.side,
+                        idleSide = this.side === 0 ? 1 : 0,
+                        activeRoles = this.players[activeSide].roles,
+                        idleRoles = this.players[idleSide].roles;
                     this.activeRoleGroup(activeRoles);
                     this.idleRoleGroup(idleRoles);
 
