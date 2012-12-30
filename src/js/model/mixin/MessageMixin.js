@@ -3,7 +3,9 @@
  *
  * @import ../../controller/Messager.js
  */
-elf.define('FS::Model::MessageMixin', ['FS::Controller::Messager'], function (messager) {
+elf.define('FS::Model::MessageMixin', [
+    'FS::Controller::Messager'
+], function (messager) {
     'use strict';
     
     var mixin = {

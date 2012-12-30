@@ -59,6 +59,7 @@ elf.define('FS::Controller::Director', [
         // 工具方法
         isRole = util.isRole,
         isWeapon = util.isWeapon,
+        isSame = util.isSame,
 
         // 游戏相关定义
         uuid = 0,
@@ -86,16 +87,16 @@ elf.define('FS::Controller::Director', [
 
     Director = Class.extend({
         // 配置属性
-        player1: {
+        player0: {
             race: ''
         },
-        player2: {
+        player1: {
             race: ''
         },
 
         // 游戏状态
         elements: {}, // 物件
-        side: 1, // 回合方
+        side: 0, // 回合方
         round: 0, // 当前回合数
         attacking: {
             role: null, // 进攻角色
@@ -109,12 +110,10 @@ elf.define('FS::Controller::Director', [
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
 
-            // 创建碰撞事件
-            this.impact = new Event();
-
             // 创建 Box2d 的物理世界
             this.initWorld();
 
+            // 监听其他消息
             this.listenMessage('director', dispactor.bind(this));
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
@@ -178,8 +177,9 @@ elf.define('FS::Controller::Director', [
                     role.changeState('idle');
                 });
             } else {
-                [this.roleGroup1, this.roleGroup2].forEach(function (group) {
-                    this.freezeRoleGroup(group);
+                [this.player0, this.player1].forEach(function (player) {
+                    var roles = player.roles;
+                    this.freezeRoleGroup(roles);
                 });
             }
         },
@@ -189,16 +189,39 @@ elf.define('FS::Controller::Director', [
                     role.changeState('active');
                 });
             } else {
-                [this.roleGroup1, this.roleGroup2].forEach(function (group) {
-                    this.activeRoleGroup(group);
+                [this.player0, this.player1].forEach(function (player) {
+                    var roles = player.roles;
+                    this.activeRoleGroup(roles);
                 });
             }
         },
         // 攻击
         attack: function (role, vector) {
             // TODO 判断攻击合法性
+            if (!role || !vector) {
+                return;
+            }
+
+            var player = this['player' + this.side],
+                roles = player.roles,
+                isActiveRole = false;
+
             // 判断是否为该回合激活的角色
+            roles.forEach(function(r) {
+                if (isSame(role, r)) {
+                    isActiveRole = true;
+                }
+            });
+            if (!isActiveRole) {
+                log('director', 'attack', 'not active role');
+                return;
+            }
+
             // 判断是否攻击已超时
+            if (this.timer.state !== 'timing') {
+                log('director', 'attack', 'timeout');
+                return;
+            }
 
             // 更新攻击数据
             var weapon = this.get(role.weapon);
@@ -227,38 +250,38 @@ elf.define('FS::Controller::Director', [
             var that = this,
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {}),
-                roleGroup1 = this.roleGroup1 = [],
-                roleGroup2 = this.roleGroup2 = [],
-                role1x = 100,
+                roles0 = this.player0.roles = [],
+                roles1 = this.player1.roles = [],
+                role0x = 100,
+                role0y = 540,
+                role1x = 920,
                 role1y = 540,
-                role2x = 920,
-                role2y = 540,
+                weapon0 = this.create(Stone.type, {
+                    x: role0x + 40,
+                    y: role0y - 20
+                }),
+                role0 = this.create(Squirrel.type, {
+                    x: role0x,
+                    y: role0y,
+                    weapon: weapon0.uuid
+                }),
                 weapon1 = this.create(Stone.type, {
-                    x: role1x + 40,
+                    x: role1x - 40,
                     y: role1y - 20
                 }),
                 role1 = this.create(Squirrel.type, {
                     x: role1x,
                     y: role1y,
                     weapon: weapon1.uuid
-                }),
-                weapon2 = this.create(Stone.type, {
-                    x: role2x - 40,
-                    y: role2y - 20
-                }),
-                role2 = this.create(Squirrel.type, {
-                    x: role2x,
-                    y: role2y,
-                    weapon: weapon2.uuid
                 });
 
             // 创建玩家一角色
             // TODO 待更新为工厂方法创建
-            roleGroup1.push(role1);
+            roles0.push(role0);
 
             // 创建玩家二角色
             // TODO 待更新为工厂方法创建
-            roleGroup2.push(role2);
+            roles1.push(role1);
 
             // 监听计时器运行状态
             timer.onStateChange('stop', function () {
@@ -267,8 +290,8 @@ elf.define('FS::Controller::Director', [
 
             // 把元素放置到场景上
             this.addChild(stage, 1);
-            this.addChild(role1, 2);
-            this.addChild(role2, 3);
+            this.addChild(role0, 2);
+            this.addChild(role1, 3);
 
             // 游戏准备完毕
             this.sendMessage('game', ['ready']);
@@ -316,10 +339,10 @@ elf.define('FS::Controller::Director', [
                     this.side = this.round % 2;
                     
                     // 激活该回合角色
-                    var activeGroup = this.side === 1 ? this.roleGroup1 : this.roleGroup2,
-                        idleGroup = this.side === 1 ? this.roleGroup2 : this.roleGroup1;
-                    this.activeRoleGroup(activeGroup);
-                    this.idleRoleGroup(idleGroup);
+                    var activeRoles = this.side === 0 ? this.player0.roles : this.player1.roles,
+                        idleRoles = this.side === 0 ? this.player1.roles : this.player0.roles;
+                    this.activeRoleGroup(activeRoles);
+                    this.idleRoleGroup(idleRoles);
 
                     // 变更回合方
                     this.sendMessage('scene', ['changeSide', this.side]);
@@ -399,8 +422,7 @@ elf.define('FS::Controller::Director', [
         // 物理世界
         // Box2d 相关
         initWorld: function () {
-            var that = this,
-                impact = this.impact;
+            var that = this;
 
             // 创建新世界
             this.world = new b2World(
@@ -413,9 +435,9 @@ elf.define('FS::Controller::Director', [
             // 创建碰撞监听器
             var listener = new b2Listener,
                 getElements = function (contact) {
-                    var data1 = contact.GetFixtureA().GetBody().GetUserData(),
-                        data2 = contact.GetFixtureB().GetBody().GetUserData();
-                    return [that.get(data1.uuid), that.get(data2.uuid)];
+                    var data0 = contact.GetFixtureA().GetBody().GetUserData(),
+                        data1 = contact.GetFixtureB().GetBody().GetUserData();
+                    return [that.get(data0.uuid), that.get(data1.uuid)];
                 };
             // 碰撞开始
             // Called when two fixtures begin to touch.

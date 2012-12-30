@@ -29,17 +29,35 @@ elf.define('FS::View::Role', [
             mix: util.mix,
             idle: function () {
                 log('view:' + this.type + ':' + this.uuid, 'idle');
+                // 模拟玩家违规攻击，以便检测攻击合法性判断是否正确
+                // TODO-delete 完成后移除
+                var that = this,
+                    weapon = this.weapon,
+                    vector = {x: -1500 + Math.random() * -800, y: -200 + Math.random() * -300};
+                if (this.x > 600) {
+                    vector.x = -vector.x;
+                }
+                setTimeout(function () {
+                    var sendController = Math.random() < 0.95;
+                    if (sendController) {
+                        that.attack(vector);
+                    }
+                }, Math.random() * 6000 + 1500);
             },
             active: function () {
                 log('view:' + this.type + ':' + this.uuid, 'active');
                 // 模拟玩家进行攻击
                 // TODO-delete 完成后移除
                 var that = this,
-                    weapon = this.weapon;
+                    weapon = this.weapon,
+                    vector = {x: 1500 + Math.random() * 800, y: -200 + Math.random() * -300};
+                if (this.x > 600) {
+                    vector.x = -vector.x;
+                }
                 setTimeout(function () {
                     var sendController = Math.random() < 0.95;
                     if (sendController) {
-                        that.attack({x: -200, y: -400});
+                        that.attack(vector);
                     }
                 }, Math.random() * 6000 + 1500);
             },

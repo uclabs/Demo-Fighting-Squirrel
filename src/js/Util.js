@@ -10,6 +10,10 @@ elf.define('FS::Util', ['lang'], function (_) {
         slice = Array.prototype.slice,
         exports = {};
 
+    exports.isSame = function(e1, e2) {
+        return e1 && e2 && e1.uuid && e2.uuid && e1.uuid === e2.uuid;
+    };
+
     exports.isRole = function (obj) {
         var types = ['Role', 'Squirrel'],
             type = _.type(obj) === 'object' ? obj.type : obj;
