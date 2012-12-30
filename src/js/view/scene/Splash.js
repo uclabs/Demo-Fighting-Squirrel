@@ -33,7 +33,11 @@ elf.define('FS::View::Splash', [
             mix: util.mix,
             hide: function () {
                 log('view:' + this.type + ':' + this.uuid, 'hide');
-                //
+                this.sprite.style.display = "none";
+                var gameCanvas = document.getElementById('game_canvas');
+                if(gameCanvas){
+                    gameCanvas.style.display = "block";
+                }
             }
         });
 

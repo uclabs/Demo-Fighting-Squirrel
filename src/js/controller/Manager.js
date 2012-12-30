@@ -91,8 +91,10 @@ elf.define('FS::Controller::Manager', [
         manager.sendView(Splash.type, ['create', splash.config()]);
 
         // 切换到菜单场景
-        splash.hide();
-        menu.replace();
+        setTimeout(function() {
+            splash.hide();
+            menu.replace();
+        }, 1000);
     };
 
     return {
