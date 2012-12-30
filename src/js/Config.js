@@ -13,6 +13,16 @@ elf.define('FS::Config', function () {
         frameRate: frameRate,
         // 帧间隔
         frameInterval: Math.floor(1000 / frameRate),
+        // 玩家配置
+        player: {
+            nickName: '玩家',
+            avatar: 0
+        },
+        // 游戏配置
+        game: {
+            music: false,
+            language: 'zh-cn'
+        },
         // 游戏世界定义
         world: {
             width: 1024,
@@ -20,7 +30,7 @@ elf.define('FS::Config', function () {
             scale: 30,
             gravity: 9.80665
         },
-        // Cocos2D Config
+        // Cocos2D 配置
         ccConfig: {
             COCOS2D_DEBUG: 2, // 0 to turn debug off, 1 for basic debug, and 2 for full debug
             box2d: true,

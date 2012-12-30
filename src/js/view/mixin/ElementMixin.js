@@ -5,6 +5,7 @@
  */
 elf.define('FS::View::ElementMixin', ['lang'], function (_) {
     'use strict';
+    
     var mixin = {
             // 配置属性
             config: function (opts) {

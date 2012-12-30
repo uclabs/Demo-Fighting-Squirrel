@@ -26,6 +26,7 @@ elf.define('FS::View::View', [
     'FS::View::Resources',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
+    'FS::View::Player',
     'FS::View::Menu',
     'FS::View::Scene',
     'FS::View::Splash',
@@ -35,14 +36,14 @@ elf.define('FS::View::View', [
     'FS::View::Squirrel',
     'FS::View::Weapon',
     'FS::View::Stone'
-], function (_, async, config, util, resources, eventMixin, messageMixin, Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, async, config, util, resources, eventMixin, messageMixin, Player, Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var view = {
                 elements: {},
                 mix: util.mix
             },
-        Classes = [Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone],
+        Classes = [Player, Menu, Scene, Splash, Timer, Stage, Role, Squirrel, Weapon, Stone],
         Cocos2dApp, cocos2dApp;
 
     // 把事件和消息 mixin
@@ -105,19 +106,12 @@ elf.define('FS::View::View', [
         }
     });
 
-    if (!cocos2dApp) {
-        cocos2dApp = new Cocos2dApp();
-    }
-
     view.init = function () {
-        // 监听 Scene 创建
-        /*this.listenMessage('Scene:create', function () {
-            if (!cocos2dApp) {
-                log('view:cocos2d', 'app');
-                cocos2dApp = new Cocos2dApp();
-            }
-        });*/
         log('view', 'init');
+
+        if (!cocos2dApp) {
+            cocos2dApp = new Cocos2dApp();
+        }
     };
     return view;
 });

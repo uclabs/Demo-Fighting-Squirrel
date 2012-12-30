@@ -11,6 +11,7 @@
  * @import ../model/mixin/EventMixin.js
  * @import ../model/mixin/MessageMixin.js
  * @import ../model/mixin/StateMixin.js
+ * @import ../model/Player.js
  * @import ../model/Timer.js
  * @import ../model/Stage.js
  * @import ../model/role/Role.js
@@ -29,13 +30,14 @@ elf.define('FS::Controller::Director', [
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin',
     'FS::Model::StateMixin',
+    'FS::Model::Player',
     'FS::Model::Timer',
     'FS::Model::Stage',
     'FS::Model::Role',
     'FS::Model::Squirrel',
     'FS::Model::Weapon',
     'FS::Model::Stone'
-], function (_, Event, Class, async, Box2D, config, util, eventMixin, messageMixin, stateMixin, Timer, Stage, Role, Squirrel, Weapon, Stone) {
+], function (_, Event, Class, async, Box2D, config, util, eventMixin, messageMixin, stateMixin, Player, Timer, Stage, Role, Squirrel, Weapon, Stone) {
     'use strict';
 
     var slice = Array.prototype.slice,
@@ -62,11 +64,11 @@ elf.define('FS::Controller::Director', [
         isSame = util.isSame,
 
         // 游戏相关定义
-        uuid = 0,
+        uuid = -1,
         Director,
         Classes = {};
 
-    [Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
+    [Player, Timer, Stage, Role, Squirrel, Weapon, Stone].forEach(function (Class) {
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
@@ -87,12 +89,7 @@ elf.define('FS::Controller::Director', [
 
     Director = Class.extend({
         // 配置属性
-        player0: {
-            race: ''
-        },
-        player1: {
-            race: ''
-        },
+        players: null,
 
         // 游戏状态
         elements: {}, // 物件
@@ -107,6 +104,11 @@ elf.define('FS::Controller::Director', [
         // 构造函数
         ctor: function (opts) {
             log('director', 'init', opts);
+            // 玩家列表
+            this.players = [];
+            // 随机一方开始
+            this.side = Math.round(Math.random());
+
             this.mix(eventMixin, messageMixin, stateMixin);
             this.config(opts);
 
@@ -177,7 +179,7 @@ elf.define('FS::Controller::Director', [
                     role.changeState('idle');
                 });
             } else {
-                [this.player0, this.player1].forEach(function (player) {
+                this.players.forEach(function (player) {
                     var roles = player.roles;
                     this.freezeRoleGroup(roles);
                 });
@@ -189,7 +191,7 @@ elf.define('FS::Controller::Director', [
                     role.changeState('active');
                 });
             } else {
-                [this.player0, this.player1].forEach(function (player) {
+                this.players.forEach(function (player) {
                     var roles = player.roles;
                     this.activeRoleGroup(roles);
                 });
@@ -248,6 +250,8 @@ elf.define('FS::Controller::Director', [
             log('director', 'start', opts);
             // 初始化各元素
             var that = this,
+                player0 = this.create(Player.type, {}),
+                palyer1 = this.create(Player.type, {});
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {}),
                 roles0 = this.player0.roles = [],
@@ -282,6 +286,9 @@ elf.define('FS::Controller::Director', [
             // 创建玩家二角色
             // TODO 待更新为工厂方法创建
             roles1.push(role1);
+
+            // 放入玩家列表中
+            this.players.push(player0, player1);
 
             // 监听计时器运行状态
             timer.onStateChange('stop', function () {

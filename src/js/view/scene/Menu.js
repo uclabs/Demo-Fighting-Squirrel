@@ -3,6 +3,7 @@
  *
  * @import ../../../lib/elf/core/lang.js
  * @import ../../../lib/elf/mod/class.js
+ * @import ../../Config.js
  * @import ../../Util.js
  * @import ../mixin/EventMixin.js
  * @import ../mixin/MessageMixin.js
@@ -12,12 +13,13 @@
 elf.define('FS::View::Menu', [
     'lang',
     'class',
+    'FS::Config',
     'FS::Util',
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
+], function (_, Class, config, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     
     var type = 'Menu',
@@ -41,7 +43,9 @@ elf.define('FS::View::Menu', [
                 var that = this;
                 setTimeout(function () {
                     // 向 manager 发送游戏开始的消息
-                    that.sendController('config', [{mode: 'multi-player'}]);
+                    that.sendController('player', [config.player]);
+                    that.sendController('options', [{mode: 'multi-player'}]);
+                    that.sendController('options', [{mode: 'online'}]);
                     that.sendController('game', ['start']);
                 }, 1000);
                 // this.sprite.replaceScene(this.sprite, transition || 'Fade', time || 0);
