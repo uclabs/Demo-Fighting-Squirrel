@@ -26,9 +26,7 @@ elf.define('FS::Controller::Manager', [
         manager = {
             mix: util.mix
         },
-        uuid = 0,
-        Classes = {},
-        menu, scene, splash;
+        Classes = {};
 
     manager.mix(eventMixin, messageMixin);
 
@@ -56,7 +54,7 @@ elf.define('FS::Controller::Manager', [
             case 'stop':
                 log('manager', 'sendMessage', 'director.stop');
                 manager.sendMessage('director', ['stop']);
-                menu.replace();
+                manager.menu.replace();
                 break;
 
             case 'restart':
@@ -70,39 +68,37 @@ elf.define('FS::Controller::Manager', [
         switch(action) {
             case 'ready':
                 log('manager', 'sendMessage', 'scene.replace');
-                scene.replace();
+                manager.scene.replace();
                 break;
         }
     });
 
     manager.listenMessage('scene', function(action) {
         var args = slice.call(arguments, 1);
-        scene[action].apply(scene, args);
+        manager.scene[action].apply(manager.scene, args);
     });
 
-    function init() {
+    manager.init = function () {
         log('manager', 'init');
 
-        menu = new Menu({uuid: 'menu'});
-        log('manager', 'Menu.create', 'menu', menu.config());
-        manager.sendView(Menu.type, ['create', menu.config()]);
+        this.menu = new Menu({uuid: 'menu'});
+        log('manager', 'Menu.create', 'menu', this.menu.config());
+        this.sendView(Menu.type, ['create', this.menu.config()]);
 
-        scene = new Scene({uuid: 'scene'});
-        log('manager', 'Scene.create', 'scene', scene.config());
-        manager.sendView(Scene.type, ['create', scene.config()]);
+        this.scene = new Scene({uuid: 'scene'});
+        log('manager', 'Scene.create', 'scene', this.scene.config());
+        this.sendView(Scene.type, ['create', this.scene.config()]);
 
-        splash = new Splash({uuid: 'splash'});
-        log('manager', 'Splash.create', 'splash', splash.config());
-        manager.sendView(Splash.type, ['create', splash.config()]);
+        this.splash = new Splash({uuid: 'splash'});
+        log('manager', 'Splash.create', 'splash', this.splash.config());
+        this.sendView(Splash.type, ['create', this.splash.config()]);
 
         // 切换到菜单场景
         setTimeout(function() {
-            splash.hide();
-            menu.replace();
+            manager.splash.hide();
+            manager.menu.replace();
         }, 1000);
     };
 
-    return {
-        init: init
-    };
+    return manager;
 });
