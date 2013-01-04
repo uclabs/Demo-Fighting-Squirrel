@@ -64,7 +64,6 @@ elf.define('FS::Controller::Director', [
         isSame = util.isSame,
 
         // 游戏相关定义
-        uuid = -1,
         Director,
         Classes = {};
 
@@ -72,7 +71,7 @@ elf.define('FS::Controller::Director', [
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
-            opts.uuid = 'd' + (++uuid);
+            opts.uuid = util.uuid();
             return new Class(opts);
         };
     });

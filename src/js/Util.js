@@ -1,6 +1,7 @@
 /**
  * Util
  *
+ * @import ../lib/uuid.js
  * @import ../lib/elf/core/lang.js
  */
 elf.define('FS::Util', ['lang'], function (_) {
@@ -61,6 +62,8 @@ elf.define('FS::Util', ['lang'], function (_) {
             _.extend.apply(_, concat.apply([true, this], args));
         }
     };
+
+    exports.uuid = uuid.v4;
 
     return exports;
 });

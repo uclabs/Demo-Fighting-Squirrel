@@ -99,7 +99,7 @@ elf.define('FS::View::Menu', [
 
     // 主屏场景
     var MainMenuScene = cc.Scene.extend({
-        onEnter:function(){
+        onEnter: function () {
             this._super();
             var mainLayer = new MainMenuLayer();
             mainLayer.init();
