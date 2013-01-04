@@ -56,15 +56,29 @@ module.exports = function (grunt) {
                 src: [
                     '<banner:meta.banner>',
                     '../src/lib/**/*.js',
-                    '../src/js/**/*.js'
+                    '../src/common/**/*.js',
+                    '../src/client/**/*.js'
                 ],
                 ignore: ['../src/js/**/*.min.js'],
-                dest: '../build/public/js/fs.min.js'
+                dest: '../build/public/client/js/fs.js'
             },
             css: {
                 type: 'css',
                 src: ['<banner:meta.banner>', '../src/ui/css/base.css'],
-                dest: '../build/public/css/fs.min.css'
+                dest: '../build/public/client/css/fs.css'
+            }
+        },
+        packserv: {
+            js: {
+                type: 'js',
+                src: [
+                    '<banner:meta.banner>',
+                    '../src/lib/**/*.js',
+                    '../src/common/**/*.js',
+                    '../src/server/**/*.js'
+                ],
+                ignore: ['../src/js/**/*.min.js'],
+                dest: '../build/public/server/fs.js'
             }
         },
         server: {
@@ -112,6 +126,7 @@ module.exports = function (grunt) {
     // public tasks
     grunt.registerTask('docs', 'Generate elf\'s documents to docs.', task(docs.grunt));
     grunt.registerMultiTask('pack', 'Concat and uglify the files.', task(packer.grunt));
+    grunt.registerMultiTask('packserv', 'Concat and uglify the files.', task(packer.grunt));
     grunt.registerTask('test', 'testserver qunit:elf');
     grunt.registerTask('build', 'lint test');
     grunt.registerTask('jenkins', 'uncolor lint test');

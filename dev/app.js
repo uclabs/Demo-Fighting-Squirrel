@@ -6,7 +6,8 @@ var path = require('path'),
 module.exports = function (config) {
     var staticDir = config.staticDir,
         elfPath = path.join(staticDir, 'lib/elf/**/*.js'),
-        jsPath = path.join(staticDir, 'js/**/*.js'),
+        commonPath = path.join(staticDir, 'common/**/*.js'),
+        clientPath = path.join(staticDir, 'client/**/*.js'),
         cssPath = path.join(staticDir, 'css/**/*.css'),
         mainPath = path.join(staticDir, 'tpl/main.js'),
         app = this;
@@ -14,7 +15,7 @@ module.exports = function (config) {
     return {
         '/': {
             template: 'index.tpl',
-            watch: [cssPath, elfPath, jsPath],
+            watch: [cssPath, elfPath, commonPath, clientPath],
             get: function () {}
         },
         '/main.js': {

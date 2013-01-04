@@ -18,9 +18,9 @@
  --><canvas id="debug" width="1024" height="768" style="display:none;"></canvas>
 
 <script>
-elf.require(['FS::Config'], function (config) {
+elf.require(['FS::CCConfig'], function (ccConfig) {
     window.addEventListener('DOMContentLoaded', function () {
-        var cfg = document.ccConfig = config.ccConfig,
+        var cfg = document.ccConfig = ccConfig,
             script = document.createElement('script');
         script.id = 'cocos2d-html5';
         script.src = cfg.engineDir + 'platform/jsloader.js';
