@@ -1,15 +1,16 @@
 /*
- * cocos2d utils
+ * Cocos2dMixin
  *
  */
 
- elf.define('FS::View::Cocos2dUtils', [], function(){
-
- 	return {
- 		replaceScene: function (scene, type, time) {
- 			if(!scene){
- 				return;
- 			}
+ elf.define('FS::View::Cocos2dMixin', [], function(){
+    'use strict';
+    
+    var mixin = {
+        replaceScene: function (scene, type, time) {
+            if(!scene){
+                return;
+            }
             switch (type) {
                 case 'Fade' :      //淡出前一场景
                     transition = cc.TransitionFade.create(time, scene);
@@ -32,5 +33,7 @@
             }
             cc.Director.getInstance().replaceScene(transition);
         }
- 	}
+    };
+    
+    return mixin;
  });

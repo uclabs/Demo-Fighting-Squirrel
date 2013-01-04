@@ -9,6 +9,7 @@
  * @import ../mixin/MessageMixin.js
  * @import ../mixin/ElementMixin.js
  * @import ../mixin/StateMixin.js
+ * @import ../mixin/Cocos2dMixin.js
  */
 elf.define('FS::View::Menu', [
     'lang',
@@ -18,8 +19,9 @@ elf.define('FS::View::Menu', [
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
-    'FS::View::StateMixin'
-], function (_, Class, config, util, eventMixin, messageMixin, elementMixin, stateMixin) {
+    'FS::View::StateMixin',
+    'FS::View::Cocos2dMixin'
+], function (_, Class, config, util, eventMixin, messageMixin, elementMixin, stateMixin, cocos2dMixin) {
     'use strict';
     
     // 主屏配置
@@ -109,7 +111,7 @@ elf.define('FS::View::Menu', [
         Menu = Class.extend({
             type: type,
             ctor: function (opts) {
-                this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
+                this.mix(eventMixin, messageMixin, elementMixin, stateMixin, cocos2dMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
 
