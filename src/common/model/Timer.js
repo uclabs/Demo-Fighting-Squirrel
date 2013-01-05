@@ -25,11 +25,11 @@ elf.define('FS::Model::Timer', [
             countdown: 10,
             remain: 0,
             timer: null,
+            mix: util.mix,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
-            mix: util.mix,
             tick: function () {
                 // 递减倒计时时间
                 this.remain -= 1;
@@ -37,6 +37,11 @@ elf.define('FS::Model::Timer', [
 
                 // 发送倒计时时间
                 this.sendView(['tick', this.remain]);
+            },
+            reset: function() {
+                log('controller:' + this.type + ':' + this.uuid, 'reset', this.countdown);
+                this.remain = this.countdown;
+                this.sendView(['reset', this.remain]);
             },
             stateHandler: {
                 timing: {

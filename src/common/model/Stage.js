@@ -38,12 +38,12 @@ elf.define('FS::Model::Stage', [
             restitution: 0, // 弹性
             width: 400,
             height: 10,
+            mix: util.mix,
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.createBody();
             },
-            mix: util.mix,
             createBody: function () {
                 var userData = {uuid: this.uuid};
                 // 物体定义

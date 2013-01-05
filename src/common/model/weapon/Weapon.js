@@ -38,6 +38,7 @@ elf.define('FS::Model::Weapon', [
         type = 'Weapon',
         Weapon = Class.extend({
             type: type,
+            mix: util.mix,
             ctor: function (opts) {
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
@@ -49,7 +50,6 @@ elf.define('FS::Model::Weapon', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: util.mix,
             createBody: function () {
                 this.body = null;
             },

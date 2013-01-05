@@ -17,7 +17,9 @@ elf.define('FS::Controller::Director', [
     'use strict';
 
     var Director = DirectorBase.extend({
-
+        ctor: function(opts) {
+            this._super(opts);
+        }
     });
 
     return Director;

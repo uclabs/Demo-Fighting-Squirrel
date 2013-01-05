@@ -25,7 +25,7 @@ tplTools = {
             break;
         default:
             tag = '';
-        }console.log(tag);
+        }
         return tag;
     },
     genTags: function (type, urls) {

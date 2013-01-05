@@ -70,7 +70,10 @@ elf.define('FS::Controller::DirectorBase', [
         Classes[Class.type] = Class;
         Class.create = Class.create || function (opts) {
             opts = opts || {};
-            opts.uuid = util.uuid();
+            // 如果是玩家，并且玩家已经携带了uuid，就不再重新生成UUID了
+            if (!(Class.type === Player.type && opts.uuid)) {
+                opts.uuid = util.uuid();
+            }
             return new Class(opts);
         };
     });
@@ -90,7 +93,7 @@ elf.define('FS::Controller::DirectorBase', [
         players: null,
 
         // 游戏状态
-        elements: {}, // 物件
+        elements: {}, // 元素们
         side: 0, // 回合方
         round: 0, // 当前回合数
         attacking: {
@@ -99,6 +102,8 @@ elf.define('FS::Controller::DirectorBase', [
             force: null // 攻击力量
         },
 
+        // 混入方法
+        mix: util.mix,
         // 构造函数
         ctor: function (opts) {
             log('director', 'init', opts);
@@ -114,29 +119,32 @@ elf.define('FS::Controller::DirectorBase', [
             this.initWorld();
 
             // 监听其他消息
-            this.listenMessage('mode', this.onMode);
-            this.listenMessage('director', dispactor.bind(this));
+            this.listenMessage('mode', this.onModeChange.bind(this));
+            this.listenMessage('player', this.onPlayerChange.bind(this));
+            this.listenMessage('game', this.onGameChange.bind(this));
+            this.listenMessage('round', this.onRoundChange.bind(this));
             this.listenMessage(Role.type, this.onRole.bind(this));
             this.listenMessage(Weapon.type, this.onWeapon.bind(this));
         },
-        mix: util.mix,
         config: function (opts) {
             log('director', 'config', opts);
             _.extend(true, this, opts);
         },
 
+        // 元素创建工厂
         create: function (type, opts) {
-            var Class = Classes[type],
-                instance;
+            var Class = Classes[type];
             if (Class) {
                 opts = opts || {};
                 opts.world = this.world;
-                instance = Class.create(opts);
+
+                var instance = Class.create(opts);
                 // 添加入元素列表中
                 this.add(opts.uuid, instance);
                 // 向 view 派发创建指令
                 log('director', instance.type + '.create', opts.uuid, opts);
                 this.sendView(instance.type, ['create', instance.config()]);
+
                 return instance;
             }
         },
@@ -150,8 +158,79 @@ elf.define('FS::Controller::DirectorBase', [
         },
 
         // 游戏模式改变
-        onMode: function(mode) {
+        onModeChange: function(mode) {
             
+        },
+        // 玩家改变
+        onPlayerChange: function(opts) {
+            if (!opts) {
+                opts = {};
+            }
+            opts.side = this.players.length;
+            var player = this.create(Player.type, opts);
+            this.players.push(player);
+        },
+        // 游戏改变
+        onGameChange: function(action, uuid) {
+            if (!uuid) {
+                return;
+            }
+            var flags = {
+                    'start': 'isGameStart',
+                    'ready': 'isGameReady'
+                },
+                flag = flags[action],
+                allAllow = true;
+            this.players.forEach(function(player) {
+                if (player.uuid === uuid) {
+                    player[flag] = true;
+                } else if (!player[flag]) {
+                    allAllow = false;
+                }
+            });
+            if (!allAllow) {
+                return;
+            }
+            switch(action) {
+                case 'start':
+                    this.gameInit();
+                    break;
+
+                case 'ready':
+                    this.gameStart();
+                    break;
+
+                case 'stop':
+                    this.gameStop();
+                    break;
+            }
+        },
+        // 回合变更
+        onRoundChange: function(action, uuid) {
+            if (!uuid) {
+                return;
+            }
+            var flags = {
+                    'ready': 'isRoundReady'
+                },
+                flag = flags[action],
+                allAllow = true;
+            this.players.forEach(function(player) {
+                if (player.uuid === uuid) {
+                    player[flag] = true;
+                } else if (!player[flag]) {
+                    allAllow = false;
+                }
+            });
+            if (!allAllow) {
+                return;
+            }
+            switch(action) {
+                case 'ready':
+                    // 计时器开始
+                    this.timer.changeState('timing');
+                    break;
+            }
         },
 
         // 角色响应方法
@@ -249,76 +328,60 @@ elf.define('FS::Controller::DirectorBase', [
             var uuid = _.type(child) === 'object' ? child.uuid : child;
             this.sendMessage('scene', ['addChild', uuid, index]);
         },
-        // 游戏逻辑
-        start: function (opts) {
+
+        // 游戏初始化
+        gameInit: function (opts) {
             log('director', 'start', opts);
-            // 初始化各元素
-            var that = this,
-                player0 = this.create(Player.type, {}),
-                player1 = this.create(Player.type, {}),
+            var create = this.create,
+                addChild = this.addChild,
+                players = this.players,
                 timer = this.timer = this.create(Timer.type, {}),
-                stage = this.stage = this.create(Stage.type, {}),
-                roles0 = player0.roles = [],
-                roles1 = player1.roles = [],
-                role0x = 100,
-                role0y = 540,
-                role1x = 920,
-                role1y = 540,
-                weapon0 = this.create(Stone.type, {
-                    x: role0x + 40,
-                    y: role0y - 20
-                }),
-                role0 = this.create(Squirrel.type, {
-                    x: role0x,
-                    y: role0y,
-                    weapon: weapon0.uuid
-                }),
-                weapon1 = this.create(Stone.type, {
-                    x: role1x - 40,
-                    y: role1y - 20
-                }),
-                role1 = this.create(Squirrel.type, {
-                    x: role1x,
-                    y: role1y,
-                    weapon: weapon1.uuid
-                });
+                stage = this.stage = this.create(Stage.type, {});
 
-            // 创建玩家一角色
-            // TODO 待更新为工厂方法创建
-            roles0.push(role0);
+            addChild(stage);
 
-            // 创建玩家二角色
-            // TODO 待更新为工厂方法创建
-            roles1.push(role1);
+            players.forEach(function(player, index) {
+                var side = config.side[index],
+                    weapon = create(Stone.type, {
+                        player: player.uuid,
+                        x: side.wx,
+                        y: side.wy
+                    }),
+                    role = create(Squirrel.type, {
+                        player: player.uuid,
+                        x: side.x,
+                        y: side.y,
+                        weapon: weapon.uuid
+                    });
+                addChild(role);
+                player.roles = [role];
 
-            // 放入玩家列表中
-            this.players.push(player0, player1);
+                player.isGameReady = false;
+                player.gameReady();
+            });
 
             // 监听计时器运行状态
             timer.onStateChange('stop', function () {
                 that.assertTimeout();
             });
-
-            // 把元素放置到场景上
-            this.addChild(stage, 1);
-            this.addChild(role0, 2);
-            this.addChild(role1, 3);
-
-            // 游戏准备完毕
-            this.sendMessage('game', ['ready']);
-
+        },
+        // 游戏开始
+        gameStart: function() {
             // 游戏状态修改为准备
             this.changeState('ready');
         },
-        stop: function () {
+        // 游戏结束
+        gameStop: function () {
             log('director', 'stop');
         },
+
         show: function () {
 
         },
         hide: function () {
 
         },
+
         // 判定胜利
         assertWin: function () {
             log('director', 'assertWin');
@@ -331,6 +394,7 @@ elf.define('FS::Controller::DirectorBase', [
                 this.changeState('ready');
             }
         },
+
         stateHandler: {
             ready: {
                 init: function () {
@@ -340,6 +404,11 @@ elf.define('FS::Controller::DirectorBase', [
                     if (this.timer.state === 'timing') {
                         return;
                     }
+
+                    // 等待玩家响应回合开始
+                    this.players.forEach(function(player) {
+                        player.isRoundReady = false;
+                    });
 
                     // 进入下一回合
                     // 增加回合数
@@ -362,8 +431,9 @@ elf.define('FS::Controller::DirectorBase', [
 
                     // 场景切换到就绪状态
                     this.sendMessage('scene', ['changeState', 'ready']);
-                    // 计时器开始
-                    this.timer.changeState('timing');
+
+                    // 重置计时器
+                    this.timer.reset();
                 },
                 exit: function () {
 

@@ -23,12 +23,18 @@ elf.define('FS::Model::Player', [
             type: type,
             side: 0,
             race: '',
+            mix: util.mix,
             ctor: function (opts) {
                 this.roles = [];
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
-            mix: util.mix
+            gameReady: function() {
+                this.sendView(['gameReady']);
+            },
+            roundInit: function () {
+                this.sendView(['roundInit']);
+            }
         });
 
     Player.type = type;

@@ -43,7 +43,7 @@ elf.define('FS::View::Menu', [
         mix: util.mix,
         init:function(){
             console.log("abc");
-            this.mix(eventMixin);
+            this.mix(eventMixin, messageMixin);
             var s = cc.Director.getInstance().getWinSize();
 
             //var greenLayer = cc.LayerColor.create(cc.c4(0, 255, 0, 255), s.width, s.height);
@@ -87,12 +87,11 @@ elf.define('FS::View::Menu', [
             this.addChild(gameMenu);
         },
         beginGame:function(){
-            console.log("begin game");
             this.sendController('mode', ['multi-player']);
-            this.sendController('game', ['start']);
+            this.sendController('player', [{uuid: 'UU'}, {uuid: 'CC'}]);
+            this.sendMessage('game', ['start']);
         },
         gameOption:function(){
-            console.log("option game");
             this.sendController('game', ['option']);
         }
     });

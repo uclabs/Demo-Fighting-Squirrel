@@ -6,6 +6,7 @@
  * @import ../../common/Util.js
  * @import Resources.js
  * @import ./mixin/EventMixin.js
+ * @import ./mixin/MessageMixin.js
  * @import ./mixin/ElementMixin.js
  * @import ./mixin/StateMixin.js
  */

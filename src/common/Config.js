@@ -15,7 +15,8 @@ elf.define('FS::Config', function () {
         frameInterval: Math.floor(1000 / frameRate),
         // 玩家配置
         player: {
-            nickName: '玩家',
+            uuid: 'nino',
+            nickName: '尼诺',
             avatar: 0
         },
         // 游戏配置
@@ -23,6 +24,21 @@ elf.define('FS::Config', function () {
             music: false,
             language: 'zh-cn'
         },
+        side: [
+            {
+                x: 100,
+                y: 540,
+                wx: 140,
+                wy: 520 
+            }
+            ,
+            {
+                x: 920,
+                y: 540,
+                wx: 880,
+                wy: 520
+            }
+        ],
         // 游戏世界定义
         world: {
             width: 1024,

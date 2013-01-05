@@ -3,6 +3,7 @@
  *
  * @import ../../lib/elf/core/lang.js
  * @import ../../lib/elf/mod/async.js
+ * @import ../../common/Config.js
  * @import ../../common/Util.js
  * @import ../model/scene/Menu.js
  * @import ../model/scene/Scene.js
@@ -13,13 +14,14 @@
 elf.define('FS::Controller::Manager', [
     'lang',
     'async',
+    'FS::Config',
     'FS::Util',
     'FS::Model::Menu',
     'FS::Model::Scene',
     'FS::Model::Splash',
     'FS::Model::EventMixin',
     'FS::Model::MessageMixin'
-], function (_, async, util, Menu, Scene, Splash, eventMixin, messageMixin) {
+], function (_, async, config, util, Menu, Scene, Splash, eventMixin, messageMixin) {
     'use strict';
 
     var slice = Array.prototype.slice,
@@ -32,36 +34,53 @@ elf.define('FS::Controller::Manager', [
 
     manager.listenView('mode', function (mode) {
         log('manager', 'mode', mode);
-        if (mode === 'multi-player') {
-            
-        } else if (mode === 'online') {
-            
-        }
+        manager.mode = mode;
         manager.sendMessage('mode', [mode]);
     });
 
-    manager.listenView('game', function (action) {
+    manager.listenView('player', function() {
+        manager.players = slice.call(arguments);
+        manager.players.forEach(function(player) {
+            // 把玩家信息送出去
+            manager.sendMessage('player', [player]);
+        });
+    });
+
+    manager.listenView('game', function (action, uuid) {
+        log('manager', 'game', action);
         switch(action) {
             case 'start':
-                log('manager', 'sendMessage', 'director.start');
-                manager.sendMessage('director', ['start']);
+                break;
+
+            case 'ready':
+
                 break;
 
             case 'exit':
-                log('manager', 'sendMessage', 'director.exit');
                 break;
 
             case 'stop':
-                log('manager', 'sendMessage', 'director.stop');
-                manager.sendMessage('director', ['stop']);
                 manager.menu.replace();
                 break;
 
             case 'restart':
-                log('manager', 'sendMessage', 'director.restart');
-                manager.sendMessage('director', ['restart']);
                 break;
         }
+        manager.sendMessage('game', [action, uuid]);
+    });
+
+    manager.listenView('round', function(action) {
+        log('manager', 'game', action);
+        switch(action) {
+            case 'init':
+                manager.sendMessage('player', [config.player]);
+                break;
+
+            case 'ready':
+
+                break;
+        }
+        manager.sendMessage('round', [action]);
     });
 
     manager.listenMessage('game', function (action) {
@@ -69,6 +88,9 @@ elf.define('FS::Controller::Manager', [
             case 'ready':
                 log('manager', 'sendMessage', 'scene.replace');
                 manager.scene.replace();
+                break;
+
+            case 'error':
                 break;
         }
     });

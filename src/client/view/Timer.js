@@ -28,12 +28,18 @@ elf.define('FS::View::Timer', [
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
             mix: util.mix,
+            reset: function(countdown) {
+                this.countdown = countdown;
+                log('view:' + this.type + ':' + this.uuid, 'reset', this.countdown);
+                // 回合准备完毕
+                this.sendMessage('game', 'ready');
+            },
             start: function (countdown) {
                 this.countdown = countdown;
-                log('view:' + this.type + ':' + this.uuid, 'start');
+                log('view:' + this.type + ':' + this.uuid, 'start', this.countdown);
             },
             stop: function () {
-                log('view:' + this.type + ':' + this.uuid, 'stop');
+                log('view:' + this.type + ':' + this.uuid, 'stop', this.countdown);
             },
             tick: function (countdown) {
                 this.countdown = countdown;

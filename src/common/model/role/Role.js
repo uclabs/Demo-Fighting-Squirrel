@@ -36,6 +36,7 @@ elf.define('FS::Model::Role', [
         type = 'Role',
         Role = Class.extend({
             type: type,
+            mix: util.mix,
             ctor: function (opts) {
                 var that = this;
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
@@ -47,7 +48,6 @@ elf.define('FS::Model::Role', [
                     that.sendMessage(type, args);
                 });
             },
-            mix: util.mix,
             active: function () {
                 this.sendView(['active']);
             },

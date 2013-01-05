@@ -17,8 +17,7 @@ elf.define('FS::View::Role', [
     'FS::View::StateMixin'
 ], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
-    var concat = Array.prototype.concat,
-        Role = Class.extend({
+    var Role = Class.extend({
             type: 'Role',
             weapon: null,
             ctor: function (opts) {

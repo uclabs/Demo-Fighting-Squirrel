@@ -17,8 +17,7 @@ elf.define('FS::View::Weapon', [
     'FS::View::StateMixin'
 ], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
     'use strict';
-    var concat = Array.prototype.concat,
-        Weapon = Class.extend({
+    var Weapon = Class.extend({
             type: 'Weapon',
             ctor: function (opts) {
                 this.mix(eventMixin, elementMixin, stateMixin);
