@@ -84,10 +84,10 @@ elf.define('FS::View::View', [
         config: ccConfig,
         mix: util.mix,
         ctor: function (scene) {
+            this.mix(eventMixin, messageMixin);
+
             var that = this;
             this._super();
-            this.mix(messageMixin);
-            this.mix(eventMixin);
             this.startScene = scene;
             cc.COCOS2D_DEBUG = this.config.COCOS2D_DEBUG;
             cc.setup(this.config.tag);
@@ -96,7 +96,7 @@ elf.define('FS::View::View', [
             };
             cc.Loader.getInstance().onload = function () {
                 cc.AppController.shareAppController().didFinishLaunchingWithOptions();
-                that.sendController('cocos2d_onload');
+                that.sendController('game', ['startup']);
             };
             cc.Loader.getInstance().preload(resources.ccRessources);
         },

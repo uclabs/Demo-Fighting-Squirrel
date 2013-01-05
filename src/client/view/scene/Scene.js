@@ -8,6 +8,7 @@
  * @import ../mixin/MessageMixin.js
  * @import ../mixin/ElementMixin.js
  * @import ../mixin/StateMixin.js
+ * @import ../mixin/Cocos2dMixin.js
  */
 elf.define('FS::View::Scene', [
     'lang',
@@ -16,40 +17,17 @@ elf.define('FS::View::Scene', [
     'FS::View::EventMixin',
     'FS::View::MessageMixin',
     'FS::View::ElementMixin',
-    'FS::View::StateMixin'
-], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
+    'FS::View::StateMixin',
+    'FS::View::Cocos2dMixin'
+], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin, cocos2dMixin) {
     'use strict';
 
     var Sprite = cc.Layer.extend({
+            mix: util.mix,
             ctor: function () {
+                this.mix(eventMixin, messageMixin, cocos2dMixin);
                 this._super();
-                cc.associateWithNative( this, cc.Layer );
-            },
-            replaceScene: function (Sprite, type, time) {
-                var scene = cc.Scene.create(),
-                    transition = null;
-                scene.addChild(Sprite);
-                switch (type) {
-                    case 'Fade' :      //淡出前一场景
-                        transition = cc.TransitionFade.create(time, scene);
-                        break;
-                    case 'JumpZoom':   //跳跃式替换，场景缩小，再加载进来
-                        transition = cc.TransitionJumpZoom.create(time, scene);
-                        break;
-                    case 'ShrinkGrow': //交叉着替换场景
-                        transition = cc.TransitionShrinkGrow.create(time,scene);
-                        break;
-                    case 'RotoZoom':   //转换角度替换
-                        transition = cc.TransitionRotoZoom.create(time,scene);
-                        break;
-                    case 'MoveInL':     //从左切入
-                        transition = cc.TransitionMoveInL.create(time, scene);
-                        break;
-                    case 'MoveInR':     //从右切入
-                        transition = cc.TransitionMoveInR.create(time, scene);
-                        break;
-                }
-                cc.Director.getInstance().replaceScene(transition);
+                cc.associateWithNative(this, cc.Layer);
             }
         }),
         type = 'Scene',
@@ -75,7 +53,7 @@ elf.define('FS::View::Scene', [
             },
             // 切换到本场景
             replace: function (transition, time) {
-                log('view:' + this.type + ':' + this.uuid, 'replace', transition, time);
+                log('view:Scene:' + this.uuid, 'replace', transition, time);
                 this.sprite.replaceScene(this.sprite, transition || 'Fade', time || 0);
             },
             addChild: function (uuid, zOrder, tag) {

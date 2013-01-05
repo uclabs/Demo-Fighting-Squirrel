@@ -42,13 +42,19 @@ elf.define('FS::Controller::Manager', [
         manager.players = slice.call(arguments);
         manager.players.forEach(function(player) {
             // 把玩家信息送出去
+            log('manager', 'player', player);
             manager.sendMessage('player', [player]);
         });
     });
 
     manager.listenView('game', function (action, uuid) {
-        log('manager', 'game', action);
+        log('manager', 'game', action, uuid);
         switch(action) {
+            case 'startup':
+                manager.splash.hide();
+                manager.menu.replace();
+                break;
+
             case 'start':
                 break;
 
@@ -69,18 +75,9 @@ elf.define('FS::Controller::Manager', [
         manager.sendMessage('game', [action, uuid]);
     });
 
-    manager.listenView('round', function(action) {
-        log('manager', 'game', action);
-        switch(action) {
-            case 'init':
-                manager.sendMessage('player', [config.player]);
-                break;
-
-            case 'ready':
-
-                break;
-        }
-        manager.sendMessage('round', [action]);
+    manager.listenView('round', function (action, uuid) {
+        log('manager', 'round', action, uuid);
+        manager.sendMessage('round', [action, uuid]);
     });
 
     manager.listenMessage('game', function (action) {
@@ -114,12 +111,6 @@ elf.define('FS::Controller::Manager', [
         this.splash = new Splash({uuid: 'splash'});
         log('manager', 'Splash.create', 'splash', this.splash.config());
         this.sendView(Splash.type, ['create', this.splash.config()]);
-
-        // 切换到菜单场景
-        setTimeout(function() {
-            manager.splash.hide();
-            manager.menu.replace();
-        }, 1000);
     };
 
     return manager;

@@ -331,31 +331,31 @@ elf.define('FS::Controller::DirectorBase', [
 
         // 游戏初始化
         gameInit: function (opts) {
-            log('director', 'start', opts);
-            var create = this.create,
-                addChild = this.addChild,
+            log('director', 'gameInit', opts);
+            var that = this,
                 players = this.players,
                 timer = this.timer = this.create(Timer.type, {}),
                 stage = this.stage = this.create(Stage.type, {});
 
-            addChild(stage);
+            that.addChild(stage);
 
             players.forEach(function(player, index) {
                 var side = config.side[index],
-                    weapon = create(Stone.type, {
+                    weapon = that.create(Stone.type, {
                         player: player.uuid,
                         x: side.wx,
                         y: side.wy
                     }),
-                    role = create(Squirrel.type, {
+                    role = that.create(Squirrel.type, {
                         player: player.uuid,
                         x: side.x,
                         y: side.y,
                         weapon: weapon.uuid
                     });
-                addChild(role);
+                that.addChild(role);
                 player.roles = [role];
 
+                // 将玩家标记为未准备好
                 player.isGameReady = false;
                 player.gameReady();
             });
@@ -367,12 +367,13 @@ elf.define('FS::Controller::DirectorBase', [
         },
         // 游戏开始
         gameStart: function() {
+            log('director', 'gameStart');
             // 游戏状态修改为准备
             this.changeState('ready');
         },
         // 游戏结束
         gameStop: function () {
-            log('director', 'stop');
+            log('director', 'gameStop');
         },
 
         show: function () {

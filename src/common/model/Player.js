@@ -25,15 +25,17 @@ elf.define('FS::Model::Player', [
             race: '',
             mix: util.mix,
             ctor: function (opts) {
-                this.roles = [];
+                log('controller:Player:' + this.uuid, 'create', opts);
                 this.mix(eventMixin, elementMixin, stateMixin);
                 this.config(opts);
             },
             gameReady: function() {
-                this.sendView(['gameReady']);
+                log('controller:Player:' + this.uuid, 'game', 'ready');
+                this.sendView(['game', 'ready']);
             },
             roundInit: function () {
-                this.sendView(['roundInit']);
+                log('controller:Player:' + this.uuid, 'round', 'init');
+                this.sendView(['round', 'init']);
             }
         });
 

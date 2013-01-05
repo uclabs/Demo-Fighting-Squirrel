@@ -42,7 +42,6 @@ elf.define('FS::View::Menu', [
     var MainMenuLayer = cc.Layer.extend({
         mix: util.mix,
         init:function(){
-            console.log("abc");
             this.mix(eventMixin, messageMixin);
             var s = cc.Director.getInstance().getWinSize();
 
@@ -115,7 +114,6 @@ elf.define('FS::View::Menu', [
                 this.listenController(opts.uuid, this.invoke.bind(this));
 
                 // 派发场景创建消息
-                //this.sendMessage('Scene:create', [this]);
                 this.sprite = new MainMenuScene();
             },
             mix: util.mix,

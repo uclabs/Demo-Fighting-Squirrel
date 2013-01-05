@@ -27,32 +27,35 @@ elf.define('FS::View::Player', [
             race: '',
             mix: util.mix,
             ctor: function (opts) {
-                this.roles = [];
                 this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
+                this.listenController(opts.uuid, this.invoke.bind(this));
 
-                this.listenMessage('game', this.onGameChange.bind(this));
-                this.listenMessage('round', this.onRoundChange.bind(this));
+                this.listenMessage('game', this.game.bind(this));
+                this.listenMessage('round', this.round.bind(this));
             },
-            onGameChange: function(action) {
+            game: function(action) {
                 if (action === 'ready') {
                     this.gameReady();
                 } else if (action === 'start') {
                     this.gameStart();
                 }
             },
-            onRoundChange: function(action) {
+            round: function(action) {
                 if (action === 'ready') {
                     this.roundReady();
                 }
             },
             gameStart: function() {
+                log('view:Player:' + this.uuid, 'game', 'start');
                 this.sendController('game', ['start', this.uuid]);
             },
             gameReady: function() {
+                log('view:Player:' + this.uuid, 'game', 'ready');
                 this.sendController('game', ['ready', this.uuid]);
             },
             roundReady: function() {
+                log('view:Player:' + this.uuid, 'round', 'ready');
                 this.sendController('round', ['ready', this.uuid]);
             }
         });

@@ -5,6 +5,7 @@
  * @import ../../lib/elf/mod/class.js
  * @import ../../common/Util.js
  * @import ./mixin/EventMixin.js
+ * @import ./mixin/MessageMixin.js
  * @import ./mixin/ElementMixin.js
  * @import ./mixin/StateMixin.js
  */
@@ -13,9 +14,10 @@ elf.define('FS::View::Timer', [
     'class',
     'FS::Util',
     'FS::View::EventMixin',
+    'FS::View::MessageMixin',
     'FS::View::ElementMixin',
     'FS::View::StateMixin'
-], function (_, Class, util, eventMixin, elementMixin, stateMixin) {
+], function (_, Class, util, eventMixin, messageMixin, elementMixin, stateMixin) {
     'use strict';
     
     var type = 'Timer',
@@ -23,7 +25,7 @@ elf.define('FS::View::Timer', [
             type: type,
             countdown: 30,
             ctor: function (opts) {
-                this.mix(eventMixin, elementMixin, stateMixin);
+                this.mix(eventMixin, messageMixin, elementMixin, stateMixin);
                 this.config(opts);
                 this.listenController(opts.uuid, this.invoke.bind(this));
             },
@@ -32,7 +34,7 @@ elf.define('FS::View::Timer', [
                 this.countdown = countdown;
                 log('view:' + this.type + ':' + this.uuid, 'reset', this.countdown);
                 // 回合准备完毕
-                this.sendMessage('game', 'ready');
+                this.sendMessage('round', ['ready']);
             },
             start: function (countdown) {
                 this.countdown = countdown;

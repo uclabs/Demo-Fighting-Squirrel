@@ -11,6 +11,7 @@
             if(!scene){
                 return;
             }
+            var transition;
             switch (type) {
                 case 'Fade' :      //淡出前一场景
                     transition = cc.TransitionFade.create(time, scene);

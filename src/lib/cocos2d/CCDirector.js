@@ -638,7 +638,6 @@ cc.Director = cc.Class.extend(/** @lends cc.Director# */{
 
         //this.addRegionToDirtyRegion(cc.rect(0, 0, cc.canvas.width, cc.canvas.height));
         var i = this._scenesStack.length;
-        console.log(i);
         this._sendCleanupToScene = true;
         this._scenesStack[i - 1] = scene;
         this._nextScene = scene;
